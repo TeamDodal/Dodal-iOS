@@ -66,7 +66,7 @@ struct MainNavigation {
                     // 목표달성 경로 추가
                     return .none
                 case let .element(id: _, action: .home(.goToSetPlan(goalId))):
-                    state.path.append(.setGoal(.init(goalId: goalId)))
+                    state.path.append(.setGoal(.init()))
                     return .none
                 default:
                     return .none
