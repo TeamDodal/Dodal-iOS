@@ -1,5 +1,5 @@
 //
-//  CustomAlert.swift
+//  CustomAlertView.swift
 //  dnd-12th-2-iOS
 //
 //  Created by Allie on 3/4/25.
@@ -7,7 +7,11 @@
 
 import SwiftUI
 
-struct CustomAlert: View {
+import ComposableArchitecture
+
+struct CustomAlertView: View {
+    @Perception.Bindable var store: StoreOf<HomeNavigation>
+    
     var body: some View {
         ZStack {
             Color.black.opacity(0.4)
@@ -26,7 +30,7 @@ struct CustomAlert: View {
                              width: 104,
                              height: 48,
                              cornerRadius: 12) {
-                        
+                        store.send(.customAlertDismissed)
                     }
                     DDButton(title: "달성",
                              font: .pretendard(size: 16, weight: .medium),
@@ -35,7 +39,7 @@ struct CustomAlert: View {
                              width: 104,
                              height: 48,
                              cornerRadius: 12) {
-                        
+                        store.send(.customAlertDismissed)
                     }
                 }
                 .padding(.top, 24)
@@ -48,5 +52,8 @@ struct CustomAlert: View {
 }
 
 #Preview {
-    CustomAlert()
+    CustomAlertView(store: Store(initialState:
+                            HomeNavigation.State()) {
+        HomeNavigation()
+    })
 }

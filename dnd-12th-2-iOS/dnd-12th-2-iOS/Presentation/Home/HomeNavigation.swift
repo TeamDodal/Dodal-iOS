@@ -21,6 +21,7 @@ struct HomeNavigation {
         var isShowGoalList = false
         var calendar = MakeCalendar.State()
         var fetchPlan = FetchPlan.State()
+        var isCustomAlertPresented = false
     }
     
     enum Action: BindableAction {
@@ -32,6 +33,8 @@ struct HomeNavigation {
         case calendar(MakeCalendar.Action)
         case fetchPlan(FetchPlan.Action)
         case showAlert
+        case customAlertDismissed
+        case goToAchieveGoal
     }
     
     var body: some Reducer<State, Action> {
@@ -68,6 +71,13 @@ struct HomeNavigation {
                 }
             case .showAlert:
                 state.isShowMenu = false
+                state.isCustomAlertPresented = true
+                return .none
+            case .customAlertDismissed:
+                state.isCustomAlertPresented = false
+                return .none
+            case .goToAchieveGoal:
+                // TODO : 목표달성 뷰 이동 로직 추가
                 return .none
             default:
                 return .none

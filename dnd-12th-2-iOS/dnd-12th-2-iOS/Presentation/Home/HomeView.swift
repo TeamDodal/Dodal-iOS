@@ -10,9 +10,7 @@ import ComposableArchitecture
 
 struct HomeView: View {
     @Perception.Bindable var store: StoreOf<HomeNavigation>
-    
-    @State private var isCustomAlertPresented = false
-    
+        
     var body: some View {
         WithPerceptionTracking {
             NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
@@ -48,10 +46,10 @@ struct HomeView: View {
             }
             .overlay {
                 Group {
-                    if isCustomAlertPresented {
-                        CustomAlert()
+                    if store.state.isCustomAlertPresented {
+                        CustomAlertView(store: store)
                             .onTapGesture {
-                                isCustomAlertPresented = false
+                                store.send(.customAlertDismissed)
                             }
                     }
                 }
@@ -105,7 +103,6 @@ extension HomeView {
                         .bodyLargeSemibold()
                         .foregroundStyle(Color.gray900)
                         .onTapGesture {
-                            isCustomAlertPresented = true
                             store.send(.showAlert)
                         }
                 }
