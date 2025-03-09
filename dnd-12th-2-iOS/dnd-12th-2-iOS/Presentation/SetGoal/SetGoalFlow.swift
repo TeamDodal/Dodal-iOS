@@ -118,8 +118,8 @@ struct SetGoalFlow {
             startDateResultStr + " ~ " + endTimeResultStr
         }
         /// 새로운 목표생성
-        init() {
-            self.makeType = .makeGoal
+        init(makeType: MakeType) {
+            self.makeType = makeType
             self.viewFlow = .setGoal
             self.fetchTip = .init(guideType: .newGoal)
         }
@@ -157,11 +157,17 @@ struct SetGoalFlow {
         // flow취소 화면에서 제거
         case requestRemoveFromStack
         
+        // 목표설정 완료시
+        case submitResult(goalTitle: String, planTitle: String, startDate: Date, endDate: Date)
+        
         // 계획생성
         case requestMakePlan
         
         // 목표생성
         case requestMakeGoal
+        
+        // 첫목표생성
+        case requestMakeFirstGoal
         
         case startPickerTapped
         
@@ -199,12 +205,15 @@ struct SetGoalFlow {
     
     // MARK: - Make Type
     enum MakeType {
+        // 첫목표 생성
+        case firstGoal
         
         // 목표&계획 생성
         case makeGoal
         
         // 계획 생성
         case makePlan
+                
     }
     
     // MARK: - Dependencies
@@ -260,6 +269,11 @@ struct SetGoalFlow {
                 return .run { send in
                     
                 }
+            case .requestMakeFirstGoal:
+                return .run { [state] send in
+                    try await goalClient.makeGoal(.init(goalTitle: state.goalTitle, planTitle: state.planTitle, startDate: state.startDate, endDate: state.endDate))                    
+                    await send(.submitResult(goalTitle: state.goalTitle, planTitle: state.planTitle, startDate: state.startDate, endDate: state.endDate))
+                }
             default:
                 return .none
             }
@@ -294,6 +308,8 @@ extension SetGoalFlow {
     
     func setCompleteAction(_ state: inout State) -> Effect<Action>  {
         switch state.makeType {
+        case .firstGoal:
+            return .send(.requestMakeFirstGoal)
         case .makeGoal:
             return .send(.requestMakeGoal)
         case .makePlan:

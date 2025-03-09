@@ -40,7 +40,7 @@ struct MainNavigation {
             switch action {
                 // MARK: - MainView
             case .goToSetGoalView:
-                state.path.append(.setGoal(.init()))
+                state.path.append(.setGoal(.init(makeType: .makeGoal)))
                 return .none
             case .goToMyPage:
                 state.path.append(.myPage(.init()))
@@ -66,7 +66,7 @@ struct MainNavigation {
                     // 목표달성 경로 추가
                     return .none
                 case let .element(id: _, action: .home(.goToSetPlan(goalId))):
-                    state.path.append(.setGoal(.init()))
+                    state.path.append(.setGoal(.init(goalId: goalId)))
                     return .none
                 default:
                     return .none
