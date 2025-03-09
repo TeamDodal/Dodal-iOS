@@ -1,41 +1,40 @@
 //
-//  AcheiveAPI.swift
+//  GoalRateAPI.swift
 //  dnd-12th-2-iOS
 //
-//  Created by Allie on 3/8/25.
+//  Created by Allie on 3/9/25.
 //
 
 import Foundation
 
 import Moya
 
-enum AchieveAPI {
-    case achieve(goalId: Int)
+enum GoalRateAPI {
+    case successRate(goalId: Int)
 }
 
-extension AchieveAPI: TargetType {
+extension GoalRateAPI: TargetType {
     var baseURL: URL {
         return URL(string: "\(SecretKey.baseUrl)/api/goals")!
     }
     
     var path: String {
         switch self {
-        case .achieve(let goalId):
-            return "/\(goalId)/achieve"
+        case .successRate(let goalId):
+            return "/\(goalId)/statistics"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .achieve:
-            return .patch
+        case .successRate:
+            return .get
         }
     }
     
     var task: Moya.Task {
         switch self {
-        case .achieve:
-            
+        case .successRate:
             return .requestPlain
         }
     }
