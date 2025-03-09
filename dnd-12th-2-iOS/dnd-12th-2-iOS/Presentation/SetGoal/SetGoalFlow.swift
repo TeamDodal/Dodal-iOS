@@ -22,6 +22,7 @@ struct SetGoalFlow {
         // 현재 화면단계
         var viewFlow: ViewFlow
         
+        // goalID
         var goalId = 0
         
         // 목표타이틀
@@ -36,8 +37,86 @@ struct SetGoalFlow {
         // 종료날짜
         var endDate = Date()
         
+        // 화면이동 애니메이션
         var isFoward = true
         
+        // 버튼텍스트
+        var buttonText: String {
+            switch viewFlow {
+            case .setGoal:
+                "다음"
+            case .setPlan:
+                "확인"
+            }
+        }
+        
+        // 버튼 활성화여부
+        var buttonDisabled: Bool {
+            switch viewFlow {
+            case .setGoal:
+                goalTitle.isEmpty
+            case .setPlan:
+                planTitle.isEmpty || !timePickerValidate
+            }
+        }
+        
+        // 시간표시 관련
+        let calendar: Calendar = {
+            var calendar = Calendar.current
+            calendar.timeZone = TimeZone.current
+            return calendar
+        }()
+        
+        // 시작날짜피커 숨김여부
+        var isShowStartPicker = true
+        
+        // 종료날짜피커 숨김여부
+        var isShowEndPicker = false
+        
+        // 피커 유효성검사
+        var timePickerValidate: Bool {
+            startDate <= endDate
+        }
+        
+        // 시작날짜 구분
+        var startDateToday: String {
+            calendar.isDate(startDate, inSameDayAs: .now) ? "오늘" : "내일"
+        }
+        
+        // 종료날짜 구분
+        var endDateToday: String {
+            calendar.isDate(endDate, inSameDayAs: .now) ? "오늘" : "내일"
+        }
+        
+        // 시작날짜 문자 HH:mm
+        var startDateStr: String {
+            startDate.formatted("HH:mm")
+        }
+        
+        // 종료날짜 문자 HH:mm
+        var endDateStr: String {
+            endDate.formatted("HH:mm")
+        }
+        
+        // 오전/오후 + 시작날짜
+        var startDateResultStr: String {
+            startDateToday + " " + startDateStr
+        }
+        
+        // 오전/오후 + 종료날짜
+        var endDateResultStr: String {
+            endDateToday + " " + endDateStr
+        }
+        
+        // 종료날짜 결과 날짜가 다른경우 + 내일
+        var endTimeResultStr: String {
+            calendar.isDate(endDate, inSameDayAs: startDate) ? endDateStr : "내일" + " " + endDateStr
+        }
+        
+        // 최종적으료 표시되는 날짜
+        var resultTimeStr: String {
+            startDateResultStr + " ~ " + endTimeResultStr
+        }
         /// 새로운 목표생성
         init() {
             self.makeType = .makeGoal
@@ -83,6 +162,10 @@ struct SetGoalFlow {
         
         // 목표생성
         case requestMakeGoal
+        
+        case startPickerTapped
+        
+        case endPickerTapped
     }
     
     // MARK: - ViewFlow
@@ -135,6 +218,15 @@ struct SetGoalFlow {
         }
         Reduce { state, action in
             switch action {
+                // UI
+            case .startPickerTapped:
+                state.isShowStartPicker = true
+                state.isShowEndPicker = false
+                return .none
+            case .endPickerTapped:
+                state.isShowEndPicker = true
+                state.isShowStartPicker = false
+                return .none
             case .nextButtonTapped:
                 return self.setNextButtonAction(&state)
             case .backButtonTapped:
@@ -163,6 +255,7 @@ struct SetGoalFlow {
                     try await goalClient.makePlan(state.goalId, .init(title: state.planTitle, startDate: state.startDate, endDate: state.endDate))
                     await send(.requestRemoveFromStack)
                 }
+                // TODO: 목표생성 화면나오면 그때연결
             case .requestMakeGoal:
                 return .run { send in
                     

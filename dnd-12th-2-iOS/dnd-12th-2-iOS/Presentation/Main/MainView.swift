@@ -28,7 +28,7 @@ struct MainView: View {
                 case let .home(store):
                     HomeView(store: store)
                 case let .setGoal(store):
-                    SetGoalView(store: store)
+                    SetGoalFlowView(store: store)
                 case let .myPage(store):
                     MyPageView(store: store)
                 }
