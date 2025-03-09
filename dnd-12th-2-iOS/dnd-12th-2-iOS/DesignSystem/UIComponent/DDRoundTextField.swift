@@ -9,6 +9,7 @@ import SwiftUI
 
 struct DDRoundTextFiled: View {
     @Binding var text: String
+    @FocusState.Binding var isFocused: Bool
     var body: some View {
         ZStack {
             Rectangle()
@@ -21,6 +22,7 @@ struct DDRoundTextFiled: View {
                     .font(.pretendard(size: 16, weight: .medium)))
                     .font(.pretendard(size: 16, weight: .medium))
                     .foregroundStyle(Color.black)
+                    .focused($isFocused)
                 
                 Text("0/50")
                     .font(.pretendard(size: 12, weight: .regular))
@@ -31,7 +33,7 @@ struct DDRoundTextFiled: View {
     }
 }
 
-#Preview {
-    DDRoundTextFiled(text: .constant(""))
-}
+//#Preview {
+//    DDRoundTextFiled(text: .constant(""))
+//}
 

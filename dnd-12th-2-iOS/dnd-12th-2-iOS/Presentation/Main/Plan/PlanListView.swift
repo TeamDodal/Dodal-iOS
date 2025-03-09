@@ -11,9 +11,9 @@ import Combine
 import ComposableArchitecture
 
 struct PlanListVIew: View {
+    @Binding var isScrolling: Bool
     let store: StoreOf<FetchPlan>
     let publisher = CurrentValueSubject<CGFloat, Never>(0)
-    @State private var isScrolling = false
     @State var offsetDict: [String: CGFloat] = [:]
     
     var body: some View {
@@ -34,9 +34,8 @@ struct PlanListVIew: View {
                                                     offsetDict[section.key] = geo.frame(in: .named("scroll")).minY
                                                 }
                                         })
-                                    
-                                    ForEach(planDictionary[section] ?? [], id: \.self) { plan in
-                                        LazyVStack(spacing: 16) {
+                                    LazyVStack(spacing: 8) {
+                                        ForEach(planDictionary[section] ?? [], id: \.self) { plan in
                                             DDResultRow(planInfo: plan, action: {})
                                         }
                                     }
@@ -65,19 +64,11 @@ struct PlanListVIew: View {
                 Divider()
                     .frame(width: UIScreen.screenWidth)
             }
-            .overlay(alignment: .bottomTrailing, content: {
-                DDFloatingButton(isExpanded: !isScrolling) {
-                    
-                }
-                .offset(y: -10)
-                .animation(.easeInOut(duration: 0.2), value: isScrolling)
-                .padding(.horizontal, 16)
-            })
             .overlay(alignment: .bottom) {
                 if !store.isTipHidden {
                     TipBubble()
                         .offset(x: 0, y: -70)
-                        .padding(.horizontal, 16)                      
+                        .padding(.horizontal, 16)
                 }
                 
             }
