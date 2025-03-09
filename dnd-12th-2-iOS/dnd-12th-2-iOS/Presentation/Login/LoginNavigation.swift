@@ -7,13 +7,14 @@
 
 import ComposableArchitecture
 import AuthenticationServices
-
+import Foundation
 @Reducer
 struct LoginNavigation {
     @Reducer
     enum Path {
         case onboarding(Onboarding)
-        case setFirstGoal(FirstGoalFlow)
+        case setFirstGoal(SetGoalFlow)
+        case goalResult(GoalResult)
     }
     
     @ObservableState
@@ -56,9 +57,12 @@ struct LoginNavigation {
             case let .path(action):
                 switch action {
                 case .element(id: _, action: .onboarding(.goToFirstGoalView)):
-                    state.path.append(.setFirstGoal(.init()))
+                    state.path.append(.setFirstGoal(.init(makeType: .firstGoal)))
                     return .none
-                case .element(id: _, action: .setFirstGoal(.goToMain)):
+                case let .element(id: _, action: .setFirstGoal(.submitResult(goalTitle, planTitle, startDate, endDate))):
+                    state.path.append(.goalResult(.init(goalTitle: goalTitle, planTitle: planTitle, startDate: startDate, endDate: endDate)))
+                    return .none
+                case .element(id: _, action: .goalResult(.goToMain)):
                     return .send(.goToMain)
                 default:
                     return .none
