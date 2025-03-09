@@ -26,10 +26,10 @@ struct CalendarView: View {
                     }, label: {
                         Text("오늘")
                             .bodyMediumMedium()
-                            .foregroundStyle(Color.purple600)
+                            .foregroundStyle(Color.gray900)
                             .padding(.vertical, 5)
                             .padding(.horizontal, 8)
-                            .background(Color.purple50)
+                            .background(Color.gray50)
                             .cornerRadius(4)
                     })
                 }
