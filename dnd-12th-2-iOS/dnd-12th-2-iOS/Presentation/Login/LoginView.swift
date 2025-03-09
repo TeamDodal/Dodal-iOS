@@ -125,7 +125,9 @@ struct LoginView: View {
                 case let .onboarding(store):
                     OnboardingView(store: store)
                 case let .setFirstGoal(store):
-                    FirstGoalView(store: store)
+                    SetGoalFlowView(store: store)
+                case let .goalResult(store):
+                    GoalResultView(store: store)
                 }
             }
         }

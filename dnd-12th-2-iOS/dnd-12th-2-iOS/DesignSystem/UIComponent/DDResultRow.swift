@@ -35,7 +35,7 @@ struct DDResultRow: View {
                             .foregroundStyle(Color.purple600)
                             .padding(.vertical, 6)
                             .padding(.horizontal, 8)
-                            .background(Color.gray50)
+                            .background(Color.purple50)
                             .cornerRadius(6)
                     } else {
                         Image(.iconRight)

@@ -12,7 +12,7 @@ struct MainNavigation {
     @Reducer
     enum Path {
         case home(HomeNavigation)
-        case setGoal(SetGoal)
+        case setGoal(SetGoalFlow)
         case myPage(MyPage)
     }
     
@@ -40,7 +40,7 @@ struct MainNavigation {
             switch action {
                 // MARK: - MainView
             case .goToSetGoalView:
-                state.path.append(.setGoal(.init()))
+                state.path.append(.setGoal(.init(makeType: .makeGoal)))
                 return .none
             case .goToMyPage:
                 state.path.append(.myPage(.init()))
@@ -58,9 +58,15 @@ struct MainNavigation {
                 case let .element(id: id, action: .home(.backButtonTapped)):
                     state.path.pop(from: id)
                     return .none
+                case let .element(id: id, action: .setGoal(.requestRemoveFromStack)):
+                    state.path.pop(from: id)
+                    return .none
                     // TODO: - 목표달성 연결
                 case .element(id: _, action: .home(.goToArchiveGoal)):
                     // 목표달성 경로 추가
+                    return .none
+                case let .element(id: _, action: .home(.goToSetPlan(goalId))):
+                    state.path.append(.setGoal(.init(goalId: goalId)))
                     return .none
                 default:
                     return .none

@@ -20,6 +20,14 @@ struct Onboarding {
         var buttonDisabled: Bool {
             questionnaire.questions[questionnaire.currentStep].answers.filter { $0.isSelected }.isEmpty
         }
+        
+        var currentStep: Int {
+            questionnaire.currentStep
+        }
+        
+        var isNextPage: Bool {
+            questionnaire.currentStep >= questionnaire.prevStep
+        }
     }
     
     enum Action {
@@ -34,6 +42,9 @@ struct Onboarding {
         
         // 이전질문지로 이동
         case goToPrevPage
+        
+        // 다음질문지로 이동
+        case goToNextPage
         
         // 질문지 받아오기
         case fetchQuestion
@@ -70,6 +81,8 @@ struct Onboarding {
                 return .none
             case .goToPrevPage:
                 return .send(.questionnaire(.decrementStep))
+            case .goToNextPage:
+                return .send(.questionnaire(.incrementStep))
             default:
                 return .none
             }
