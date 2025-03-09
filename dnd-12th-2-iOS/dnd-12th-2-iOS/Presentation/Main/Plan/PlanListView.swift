@@ -34,9 +34,8 @@ struct PlanListVIew: View {
                                                     offsetDict[section.key] = geo.frame(in: .named("scroll")).minY
                                                 }
                                         })
-                                    
-                                    ForEach(planDictionary[section] ?? [], id: \.self) { plan in
-                                        LazyVStack(spacing: 8) {
+                                    LazyVStack(spacing: 8) {
+                                        ForEach(planDictionary[section] ?? [], id: \.self) { plan in
                                             DDResultRow(planInfo: plan, action: {})
                                         }
                                     }
@@ -64,12 +63,12 @@ struct PlanListVIew: View {
             .overlay(alignment: .top) {
                 Divider()
                     .frame(width: UIScreen.screenWidth)
-            }           
+            }
             .overlay(alignment: .bottom) {
                 if !store.isTipHidden {
                     TipBubble()
                         .offset(x: 0, y: -70)
-                        .padding(.horizontal, 16)                      
+                        .padding(.horizontal, 16)
                 }
                 
             }
