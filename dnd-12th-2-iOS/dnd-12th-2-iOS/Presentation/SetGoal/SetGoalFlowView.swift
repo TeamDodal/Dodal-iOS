@@ -10,35 +10,40 @@ import ComposableArchitecture
 
 struct SetGoalFlowView: View {
     @Perception.Bindable var store: StoreOf<SetGoalFlow>
-    @FocusState var isFocused: Bool
+    @FocusState var planFieldFocus: Bool
+    @FocusState var goalFieldFocus: Bool
     var body: some View {
         WithPerceptionTracking {
-            ScrollView {
-                switch store.viewFlow {
-                case .setGoal:
+            switch store.viewFlow {
+            case .setGoal:
+                VStack(spacing: 0) {
+                    Text(store.viewFlow.title)
+                        .headingStyle1()
+                        .alignmentLeading()
+                        .foregroundStyle(Color.gray900)
+                        .padding(.top, 40)
+                    DDRoundTextFiled(text:  $store.goalTitle, isFocused: $goalFieldFocus)
+                        .padding(.top, 20)
+                    TipView(store: store.scope(state: \.fetchTip, action: \.fetchTip))
+                        .padding(.top, 8)
+                    Spacer()
+                    DDButton(title: store.buttonText, isDisable: store.buttonDisabled){
+                        store.send(.nextButtonTapped)
+                    }                    
+                    .padding(.bottom, 12)
+                }
+                .onAppear {
+                    goalFieldFocus = true
+                }
+            case .setPlan:
+                ScrollView {
                     VStack(spacing: 0) {
                         Text(store.viewFlow.title)
                             .headingStyle1()
                             .alignmentLeading()
                             .foregroundStyle(Color.gray900)
                             .padding(.top, 40)
-                        DDTextField(text:  $store.goalTitle)
-                            .padding(.top, 20)
-                        TipView(store: store.scope(state: \.fetchTip, action: \.fetchTip))
-                            .padding(.top, 8)
-                        Spacer()
-                        DDButton(title: store.buttonText, isDisable: store.buttonDisabled){
-                            store.send(.nextButtonTapped)
-                        }
-                    }
-                case .setPlan:
-                    VStack(spacing: 0) {
-                        Text(store.viewFlow.title)
-                            .headingStyle1()
-                            .alignmentLeading()
-                            .foregroundStyle(Color.gray900)
-                            .padding(.top, 40)
-                        DDRoundTextFiled(text: $store.planTitle, isFocused: $isFocused)
+                        DDRoundTextFiled(text: $store.planTitle, isFocused: $planFieldFocus)
                             .padding(.top, 20)
                         TipView(store: store.scope(state: \.fetchTip, action: \.fetchTip))
                             .padding(.top, 8)
@@ -52,23 +57,27 @@ struct SetGoalFlowView: View {
                     .onTapGesture {
                         UIApplication.shared.hideKeyboard()
                     }
+                    .onAppear {
+                        planFieldFocus = true
+                    }
                 }
+                .scrollDisabled(true)
+                .ignoresSafeArea(.keyboard)
             }
-            .scrollDisabled(true)
-            .navigationBar(left: {
-                DDBackButton(action: {
-                    store.send(.backButtonTapped)
-                })
-            })
-            .id(store.viewFlow)
-            .animation(.default, value: store.viewFlow)
-            .transition(store.isFoward ? AnyTransition.asymmetric(
-                insertion: .move(edge: .trailing),
-                removal: .move(edge: .leading)) :   AnyTransition.asymmetric(
-                    insertion: .move(edge: .leading),
-                    removal: .move(edge: .trailing)))
-            .ignoresSafeArea(.keyboard)
         }
+        .navigationBar(left: {
+            DDBackButton(action: {
+                store.send(.backButtonTapped)
+            })
+        })
+        .id(store.viewFlow)
+        .animation(.default, value: store.viewFlow)
+        .transition(store.isFoward ? AnyTransition.asymmetric(
+            insertion: .move(edge: .trailing),
+            removal: .move(edge: .leading)) :   AnyTransition.asymmetric(
+                insertion: .move(edge: .leading),
+                removal: .move(edge: .trailing)))
+        
     }
 }
 
@@ -128,8 +137,8 @@ extension SetGoalFlowView {
                     .animation(.easeInOut, value: store.isShowEndPicker)
             }
         }
-        .colorMultiply(!(store.planTitle.isEmpty) && !isFocused ? Color.white : Color.gray.opacity(0.2))
-        .disabled(store.planTitle.isEmpty || isFocused)
+        .colorMultiply(!(store.planTitle.isEmpty) && !planFieldFocus ? Color.white : Color.gray.opacity(0.2))
+        .disabled(store.planTitle.isEmpty || planFieldFocus)
     }
 }
 
