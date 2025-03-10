@@ -27,10 +27,15 @@ struct DDBottomSheet<ContentView>: ViewModifier where ContentView: View {
                                 dismissSheet()
                             }
                         
-                        VStack {
+                        VStack(spacing: 0) {
+                            Rectangle()
+                                .frame(width: 40, height: 4)
+                                .clipShape(Capsule())
+                                .foregroundStyle(Color.gray100)
+                                .padding(.top, 12)
                             contentView()
                                 .padding(.horizontal, 16)
-                                .padding(.top, 38)
+                                .padding(.top, 20)
                                 .padding(.bottom, 30)
                                 .background(GeometryReader { proxy in
                                     Color.clear
@@ -82,12 +87,11 @@ struct DDBottomSheet<ContentView>: ViewModifier where ContentView: View {
                     }
                 }
             }
-            .zIndex(10)
     }
     
     private func dismissSheet() {
         withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
-            offset = dynamicHeight + safeAreaInsets.bottom
+            offset = dynamicHeight + safeAreaInsets.bottom + 16
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             isPresented = false
