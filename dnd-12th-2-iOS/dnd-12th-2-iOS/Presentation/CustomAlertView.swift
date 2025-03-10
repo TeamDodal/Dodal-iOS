@@ -40,6 +40,7 @@ struct CustomAlertView: View {
                              height: 48,
                              cornerRadius: 12) {
                         store.send(.customAlertDismissed)
+                        store.send(.goToAchieveGoal)
                     }
                 }
                 .padding(.top, 24)
@@ -51,9 +52,9 @@ struct CustomAlertView: View {
     }
 }
 
-#Preview {
-    CustomAlertView(store: Store(initialState:
-                            HomeNavigation.State()) {
-        HomeNavigation()
-    })
-}
+//#Preview {
+//    CustomAlertView(store: Store(initialState:
+//                            HomeNavigation.State()) {
+//        HomeNavigation()
+//    })
+//}
