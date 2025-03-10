@@ -77,7 +77,7 @@ extension FetchPlan {
             let startDate = plan.startDate.toDate()
             let endDate = plan.endDate.toDate()
             let startDateResult = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: startDate)
-            let endDateResult = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: startDate) ?? Date()
+            let endDateResult = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: endDate) ?? Date()
             var currentDate = startDateResult ?? Date()
             
             while currentDate <= endDateResult {

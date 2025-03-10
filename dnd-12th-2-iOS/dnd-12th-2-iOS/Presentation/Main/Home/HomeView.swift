@@ -65,26 +65,47 @@ extension HomeView {
     }
     
     private func MenuItem() -> some View {
-        VStack(spacing: 34) {
+        VStack(spacing: 8) {
             HStack {
-                HStack(spacing: 8) {
-                    Image("iconFlag")
-                    Text("목표 달성")
-                        .bodyLargeSemibold()
-                        .foregroundStyle(Color.gray900)
+                HStack(spacing: 12) {
+                    Image("goalIcon")
+                    VStack {
+                        Text("도달")
+                            .bodyMediumSemibold()
+                            .alignmentLeading()
+                            .foregroundStyle(Color.gray900)
+                        Text("목표를 완수하고 새 목표를 설정합니다.")
+                            .bodySmallRegular()
+                            .alignmentLeading()
+                            .foregroundStyle(Color.gray500)
+                    }
+                    
+                    Spacer()
+                    Image("iconGray")
                 }
-                Spacer()
             }
+            .padding(.vertical, 14.5)
+            .padding(.horizontal, 12)
             
             HStack {
-                HStack(spacing: 8) {
-                    Image("iconTrash")
-                    Text("삭제하기")
-                        .bodyLargeSemibold()
-                        .foregroundStyle(Color.gray900)
+                HStack(spacing: 12) {
+                    Image("trashIcon")
+                    VStack {
+                        Text("삭제")
+                            .bodyMediumSemibold()
+                            .alignmentLeading()
+                            .foregroundStyle(Color.gray900)
+                        Text("목표를 삭제합니다.")
+                            .bodySmallRegular()
+                            .alignmentLeading()
+                            .foregroundStyle(Color.gray500)
+                    }
+                    Spacer()
+                    Image("iconGray")
                 }
-                Spacer()
             }
+            .padding(.vertical, 14.5)
+            .padding(.horizontal, 12)
         }
     }
 }
