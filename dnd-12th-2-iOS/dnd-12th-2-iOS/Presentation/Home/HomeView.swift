@@ -42,6 +42,8 @@ struct HomeView: View {
                 switch store.case {
                 case let .myPage(store):
                     MyPageView(store: store)
+                case let .achieveGoal(store):
+                    AchieveGoalView(store: store)
                 }
             }
             .overlay {
@@ -132,9 +134,9 @@ extension HomeView {
     }
 }
 
-#Preview {
-    HomeView(store: Store(initialState:
-                            HomeNavigation.State()) {
-        HomeNavigation()
-    })
-}
+//#Preview {
+//    HomeView(store: Store(initialState:
+//                            HomeNavigation.State()) {
+//        HomeNavigation()
+//    })
+//}

@@ -12,6 +12,7 @@ struct HomeNavigation {
     @Reducer
     enum Path {
         case myPage(MyPage)
+        case achieveGoal(AchieveGoal)
     }
     
     @ObservableState
@@ -22,6 +23,7 @@ struct HomeNavigation {
         var calendar = MakeCalendar.State()
         var fetchPlan = FetchPlan.State()
         var isCustomAlertPresented = false
+        let goalId: Int = 1
     }
     
     enum Action: BindableAction {
@@ -78,6 +80,7 @@ struct HomeNavigation {
                 return .none
             case .goToAchieveGoal:
                 // TODO : 목표달성 뷰 이동 로직 추가
+                state.path.append(.achieveGoal(.init(goalId: state.goalId)))
                 return .none
             default:
                 return .none
