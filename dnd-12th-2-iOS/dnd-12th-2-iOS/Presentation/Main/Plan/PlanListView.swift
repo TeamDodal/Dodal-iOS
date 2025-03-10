@@ -142,16 +142,7 @@ struct ScrollViewWrapper<Content: View>: UIViewRepresentable {
         
         init(parent: ScrollViewWrapper) {
             self.parent = parent
-            super.init()
-                        parent.publisher
-                            .receive(on: DispatchQueue.main)
-                            .dropFirst()
-                            .sink { offset in
-                                UIView.animate(withDuration: 0.5) {
-                                    parent.scrollView.contentOffset = .init(x: 0, y: offset - 10)
-                                }
-                            }
-                            .store(in: &bag)
+            super.init()          
         }
         
         func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
