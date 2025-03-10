@@ -7,15 +7,14 @@
 
 import ComposableArchitecture
 import AuthenticationServices
-
+import Foundation
 @Reducer
 struct LoginNavigation {
     @Reducer
     enum Path {
         case onboarding(Onboarding)
-        case complete(Onboarding)
-        case goal(MakeGoal)
-        case goalComplete(MakeGoal)
+        case setFirstGoal(SetGoalFlow)
+        case goalResult(GoalResult)
     }
     
     @ObservableState
@@ -54,40 +53,39 @@ struct LoginNavigation {
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
+                // MARK: - Flow
             case let .path(action):
                 switch action {
-                case let .element(id: _, action: .onboarding(.goToResultView(onboarding))):
-                    state.path.append(.complete(onboarding))
+                case .element(id: _, action: .onboarding(.goToFirstGoalView)):
+                    state.path.append(.setFirstGoal(.init(makeType: .firstGoal)))
                     return .none
-                case .element(id: _, action: .complete(.goToGoalView)):
-                    state.path.append(.goal(.init(goalType: .firstGoal)))
+                case let .element(id: _, action: .setFirstGoal(.submitResult(goalTitle, planTitle, startDate, endDate))):
+                    state.path.append(.goalResult(.init(goalTitle: goalTitle, planTitle: planTitle, startDate: startDate, endDate: endDate)))
                     return .none
-                case .element(id: _, action: .goal(.goToCompleteView)):
-                    state.path.append(.goalComplete(.init()))
-                    return .none
-                case let .element(id: id, action: .goalComplete(.backButtonTapped)):
-                    state.path.pop(from: id)
-                    return .none
-                case let .element(id: id, action: .complete(.backButtonTapped)):
-                    state.path.pop(from: id)
-                    return .none
+                case .element(id: _, action: .goalResult(.goToMain)):
+                    return .send(.goToMain)
                 default:
                     return .none
                 }
+                // MARK: - LoginComplete
             case let .appleLoginButtonTapped(authorization):
                 guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential,
                       let IdentityToken = String(data: appleIDCredential.identityToken!, encoding: .utf8) else {
                     return .none
                 }
-                // TODO: 로그인한 유저 온보딩 완료여부 확인 처리            
+                // TODO: 로그인한 유저 온보딩 완료여부 확인 처리
                 return .concatenate([
                     .run { send in
                         let result = try await authClient.signIn(IdentityToken)
                         await send(.appleLoginComplete(result))
                     },
                     .run { send in
-                        let _ = try await userClient.fetchUserOnboarding()
-                        await send(.goToMain)
+                        let isOnboarding = try await userClient.fetchUserOnboarding()
+                        if isOnboarding {
+                            await send(.goToMain)
+                        } else {
+                            await send(.goToOnboarding)
+                        }                        
                     } catch: { error, send in
                         // 온보딩 데이터가 없는 경우 예외가 발생한다
                         await send(.goToOnboarding)

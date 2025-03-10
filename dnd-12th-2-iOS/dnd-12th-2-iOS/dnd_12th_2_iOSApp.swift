@@ -21,7 +21,7 @@ struct dnd_12th_2_iOSApp: App {
                 // 토큰 지울때 사용
 //                KeyChainManager.deleteItem(key: .accessToken)
 //                KeyChainManager.deleteItem(key: .refreshToken)
-                // 테스트유저 토큰
+               //  테스트유저 토큰
 //                KeyChainManager.addItem(key: .accessToken, value: SecretKey.apiKey)
 //                KeyChainManager.addItem(key: .refreshToken, value: SecretKey.apiKey)
             }

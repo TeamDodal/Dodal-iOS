@@ -13,10 +13,6 @@ struct Onboarding {
     struct State {
         var questionnaire = Questionnaire.State()
         
-        var isLastPage: Bool {
-            questionnaire.currentStep >= questionnaire.questions.count - 1
-        }
-        
         var isFirstPage: Bool {
             questionnaire.currentStep == 0
         }
@@ -24,28 +20,31 @@ struct Onboarding {
         var buttonDisabled: Bool {
             questionnaire.questions[questionnaire.currentStep].answers.filter { $0.isSelected }.isEmpty
         }
+        
+        var currentStep: Int {
+            questionnaire.currentStep
+        }
+        
+        var isNextPage: Bool {
+            questionnaire.currentStep >= questionnaire.prevStep
+        }
     }
     
     enum Action {
-        // 첫목표설정으로 이동
-        case goToGoalView
+        // 설문페이지
+        case questionnaire(Questionnaire.Action)
         
-        // 온보딩 완료시 결과화면이동
-        case goToResultView(Onboarding.State)
+        // 첫목표설정으로 이동
+        case goToFirstGoalView
         
         // 이전화면 이동
         case backButtonTapped
         
-        case viewAppear
-        
-        // 다음질문지로 이동
-        case goToNextPage
-        
         // 이전질문지로 이동
         case goToPrevPage
         
-        // 답변선택
-        case answerTapped(answerId: Int)
+        // 다음질문지로 이동
+        case goToNextPage
         
         // 질문지 받아오기
         case fetchQuestion
@@ -55,7 +54,6 @@ struct Onboarding {
         
         // 온보딩 데이터 생성
         case createOnboardingRequest
-        case questionnaire(Questionnaire.Action)
     }
     
     @Dependency(\.userClient) var userClient
@@ -66,10 +64,10 @@ struct Onboarding {
         }
         Reduce { state, action in
             switch action {
-            case .createOnboardingRequest:
+            case .questionnaire(.questionCompleted):
                 return .run { [state] send in
                     try await userClient.createOnboarding(state.questionnaire.questions)
-                    await send(.goToGoalView)
+                    await send(.goToFirstGoalView)
                 } catch: { error, send in
                     print(error.localizedDescription)
                 }
@@ -81,18 +79,10 @@ struct Onboarding {
             case let .fetchQuestionResponse(questions):
                 state.questionnaire = .init(question: questions)
                 return .none
-            case .viewAppear:
-                return .send(.fetchQuestion)
-            case .goToNextPage:
-                if state.isLastPage {
-                    return .send(.goToResultView(state))
-                } else {
-                    return .send(.questionnaire(.incrementStep))
-                }
             case .goToPrevPage:
                 return .send(.questionnaire(.decrementStep))
-            case let .answerTapped(answerId):
-                return .send(.questionnaire(.answerTapped(answerId: answerId)))
+            case .goToNextPage:
+                return .send(.questionnaire(.incrementStep))
             default:
                 return .none
             }
