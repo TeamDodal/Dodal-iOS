@@ -10,9 +10,14 @@ import UIKit
 import Combine
 import ComposableArchitecture
 
+final class ScrollOffsetObserve: ObservableObject {
+    @Published var offset: CGFloat = 0
+}
+
 struct PlanListVIew: View {
     @Binding var isScrolling: Bool
     let store: StoreOf<FetchPlan>
+    @StateObject var scrollObserve = ScrollOffsetObserve()
     let publisher = CurrentValueSubject<CGFloat, Never>(0)
     @State var offsetDict: [String: CGFloat] = [:]
     
@@ -20,7 +25,7 @@ struct PlanListVIew: View {
         WithPerceptionTracking {
             ScrollViewReader { proxy in
                 WithPerceptionTracking {
-                    ScrollViewWrapper(isScrolling: $isScrolling, publisher: publisher) {
+                    ScrollViewWrapper(isScrolling: $isScrolling, publisher: scrollObserve.$offset.eraseToAnyPublisher()) {
                         VStack(spacing: 24) {
                             ForEach(store.planGroup, id: \.self) { planDictionary in
                                 ForEach(Array(planDictionary.keys), id: \.self.key) { section in
@@ -53,10 +58,10 @@ struct PlanListVIew: View {
                     }
                     .onChange(of: store.scrollKey) { newScrollKey in
                         if let scrollOffset = offsetDict[newScrollKey] {
-                            publisher.send(scrollOffset)
+                            scrollObserve.offset = scrollOffset
+                            HapticManager.shared.hapticImpact(style: .soft)
                         }
                     }
-                    
                 }
             }
             .ignoresSafeArea(.container, edges: [.bottom, .top])
@@ -79,7 +84,7 @@ struct PlanListVIew: View {
 struct ScrollViewWrapper<Content: View>: UIViewRepresentable {
     @Binding var isScrolling: Bool
     let content: Content
-    let publisher: CurrentValueSubject<CGFloat, Never>
+    let publisher: AnyPublisher<CGFloat, Never>
     let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.showsVerticalScrollIndicator = false
@@ -87,7 +92,7 @@ struct ScrollViewWrapper<Content: View>: UIViewRepresentable {
         return scrollView
     }()
     
-    init(isScrolling: Binding<Bool>, publisher: CurrentValueSubject<CGFloat, Never>,  @ViewBuilder content: () -> Content) {
+    init(isScrolling: Binding<Bool>, publisher: AnyPublisher<CGFloat, Never>,  @ViewBuilder content: () -> Content) {
         self._isScrolling = isScrolling
         self.publisher = publisher
         self.content = content()
@@ -115,6 +120,15 @@ struct ScrollViewWrapper<Content: View>: UIViewRepresentable {
         
         scrollView.contentSize = CGSize(width: scrollView.frame.width, height: hostingController.view.frame.height)
         
+        publisher
+            .receive(on: DispatchQueue.main)
+            .dropFirst()
+            .sink { offset in
+                UIView.animate(withDuration: 0.4) {
+                    scrollView.contentOffset = .init(x: 0, y: offset - 10)
+                }
+            }
+            .store(in: &context.coordinator.bag)
         return scrollView
     }
     
@@ -130,15 +144,6 @@ struct ScrollViewWrapper<Content: View>: UIViewRepresentable {
         init(parent: ScrollViewWrapper) {
             self.parent = parent
             super.init()
-            parent.publisher
-                .receive(on: DispatchQueue.main)
-                .dropFirst()
-                .sink { offset in
-                    UIView.animate(withDuration: 0.5) {
-                        parent.scrollView.contentOffset = .init(x: 0, y: offset - 10)
-                    }
-                }
-                .store(in: &bag)
         }
         
         func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -161,4 +166,6 @@ struct ScrollViewWrapper<Content: View>: UIViewRepresentable {
             }
         }
     }
+    
 }
+

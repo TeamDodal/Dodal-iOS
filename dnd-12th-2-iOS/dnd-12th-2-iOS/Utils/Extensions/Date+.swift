@@ -40,6 +40,7 @@ extension Date {
     
     func toISO8601DateFormat() -> String {
         let dateFormatter = ISO8601DateFormatter()
+        dateFormatter.timeZone = .current
         dateFormatter.formatOptions = [.withFullDate, .withTime, .withColonSeparatorInTime]
         return dateFormatter.string(from: self)
     }
