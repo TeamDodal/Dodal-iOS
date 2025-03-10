@@ -59,6 +59,7 @@ struct PlanListVIew: View {
                     .onChange(of: store.scrollKey) { newScrollKey in
                         if let scrollOffset = offsetDict[newScrollKey] {
                             scrollObserve.offset = scrollOffset
+                            HapticManager.shared.hapticImpact(style: .soft)
                         }
                     }
                 }
@@ -123,7 +124,7 @@ struct ScrollViewWrapper<Content: View>: UIViewRepresentable {
             .receive(on: DispatchQueue.main)
             .dropFirst()
             .sink { offset in
-                UIView.animate(withDuration: 0.5) {
+                UIView.animate(withDuration: 0.4) {
                     scrollView.contentOffset = .init(x: 0, y: offset - 10)
                 }
             }
@@ -142,7 +143,7 @@ struct ScrollViewWrapper<Content: View>: UIViewRepresentable {
         
         init(parent: ScrollViewWrapper) {
             self.parent = parent
-            super.init()          
+            super.init()
         }
         
         func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
