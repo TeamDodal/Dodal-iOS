@@ -33,18 +33,8 @@ struct QuestionForm: View {
                         })
                     }
                 }
-                .padding(.top, 50)
-                
-                Spacer()
+                .padding(.top, 50)                                                   
             }
-            .background(Color.white)
-            .id(store.currentStep)
-            .animation(.default, value: store.currentStep)
-            .transition(store.currentStep >= store.prevStep ?   AnyTransition.asymmetric(
-                insertion: .move(edge: .trailing),
-                removal: .move(edge: .leading)) :   AnyTransition.asymmetric(
-                    insertion: .move(edge: .leading),
-                    removal: .move(edge: .trailing)))
         }
     }
 }

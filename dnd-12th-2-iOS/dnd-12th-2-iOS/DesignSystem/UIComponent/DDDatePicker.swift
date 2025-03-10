@@ -75,18 +75,6 @@ struct DDatePicker: View {
                 .frame(width: 45)
         }
         .frame(width: 307, height: 198)
-        .overlay(alignment: .top) {
-            Rectangle()
-                .frame(height: 15)
-                .foregroundStyle(Color.white)
-                .offset(y: 10)
-        }
-        .overlay(alignment: .bottom) {
-            Rectangle()
-                .frame(height: 15)
-                .foregroundStyle(Color.white)
-                .offset(y: -10)
-        }
         .onAppear {
             selectedHour = calendar.component(.hour, from: date)
             selectedMinute = calendar.component(.minute, from: date)

@@ -12,15 +12,25 @@ struct OnboardingView: View {
     let store: StoreOf<Onboarding>
     var body: some View {
         WithPerceptionTracking {
-            QuestionForm(
-                store: store.scope(state: \.questionnaire,
-                                   action: \.questionnaire)
-            )
-            
-            DDButton(isDisable: store.buttonDisabled, action: {
-                store.send(.goToNextPage)
-            })
+            VStack {
+                QuestionForm(
+                    store: store.scope(state: \.questionnaire,
+                                       action: \.questionnaire)
+                )
+                Spacer()
+                DDButton(isDisable: store.buttonDisabled) {
+                    store.send(.goToNextPage)
+                }
+            }
         }
+        .background(Color.white)
+        .id(store.currentStep)
+        .animation(.default, value: store.currentStep)
+        .transition(store.isNextPage ?   AnyTransition.asymmetric(
+            insertion: .move(edge: .trailing),
+            removal: .move(edge: .leading)) :   AnyTransition.asymmetric(
+                insertion: .move(edge: .leading),
+                removal: .move(edge: .trailing)))
         .navigationBar(left: {
             DDBackButton(action: {
                 store.send(.goToPrevPage)
@@ -30,7 +40,7 @@ struct OnboardingView: View {
             StepCircle(currentStep: store.questionnaire.currentStep + 1)
         })
         .onAppear {
-            store.send(.viewAppear)
+            store.send(.fetchQuestion)
         }
     }
 }
