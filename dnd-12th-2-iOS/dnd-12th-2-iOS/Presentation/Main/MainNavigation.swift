@@ -14,6 +14,7 @@ struct MainNavigation {
         case home(HomeNavigation)
         case setGoal(SetGoalFlow)
         case myPage(MyPage)
+        case achieveGoal(AchieveGoal)
     }
     
     @ObservableState
@@ -62,8 +63,9 @@ struct MainNavigation {
                     state.path.pop(from: id)
                     return .none
                     // TODO: - 목표달성 연결
-                case .element(id: _, action: .home(.goToArchiveGoal)):
+                case let .element(id: _, action: .home(.goToAchieveGoal(goalId))):
                     // 목표달성 경로 추가
+                    state.path.append(.achieveGoal(.init(goalId: goalId)))
                     return .none
                 case let .element(id: _, action: .home(.goToSetPlan(goalId))):
                     state.path.append(.setGoal(.init(goalId: goalId)))

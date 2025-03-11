@@ -39,7 +39,7 @@ struct HomeNavigation {
         case backButtonTapped
         
         // 목표달성
-        case goToArchiveGoal
+        case goToAchieveGoal(goalId: Int)
         
         case addPlanButtonTapped
         
@@ -53,8 +53,11 @@ struct HomeNavigation {
         case fetchPlan(FetchPlan.Action)
         case showAlert
         case customAlertDismissed
-        case goToAchieveGoal(goalId: Int)
+        case confirmButtonTapped
+        case achieveGoal(goalId: Int)
     }
+    
+    @Dependency(\.goalClient) var goalClient
     
     var body: some Reducer<State, Action> {
         BindingReducer()
@@ -92,11 +95,13 @@ struct HomeNavigation {
             case .customAlertDismissed:
                 state.isCustomAlertPresented = false
                 return .none
-            case .goToAchieveGoal:
-                // TODO : 목표달성 뷰 이동 로직 추가
-                    
-//                state.path.append(.achieveGoal(.init(goalId: state.goalId)))
-                return .none
+            case .confirmButtonTapped:
+                return .send(.achieveGoal(goalId: state.goalId))
+            case .achieveGoal:
+                let goalId = state.goalId
+                return .run { send in
+                    try await goalClient.achieveGoal(goalId)
+                }
             default:
                 return .none
             }

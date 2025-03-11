@@ -12,7 +12,7 @@ struct AchieveGoal {
     @ObservableState
     struct State {
         let goalId: Int
-        var goalInfo: GoalResonseDto?
+        var goalInfo: Goal?
         var isLoading = false
         var error: String?
         
@@ -23,11 +23,11 @@ struct AchieveGoal {
     
     enum Action {
         case loadGoalInfo
-        case goalInfoLoaded(GoalResonseDto)
+        case goalInfoLoaded(Goal?)
         case goalInfoFailed(String)
     }
     
-    @Dependency(\.achieveClient) var achieveClient
+    @Dependency(\.goalClient) var goalClient
     
     var body: some Reducer<State, Action> {
         Reduce { state, action in
@@ -36,14 +36,9 @@ struct AchieveGoal {
                 state.isLoading = true
                 state.error = nil
                 return .run { [state] send in
-                    do {
-                        let goalInfo = try await achieveClient.fetchGoalRate(state.goalId)
-                        await send(.goalInfoLoaded(goalInfo))
-                    } catch {
-                        await send(.goalInfoFailed("네트워크 오류: \(error)"))
-                    }
+                    let goalInfo = try await goalClient.fetchGoalRate(state.goalId)
+                    await send(.goalInfoLoaded(goalInfo.first))
                 }
-                
             case .goalInfoLoaded(let goalInfo):
                 state.isLoading = false
                 state.goalInfo = goalInfo

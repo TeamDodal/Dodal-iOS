@@ -35,8 +35,8 @@ struct HomeView: View {
                             store.send(.customAlertDismissed)
                         },
                         onConfirm: {
-                            // 목표 달성 시 액션
                             store.send(.customAlertDismissed)
+                            store.send(.confirmButtonTapped)
                         }
                     )
                 }
