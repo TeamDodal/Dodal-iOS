@@ -67,7 +67,7 @@ struct AchieveGoalView: View {
                     }
                     
                     HStack(spacing: 8) {
-                        DDButton(title: "새로운 목표 설정하기",
+                        DDButton(title: "새로 목표 설정",
                                  font: .pretendard(size: 16, weight: .semibold),
                                  backgroundColor: .purple100,
                                  textColor: .purple500,

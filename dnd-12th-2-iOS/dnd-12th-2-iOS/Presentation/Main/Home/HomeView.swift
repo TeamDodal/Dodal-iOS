@@ -25,6 +25,22 @@ struct HomeView: View {
             .navigationBar(center: {
                 HomeNavigation()
             })
+            .overlay(alignment: .center, content: {
+                if store.state.isCustomAlertPresented {
+                    DDAlert(
+                        title: "목표를 정말 달성했나요?",
+                        cancelButtonTitle: "취소",
+                        confirmButtonTitle: "확인",
+                        onCancel: {
+                            store.send(.customAlertDismissed)
+                        },
+                        onConfirm: {
+                            // 목표 달성 시 액션
+                            store.send(.customAlertDismissed)
+                        }
+                    )
+                }
+            })
             .overlay(alignment: .bottomTrailing, content: {
                 CTAButton(isScrolling: isScrolling) {
                     store.send(.addPlanButtonTapped)
@@ -82,6 +98,9 @@ extension HomeView {
                     
                     Spacer()
                     Image("iconGray")
+                }
+                .onTapGesture {
+                    store.send(.showAlert)
                 }
             }
             .padding(.vertical, 14.5)

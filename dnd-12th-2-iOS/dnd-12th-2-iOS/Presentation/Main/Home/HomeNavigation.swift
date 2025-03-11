@@ -14,6 +14,7 @@ struct HomeNavigation {
     struct State {
         var isShowMenu = false
         var isShowGoalList = false
+        var isCustomAlertPresented = false
         var calendar: MakeCalendar.State
         var fetchPlan: FetchPlan.State
         let goalTitle: String
@@ -52,7 +53,7 @@ struct HomeNavigation {
         case fetchPlan(FetchPlan.Action)
         case showAlert
         case customAlertDismissed
-        case goToAchieveGoal
+        case goToAchieveGoal(goalId: Int)
     }
     
     var body: some Reducer<State, Action> {
@@ -93,7 +94,8 @@ struct HomeNavigation {
                 return .none
             case .goToAchieveGoal:
                 // TODO : 목표달성 뷰 이동 로직 추가
-                state.path.append(.achieveGoal(.init(goalId: state.goalId)))
+                    
+//                state.path.append(.achieveGoal(.init(goalId: state.goalId)))
                 return .none
             default:
                 return .none

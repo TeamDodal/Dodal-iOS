@@ -1,49 +1,53 @@
 //
-//  CustomAlertView.swift
+//  DDAlert.swift
 //  dnd-12th-2-iOS
 //
-//  Created by Allie on 3/4/25.
+//  Created by Allie on 3/11/25.
 //
 
 import SwiftUI
 
-import ComposableArchitecture
-
-struct CustomAlertView: View {
-    @Perception.Bindable var store: StoreOf<HomeNavigation>
+struct DDAlert: View {
+    let title: String
+    let cancelButtonTitle: String
+    let confirmButtonTitle: String
+    let onCancel: () -> Void
+    let onConfirm: () -> Void
     
     var body: some View {
         ZStack {
             Color.black.opacity(0.4)
                 .edgesIgnoringSafeArea(.all)
+                .onTapGesture {
+                    onCancel()
+                }
             
-            VStack(alignment: .leading) {
-                Text("목표를 달성하셨나요?")
+            VStack {
+                Text(title)
                     .font(.pretendard(size: 18, weight: .semibold))
                     .foregroundStyle(.gray900)
                 
                 HStack {
-                    DDButton(title: "취소",
+                    DDButton(title: cancelButtonTitle,
                              font: .pretendard(size: 16, weight: .medium),
                              backgroundColor: .gray50,
-                             textColor: .gray500,
+                             textColor: .gray900,
                              width: 104,
                              height: 48,
                              cornerRadius: 12) {
-                        store.send(.customAlertDismissed)
+                        onCancel()
                     }
-                    DDButton(title: "달성",
+                    DDButton(title: confirmButtonTitle,
                              font: .pretendard(size: 16, weight: .medium),
-                             backgroundColor: .purple600,
+                             backgroundColor: .purple500,
                              textColor: .white,
                              width: 104,
                              height: 48,
                              cornerRadius: 12) {
-                        store.send(.customAlertDismissed)
-                        store.send(.goToAchieveGoal)
+                        onConfirm()
                     }
                 }
-                .padding(.top, 24)
+                .padding(.top, 14)
             }
             .padding(20)
             .background(.white)
@@ -51,10 +55,3 @@ struct CustomAlertView: View {
         }
     }
 }
-
-//#Preview {
-//    CustomAlertView(store: Store(initialState:
-//                            HomeNavigation.State()) {
-//        HomeNavigation()
-//    })
-//}
