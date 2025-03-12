@@ -39,6 +39,9 @@ struct MainNavigation {
         }
         Reduce { state, action in
             switch action {
+            case .fetchGoal(.goToSetGoal):
+                state.path.append(.setGoal(.init(makeType: .firstGoal)))
+                return .none
                 // MARK: - MainView
             case .goToSetGoalView:
                 state.path.append(.setGoal(.init(makeType: .firstGoal)))
