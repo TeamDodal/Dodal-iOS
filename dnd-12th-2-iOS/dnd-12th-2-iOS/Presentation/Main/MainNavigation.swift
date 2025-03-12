@@ -18,6 +18,7 @@ struct MainNavigation {
         case achieveGoal(AchieveGoal)
         case feedbackComplete(FeedbackComplete)
         case fetchFeedback(FetchFeedback)
+        case feedbackResult(FeedbackResult)
     }
     
     @ObservableState
@@ -100,6 +101,12 @@ struct MainNavigation {
                     return .none
                 case let .element(id: _, action: .feedbackComplete(.goToFeedback(planInfo))):
                     state.path.append(.fetchFeedback(.init(planInfo: planInfo)))
+                    return .none
+                case let .element(id: _, action: .fetchFeedback(.goToFeedbackResult(planInfo))):
+                    state.path.append(.feedbackResult(.init(planInfo: planInfo)))
+                    return .none
+                case let .element(id: id, action: .fetchFeedback(.backButtonTapped)):
+                    state.path.pop(from: id)
                     return .none
                 default:
                     return .none

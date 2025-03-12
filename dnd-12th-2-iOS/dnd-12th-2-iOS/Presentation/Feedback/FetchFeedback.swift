@@ -15,6 +15,10 @@ struct FetchFeedback {
     struct State {
         let planInfo: Plan
         var feedbacks: [Feedback]
+        var selectedText = ""
+        var buttonDisabled: Bool {
+            selectedText.isEmpty
+        }
         
         init(planInfo: Plan, feedbacks: [Feedback] = []) {
             self.planInfo = planInfo
@@ -25,6 +29,9 @@ struct FetchFeedback {
     enum Action {
         case loadFeedback
         case fetchFeedbackResponse([Feedback])
+        case cellTapped(text: String)
+        case completeButtonTapped
+        case goToFeedbackResult(planInfo: Plan)
         case backButtonTapped
     }
     
@@ -42,6 +49,11 @@ struct FetchFeedback {
             case let .fetchFeedbackResponse(response):
                 state.feedbacks = response
                 return .none
+            case let .cellTapped(text):
+                state.selectedText = text
+                return .none
+            case .completeButtonTapped:
+                return .send(.goToFeedbackResult(planInfo: state.planInfo))
             default:
                 return  .none
             }
