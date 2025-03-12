@@ -42,6 +42,12 @@ struct HomeNavigation {
         // 목표달성
         case goToAchieveGoal(goalId: Int)
         
+        case completeButtonTapped
+        
+        case failureButtonTapped
+        
+        case goToFeedback(isSuccess: Bool, planInfo: Plan)
+        
         case addPlanButtonTapped
         
         // 계획설정으로 이동
@@ -108,6 +114,18 @@ struct HomeNavigation {
                     try await goalClient.achieveGoal(goalId)
                     await send(.goToAchieveGoal(goalId: state.goalId))
                 }
+            case .completeButtonTapped:
+                state.isShowSheet = false
+                guard let planInfo = state.fetchPlan.plan else {
+                    return .none
+                }
+                return .send(.goToFeedback(isSuccess: true, planInfo: planInfo))
+            case .failureButtonTapped:
+                state.isShowSheet = false
+                guard let planInfo = state.fetchPlan.plan else {
+                    return .none
+                }
+                return .send(.goToFeedback(isSuccess: false, planInfo: planInfo))
             default:
                 return .none
             }

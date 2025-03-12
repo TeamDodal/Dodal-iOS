@@ -161,11 +161,12 @@ extension HomeView {
                 }
                 
                 DDButton(title: "완료하지 못했어요", backgroundColor: .purple50, textColor: .purple500) {
+                    store.send(.failureButtonTapped)
                 }
                 .padding(.top, 20)
                 
                 DDButton(title: "완료했어요") {
-                    
+                    store.send(.completeButtonTapped)
                 }
                 .padding(.top, 8)
             }
