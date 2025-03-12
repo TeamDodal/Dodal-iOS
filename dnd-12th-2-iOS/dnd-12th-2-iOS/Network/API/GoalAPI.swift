@@ -14,6 +14,8 @@ enum GoalAPI {
     case fetchGoal
     case fetchWeeklyGoal(Int, String)
     case fetchPlans(goalId: Int, date: String, range: Int)
+    case achieveGoal(goalId: Int)
+    case fetchSuccessRate(goalId: Int)
 }
 
 extension GoalAPI: TargetType {
@@ -31,6 +33,10 @@ extension GoalAPI: TargetType {
             return "/\(goalId)/plans"
         case let .makePlan(goalId, _):
             return "/\(goalId)/plans"
+        case let .achieveGoal(goalId):
+            return "/\(goalId)/achieve"
+        case let .fetchSuccessRate(goalId):
+            return "/\(goalId)/statistics"
         default:
             return ""
         }
@@ -47,6 +53,10 @@ extension GoalAPI: TargetType {
         case .fetchWeeklyGoal:
             return .get
         case .fetchPlans:
+            return .get
+        case .achieveGoal:
+            return .patch
+        case .fetchSuccessRate:
             return .get
         }
     }

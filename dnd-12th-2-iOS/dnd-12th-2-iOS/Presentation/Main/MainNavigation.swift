@@ -15,6 +15,7 @@ struct MainNavigation {
         case setGoal(SetGoalFlow)
         case myPage(MyPage)
         case goalResult(GoalResult)
+        case achieveGoal(AchieveGoal)
     }
     
     @ObservableState
@@ -31,6 +32,8 @@ struct MainNavigation {
         // 마이페이지로 이동
         case goToMyPage
         case fetchGoal(FetchGoal.Action)
+        // 목표달성으로 이동
+        case goToAchieveGoal(goalId: Int)
     }
     
     var body: some Reducer<State, Action> {
@@ -53,6 +56,9 @@ struct MainNavigation {
             case let .fetchGoal(.cellTapped(goalInfo)):
                 state.path.append(.home(.init(goalId: goalInfo.goalId, goalTitle: goalInfo.title)))
                 return .none
+            case let .goToAchieveGoal(goalId):
+                state.path.append(.achieveGoal(.init(goalId: goalId)))
+                return .none
                 // MARK: - Flow
             case let .path(action):
                 switch action {
@@ -66,9 +72,9 @@ struct MainNavigation {
                     state.path.pop(from: id)
                     return .none
                     // TODO: - 목표달성 연결
-                case .element(id: _, action: .home(.goToArchiveGoal)):
-                    // 목표달성 경로 추가
-                    return .none
+                case let .element(id: id, action: .home(.goToAchieveGoal(goalId))):
+                    state.path.pop(from: id)
+                    return .send(.goToAchieveGoal(goalId: goalId))
                 case let .element(id: _, action: .home(.goToSetPlan(goalId))):
                     state.path.append(.setGoal(.init(goalId: goalId)))
                     return .none
@@ -77,6 +83,10 @@ struct MainNavigation {
                     return .none
                 case .element(id: _, action: .goalResult(.goToMain)):
                     state.path.removeAll()
+                case .element(id: _, action: .achieveGoal(.goToSetGoal)):
+                    return .send(.goToSetGoalView)
+                case let .element(id: id, action: .achieveGoal(.goToHome)):
+                    state.path.pop(from: id)
                     return .none
                 default:
                     return .none
