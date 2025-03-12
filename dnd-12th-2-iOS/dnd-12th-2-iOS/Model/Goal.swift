@@ -11,4 +11,8 @@ struct Goal: Hashable {
     let successCount: Int
     let failureCount: Int
     let totalCount: Int
+    
+    var successPercent: Int {
+        successCount / totalCount * 100
+    }
 }
