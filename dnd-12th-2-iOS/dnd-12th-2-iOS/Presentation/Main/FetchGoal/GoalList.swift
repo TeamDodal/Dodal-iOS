@@ -25,13 +25,37 @@ struct GoalList: View {
             .padding(.top, 24)
             .padding(.bottom, 16)
             .padding(.horizontal, 16)
-            ScrollView(showsIndicators: false) {
-                LazyVStack(spacing: 16) {
-                    ForEach(store.goalList, id: \.self) { item in
-                        GoalListCell(goal: item) { store.send(.cellTapped(item)) }
-                    }
+            if !store.goalList.isEmpty {
+                VStack(spacing: 0) {
+                    Image("plusIcon")
+                        .onTapGesture {
+                            store.send(.goToSetGoal)
+                        }
+                    Text("새로운 목표를 설정해주세요")
+                        .bodyLargeSemibold()
+                        .alignmentCenter()
+                        .foregroundStyle(.gray700)
+                        .padding(.top, 12)
+                    Text("아직 목표가 생성되지 않았어요. \n '+ 목표 추가하기' 버튼을 눌러 목표를 설정해주세요.")
+                        .bodySmallRegular()
+                        .multilineTextAlignment(.center)
+                        .foregroundStyle(.gray500)
+                        .padding(.top, 6)
                 }
+                .padding(.vertical, 16)
+                .background(.white)
+                .cornerRadius(12)
                 .padding(.horizontal, 16)
+                Spacer()
+            } else {
+                ScrollView(showsIndicators: false) {
+                    LazyVStack(spacing: 16) {
+                        ForEach(store.goalList, id: \.self) { item in
+                            GoalListCell(goal: item) { store.send(.cellTapped(item)) }
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                }
             }
         }
         .background(.gray50)
