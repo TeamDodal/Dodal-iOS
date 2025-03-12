@@ -29,6 +29,8 @@ struct MainView: View {
                     MyPageView(store: store)
                 case let .goalResult(store):
                     GoalResultView(store: store)
+                case let .achieveGoal(store):
+                    AchieveGoalView(store: store)
                 }
             }
         }
