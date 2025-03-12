@@ -31,6 +31,8 @@ struct MainNavigation {
         // 마이페이지로 이동
         case goToMyPage
         case fetchGoal(FetchGoal.Action)
+        // 목표달성으로 이동
+        case goToAchieveGoal(goalId: Int)
     }
     
     var body: some Reducer<State, Action> {
@@ -50,6 +52,9 @@ struct MainNavigation {
             case let .fetchGoal(.cellTapped(goalInfo)):
                 state.path.append(.home(.init(goalId: goalInfo.goalId, goalTitle: goalInfo.title)))
                 return .none
+            case let .goToAchieveGoal(goalId):
+                state.path.append(.achieveGoal(.init(goalId: goalId)))
+                return .none
                 // MARK: - Flow
             case let .path(action):
                 switch action {
@@ -65,8 +70,8 @@ struct MainNavigation {
                     // TODO: - 목표달성 연결
                 case let .element(id: _, action: .home(.goToAchieveGoal(goalId))):
                     // 목표달성 경로 추가
-                    state.path.append(.achieveGoal(.init(goalId: goalId)))
-                    return .none
+//                    state.path.append(.achieveGoal(.init(goalId: goalId)))
+                    return .send(.goToAchieveGoal(goalId: goalId))
                 case let .element(id: _, action: .home(.goToSetPlan(goalId))):
                     state.path.append(.setGoal(.init(goalId: goalId)))
                     return .none

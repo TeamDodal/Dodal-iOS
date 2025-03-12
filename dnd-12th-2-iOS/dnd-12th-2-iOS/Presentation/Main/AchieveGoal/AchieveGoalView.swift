@@ -31,64 +31,68 @@ struct AchieveGoalView: View {
                 
                 VStack(alignment: .leading) {
                     Text("축하해요!\n목표 달성을 성공했어요.")
-                        .font(.pretendard(size: 22, weight: .bold), lineHeight: 30)
+                        .font(.pretendard(size: 28, weight: .bold), lineHeight: 40)
                         .foregroundStyle(.gray900)
-                        .padding(.top, 75)
+                        .padding(.top, 113)
                         .padding(.leading, 5)
                     
                     Spacer()
                     
                     if let goalInfo = store.goalInfo {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text(goalInfo.title)
-                                .font(.pretendard(size: 16, weight: .bold))
-                                .foregroundStyle(.gray900)
+                    VStack(alignment: .leading, spacing: 20) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("목표")
+                                    .font(.pretendard(size: 14, weight: .medium))
+                                    .foregroundStyle(.gray500)
+                                Text(goalInfo.title)
+                                    .font(.pretendard(size: 16, weight: .semibold))
+                                    .foregroundStyle(.gray900)
+                            }
                             
-                            VStack(spacing: 12) {
+                            VStack(alignment: .leading, spacing: 4) {
                                 HStack {
-                                    Text("성공률")
-                                        .font(.pretendard(size: 12, weight: .medium))
-                                        .foregroundStyle(.gray)
+                                    Text("계획 달성률")
+                                        .font(.pretendard(size: 14, weight: .medium))
+                                        .foregroundStyle(.gray500)
                                     Spacer()
-                                    Text("\(Int((CGFloat(goalInfo.successCount) / CGFloat(goalInfo.totalCount)) * 100))%")
-                                        .font(.pretendard(size: 12, weight: .bold))
+                                    Text("\(goalInfo.totalCount > 0 ? Int((CGFloat(goalInfo.successCount) / CGFloat(goalInfo.totalCount)) * 100) : 0)%")
+                                        .font(.pretendard(size: 16, weight: .semibold))
                                         .foregroundColor(.purple600)
                                 }
-                                CustomProgressView(progress: CGFloat(goalInfo.successCount) / CGFloat(goalInfo.totalCount))
+                                CustomProgressView(progress: goalInfo.totalCount > 0 ? CGFloat(goalInfo.successCount) / CGFloat(goalInfo.totalCount) : 0)
                                     .frame(height: 12)
                             }
-                            .padding(16)
-                            .background(.white)
                             .cornerRadius(12)
                         }
-                        .padding()
-                        .background(.gray50)
+                        .padding(24)
+                        .background(.white)
                         .cornerRadius(12)
                     }
                     
                     HStack(spacing: 8) {
-                        DDButton(title: "새로 목표 설정",
-                                 font: .pretendard(size: 16, weight: .semibold),
-                                 backgroundColor: .purple100,
+                        DDButton(title: "새 목표 설정",
+                                 font: .pretendard(size: 16, weight: .medium),
+                                 backgroundColor: .purple50,
                                  textColor: .purple500,
-                                 height: 48,
                                  cornerRadius: 12) {
                             // action
                         }
                         DDButton(title: "완료",
-                                 font: .pretendard(size: 16, weight: .semibold),
+                                 font: .pretendard(size: 16, weight: .medium),
                                  backgroundColor: .purple500,
                                  textColor: .white,
-                                 height: 48,
                                  cornerRadius: 12) {
                             // action
                         }
                     }
                     .padding(.top, 16)
-                    .padding(.bottom, 36)
+                    .padding(.bottom, 16)
                 }
                 .padding(20)
             }
+        }
+        .onAppear {
+            store.send(.loadGoalInfo)
         }
     }
 }
@@ -102,7 +106,7 @@ struct CustomProgressView: View {
                 RoundedRectangle(cornerRadius: 20)
                     .frame(width: geometry.size.width, height: geometry.size.height)
                     .opacity(0.3)
-                    .foregroundStyle(.gray)
+                    .foregroundStyle(.purple100)
                 
                 RoundedRectangle(cornerRadius: 20)
                     .frame(width: min(progress * geometry.size.width, geometry.size.width), height: geometry.size.height)
@@ -115,7 +119,7 @@ struct CustomProgressView: View {
 
 //#Preview {
 //    AchieveGoalView(store: Store(initialState:
-//                                    AchieveGoal.State()) {
+//                                    AchieveGoal.State(goalId: 1)) {
 //        AchieveGoal()
 //    })
 //}
