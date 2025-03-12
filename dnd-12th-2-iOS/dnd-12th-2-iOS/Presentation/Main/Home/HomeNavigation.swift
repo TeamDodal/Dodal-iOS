@@ -12,6 +12,7 @@ struct HomeNavigation {
     
     @ObservableState
     struct State {
+        var isShowSheet = false
         var isShowMenu = false
         var isShowGoalList = false
         var isCustomAlertPresented = false
@@ -77,6 +78,10 @@ struct HomeNavigation {
                 return .none
             case .addPlanButtonTapped:
                 return .send(.goToSetPlan(goalId: state.goalId))
+                // MARK: - FetchPlan
+            case .fetchPlan(.cellTapped):
+                state.isShowSheet = true
+                return .none
                 // MARK: - Calendar
             case let .calendar(action):
                 switch action {
