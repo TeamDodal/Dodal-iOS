@@ -11,10 +11,8 @@ import ComposableArchitecture
 struct FeedbackComplete {
     @ObservableState
     struct State {
-        let completeType: CompleteType
         let planInfo: Plan
-        init(completeType: CompleteType, planInfo: Plan) {
-            self.completeType = completeType
+        init(planInfo: Plan) {
             self.planInfo = planInfo
         }
     }
@@ -26,11 +24,14 @@ struct FeedbackComplete {
     enum Action {
         case backButtonTapped
         case nextButtonTapped
+        case goToFeedback(planInfo: Plan)
     }
     
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
+            case .nextButtonTapped:
+                return .send(.goToFeedback(planInfo: state.planInfo))
             default:
                 return .none
             }

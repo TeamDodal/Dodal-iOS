@@ -32,7 +32,7 @@ struct FeedbackCompleteView: View {
 extension FeedbackCompleteView {
     @ViewBuilder
     func ResultText() -> some View {
-        switch store.completeType {
+        switch store.planInfo.completeType {
         case .success:
             Text("계획을 달성했어요! \n한걸음 더 성장한 당신을 응원해요.")
                 .headingStyle2()
@@ -50,7 +50,7 @@ extension FeedbackCompleteView {
     
     @ViewBuilder
     func FeedbackResult() -> some View {
-        switch store.completeType {
+        switch store.planInfo.completeType {
         case .success:
             HStack(spacing: 12) {
              Circle()
@@ -104,7 +104,7 @@ extension FeedbackCompleteView {
     
     @ViewBuilder
     func BackgroundImage() -> some View {
-        switch store.completeType {
+        switch store.planInfo.completeType {
         case .success:
             VStack {
                 Image("feedbackBackground")

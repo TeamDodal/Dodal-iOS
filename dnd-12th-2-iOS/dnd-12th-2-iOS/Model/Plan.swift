@@ -20,6 +20,7 @@ struct Plan: Hashable {
     let startDate: String
     let endDate: String
     let completedDate: String?
+    var completeType: ComplteType = .failure
     
     var period: String {
         return "\(startDate.toTimeFormat()) ~ \(endDate.toTimeFormat())"
@@ -45,5 +46,10 @@ struct Plan: Hashable {
         case .ready:
             Image("iconReady")
         }
+    }
+    
+    enum ComplteType {
+        case success
+        case failure
     }
 }

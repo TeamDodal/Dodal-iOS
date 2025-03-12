@@ -33,6 +33,8 @@ struct MainView: View {
                     AchieveGoalView(store: store)
                 case let .feedbackComplete(store):
                     FeedbackCompleteView(store: store)
+                case let .fetchFeedback(store):
+                    FeedbackQuestionView(store: store)
                 }
             }
         }
