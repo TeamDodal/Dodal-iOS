@@ -23,6 +23,17 @@ struct GoalResult {
             self.startDate = startDate
             self.endDate = endDate
         }
+        
+        var dateString: String {
+            let calendar = Calendar.current
+            let isSameDay = calendar.isDate(startDate, inSameDayAs: endDate)
+            let isTodayStart = calendar.isDateInToday(startDate)
+            
+            let startPrefix = isTodayStart ? "오늘" : "내일"
+            let endPrefix = isSameDay ? "" : "내일"
+            
+            return "\(startPrefix) \(startDate.formatted("HH:mm")) ~ \(endPrefix) \(endDate.formatted("HH:mm"))"
+        }
     }
     enum Action {
         case goToMain

@@ -37,7 +37,7 @@ struct DDNavigationModifier<C, L, R>: ViewModifier where C: View, L: View, R: Vi
                 }
             }
             .frame(height: 48)
-            .background(.white)
+//            .background(.white)
             
             Spacer(minLength: 0)
             

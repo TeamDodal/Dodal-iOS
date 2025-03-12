@@ -14,6 +14,7 @@ struct MainNavigation {
         case home(HomeNavigation)
         case setGoal(SetGoalFlow)
         case myPage(MyPage)
+        case goalResult(GoalResult)
         case achieveGoal(AchieveGoal)
     }
     
@@ -41,9 +42,12 @@ struct MainNavigation {
         }
         Reduce { state, action in
             switch action {
+            case .fetchGoal(.goToSetGoal):
+                state.path.append(.setGoal(.init(makeType: .firstGoal)))
+                return .none
                 // MARK: - MainView
             case .goToSetGoalView:
-                state.path.append(.setGoal(.init(makeType: .makeGoal)))
+                state.path.append(.setGoal(.init(makeType: .firstGoal)))
                 return .none
             case .goToMyPage:
                 state.path.append(.myPage(.init()))
@@ -74,6 +78,12 @@ struct MainNavigation {
                 case let .element(id: _, action: .home(.goToSetPlan(goalId))):
                     state.path.append(.setGoal(.init(goalId: goalId)))
                     return .none
+                case let .element(id: _, action: .setGoal(.submitResult(goalTitle, planTitle, startDate, endDate))):
+                    state.path.append(.goalResult(.init(goalTitle: goalTitle, planTitle: planTitle, startDate: startDate, endDate: endDate)))
+                    return .none
+                case .element(id: _, action: .goalResult(.goToMain)):
+                    state.path.removeAll()
+                    return .none
                 case .element(id: _, action: .achieveGoal(.goToSetGoal)):
                     return .send(.goToSetGoalView)
                 case let .element(id: id, action: .achieveGoal(.goToHome)):
@@ -85,6 +95,6 @@ struct MainNavigation {
             default:
                 return .none
             }
-        }  .forEach(\.path, action: \.path)
+        }.forEach(\.path, action: \.path)
     }
 }
