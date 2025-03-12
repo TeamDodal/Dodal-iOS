@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "successBadge.png",
+      "filename" : "airplane.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "successBadge@2x.png",
+      "filename" : "airplane@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "successBadge@3x.png",
+      "filename" : "airplane@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
