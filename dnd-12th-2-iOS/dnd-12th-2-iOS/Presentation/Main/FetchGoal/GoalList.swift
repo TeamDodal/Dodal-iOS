@@ -25,7 +25,7 @@ struct GoalList: View {
             .padding(.top, 24)
             .padding(.bottom, 16)
             .padding(.horizontal, 16)
-            if !store.goalList.isEmpty {
+            if store.goalList.isEmpty {
                 VStack(spacing: 0) {
                     Image("plusIcon")
                         .onTapGesture {
