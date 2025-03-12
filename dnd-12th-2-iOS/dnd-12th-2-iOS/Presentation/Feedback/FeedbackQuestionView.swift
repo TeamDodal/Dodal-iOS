@@ -18,12 +18,24 @@ struct FeedbackQuestionView: View {
                 .padding(.top, 20)
             FeedbackSubText()
                 .padding(.top, 8)
-            
+                        
+            VStack(spacing: 12) {
+                ForEach(store.feedbacks.first?.indicators ?? [], id: \.self) { title in
+                    DDRow(title: title, isSelected: title == store.selectedText) {
+                        store.send(.cellTapped(text: title))
+                    }
+                }
+            }
+            .padding(.top, 32)
             Spacer()
-            
+            DDButton(isDisable: store.buttonDisabled) {
+                store.send(.completeButtonTapped)
+            }
         }
         .navigationBar(left: {
-            DDBackButton(action: {})
+            DDBackButton {
+                store.send(.backButtonTapped)
+            }
         })
         .onAppear {
             store.send(.loadFeedback)
