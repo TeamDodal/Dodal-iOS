@@ -15,6 +15,9 @@ struct GoalClient {
     var fetchGoal: () async throws -> [Goal]
     var fetchWeeklyGoal: (Int, String) async throws -> [Day]
     var fetchPlans: (Int, String, Int) async throws -> [Plan]
+    var achieveGoal: (Int) async throws -> Void
+    var fetchGoalRate: (Int) async throws -> [Goal]
+    
     static let provider = MoyaProvider<GoalAPI>(session: Session(interceptor: AuthIntercepter.shared), plugins: [MoyaLoggingPlugin()])
 }
 
@@ -60,6 +63,22 @@ extension GoalClient: DependencyKey {
                     throw APIError.parseError
                 }
                 return data.toDomain()
+            } catch {
+                throw error
+            }
+        }, achieveGoal: { goalId in
+            do {
+                try await provider.async.requestPlain(.achieveGoal(goalId: goalId))
+            } catch {
+                throw error
+            }
+        }, fetchGoalRate: { goalId in
+            do {
+                let result: BaseResponse<GoalResonseDto> = try await provider.async.request(.fetchSuccessRate(goalId: goalId))
+                guard let result = result.data else {
+                    throw APIError.parseError
+                }
+                return [result.toElement()]
             } catch {
                 throw error
             }
