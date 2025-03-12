@@ -14,6 +14,7 @@ struct HomeNavigation {
     struct State {
         var isShowMenu = false
         var isShowGoalList = false
+        var isCustomAlertPresented = false
         var calendar: MakeCalendar.State
         var fetchPlan: FetchPlan.State
         let goalTitle: String
@@ -38,7 +39,7 @@ struct HomeNavigation {
         case backButtonTapped
         
         // 목표달성
-        case goToArchiveGoal
+        case goToAchieveGoal(goalId: Int)
         
         case addPlanButtonTapped
         
@@ -50,7 +51,13 @@ struct HomeNavigation {
         
         // 목표리스트
         case fetchPlan(FetchPlan.Action)
+        case showAlert
+        case customAlertDismissed
+        case confirmButtonTapped
+        case achieveGoal(goalId: Int)
     }
+    
+    @Dependency(\.goalClient) var goalClient
     
     var body: some Reducer<State, Action> {
         BindingReducer()
@@ -80,6 +87,21 @@ struct HomeNavigation {
                     return .send(.fetchPlan(.requestPlan(date)))
                 default:
                     return .none
+                }
+            case .showAlert:
+                state.isShowMenu = false
+                state.isCustomAlertPresented = true
+                return .none
+            case .customAlertDismissed:
+                state.isCustomAlertPresented = false
+                return .none
+            case .confirmButtonTapped:
+                return .send(.achieveGoal(goalId: state.goalId))
+            case .achieveGoal:
+                return .run { [state] send in
+                    let goalId = state.goalId
+                    try await goalClient.achieveGoal(goalId)
+                    await send(.goToAchieveGoal(goalId: state.goalId))
                 }
             default:
                 return .none

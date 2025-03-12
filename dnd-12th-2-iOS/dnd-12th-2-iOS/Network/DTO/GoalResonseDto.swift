@@ -22,3 +22,15 @@ extension Array where Element == GoalResonseDto {
                         totalCount: $0.totalCount)}
     }
 }
+
+extension GoalResonseDto {
+    func toElement() -> Goal {
+        Goal(
+            goalId: self.goalId,
+            title: self.title,
+            successCount: self.successCount,
+            failureCount: self.failureCount,
+            totalCount: self.totalCount
+        )
+    }
+}

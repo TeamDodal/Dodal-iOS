@@ -31,6 +31,8 @@ struct MainView: View {
                     SetGoalFlowView(store: store)
                 case let .myPage(store):
                     MyPageView(store: store)
+                case let .achieveGoal(store):
+                    AchieveGoalView(store: store)
                 }
             }
         }
