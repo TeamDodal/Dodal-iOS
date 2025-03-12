@@ -21,6 +21,7 @@ struct FetchPlan {
         var planGroup: [[Section: [Plan]]] = [[:]]
         var scrollKey = ""
         var renderKey = ""
+        var plan: Plan?
         
         var isTipHidden: Bool {
             return !(planGroup.flatMap { $0.values.flatMap { $0 } }.count <= 2)
@@ -36,6 +37,7 @@ struct FetchPlan {
         case fetchPlans(Date)
         case fetchPlanResponse([Plan])
         case responseScrollId(Date)
+        case cellTapped(Plan)
         case setRenderKey
     }
     
@@ -61,6 +63,9 @@ struct FetchPlan {
                 return self.groupByStartDate(&state, plan: response)
             case .setRenderKey:
                 state.renderKey = UUID().uuidString
+                return .none
+            case let .cellTapped(plan):
+                state.plan = plan
                 return .none
             }
         }
