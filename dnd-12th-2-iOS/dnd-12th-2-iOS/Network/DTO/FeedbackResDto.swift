@@ -7,17 +7,18 @@
 
 import Foundation
 
-struct FeedbackData: Decodable {
-    let elements: [FeedbackResDto]
+struct FeedbackResDto: Decodable {
+    let elements: [FeedbackData]
 }
 
-struct FeedbackResDto: Decodable {
-    let question, description: String
+struct FeedbackData: Decodable {
+    let question: String
+    let description: String
     let order: Int
     let indicators: [String]
 }
 
-extension Array where Element == FeedbackResDto {
+extension Array where Element == FeedbackData {
     func toDomain() -> [Feedback] {
         self.map { Feedback(question: $0.question,
                             description: $0.description,

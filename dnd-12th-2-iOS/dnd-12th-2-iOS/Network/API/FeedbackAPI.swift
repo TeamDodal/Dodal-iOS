@@ -10,7 +10,7 @@ import Foundation
 import Moya
 
 enum FeedbackAPI {
-    case fetchFeedback(type: String)
+    case fetchFeedbacks(type: String)
 }
 
 extension FeedbackAPI: TargetType {
@@ -20,21 +20,21 @@ extension FeedbackAPI: TargetType {
     
     var path: String {
         switch self {
-        case .fetchFeedback:
+        case .fetchFeedbacks:
             return "/feedbacks"
         }
     }
     
     var method: Moya.Method {
         switch self {
-        case .fetchFeedback:
+        case .fetchFeedbacks:
             return .get
         }
     }
     
     var task: Moya.Task {
         switch self {
-        case let .fetchFeedback(type):
+        case let .fetchFeedbacks(type):
             return .requestParameters(parameters: ["type": type], encoding: URLEncoding.queryString)
         }
     }
