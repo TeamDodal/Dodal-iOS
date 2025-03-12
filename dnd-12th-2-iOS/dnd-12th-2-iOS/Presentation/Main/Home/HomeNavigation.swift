@@ -98,9 +98,10 @@ struct HomeNavigation {
             case .confirmButtonTapped:
                 return .send(.achieveGoal(goalId: state.goalId))
             case .achieveGoal:
-                let goalId = state.goalId
-                return .run { send in
+                return .run { [state] send in
+                    let goalId = state.goalId
                     try await goalClient.achieveGoal(goalId)
+                    await send(.goToAchieveGoal(goalId: state.goalId))
                 }
             default:
                 return .none

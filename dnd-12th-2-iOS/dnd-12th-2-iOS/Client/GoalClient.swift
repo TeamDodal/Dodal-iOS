@@ -74,11 +74,12 @@ extension GoalClient: DependencyKey {
             }
         }, fetchGoalRate: { goalId in
             do {
-                let result: BaseResponse<[GoalResonseDto]> = try await provider.async.request(.fetchSuccessRate(goalId: goalId))
+                let result: BaseResponse<GoalResonseDto> = try await provider.async.request(.fetchSuccessRate(goalId: goalId))
                 guard let result = result.data else {
                     throw APIError.parseError
                 }
-                return result.toDomain()
+                print("여기 데이터", result)
+                return [result.toElement()]
             } catch {
                 throw error
             }
