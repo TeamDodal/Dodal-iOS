@@ -83,6 +83,7 @@ struct MainNavigation {
                     return .none
                 case .element(id: _, action: .goalResult(.goToMain)):
                     state.path.removeAll()
+                    return .none
                 case .element(id: _, action: .achieveGoal(.goToSetGoal)):
                     return .send(.goToSetGoalView)
                 case let .element(id: id, action: .achieveGoal(.goToHome)):
@@ -94,6 +95,6 @@ struct MainNavigation {
             default:
                 return .none
             }
-        }  .forEach(\.path, action: \.path)
+        }.forEach(\.path, action: \.path)
     }
 }
