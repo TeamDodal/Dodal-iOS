@@ -91,6 +91,7 @@ struct AchieveGoalView: View {
                 .padding(20)
             }
         }
+        .navigationBarBackButtonHidden(true)
         .onAppear {
             store.send(.loadGoalInfo)
         }
