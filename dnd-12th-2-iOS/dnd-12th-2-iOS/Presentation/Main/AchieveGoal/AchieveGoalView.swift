@@ -75,14 +75,14 @@ struct AchieveGoalView: View {
                                  backgroundColor: .purple50,
                                  textColor: .purple500,
                                  cornerRadius: 12) {
-                            // action
+                            store.send(.goToSetGoal)
                         }
                         DDButton(title: "완료",
                                  font: .pretendard(size: 16, weight: .medium),
                                  backgroundColor: .purple500,
                                  textColor: .white,
                                  cornerRadius: 12) {
-                            // action
+                            store.send(.goToHome)
                         }
                     }
                     .padding(.top, 16)
