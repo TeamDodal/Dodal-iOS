@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "appLogo.png",
+      "filename" : "plusIcon.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Group 2085665826@2x.png",
+      "filename" : "plus-circle@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Group 2085665826@3x.png",
+      "filename" : "plus-circle@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
