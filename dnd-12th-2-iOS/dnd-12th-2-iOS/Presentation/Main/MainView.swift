@@ -27,6 +27,8 @@ struct MainView: View {
                     SetGoalFlowView(store: store)
                 case let .myPage(store):
                     MyPageView(store: store)
+                case let .goalResult(store):
+                    GoalResultView(store: store)
                 }
             }
         }
@@ -72,7 +74,9 @@ extension MainView {
                             .foregroundStyle(Color.gray900)
                             .alignmentLeading()
                         
-                        Button(action: { }, label: {
+                        Button(action: {
+                            store.send(.goToSetGoalView)
+                        }, label: {
                             HStack(spacing: 4) {
                                 Image("iconPlus")
                                 
@@ -87,9 +91,8 @@ extension MainView {
                         .clipShape(Capsule())
                         .padding(.top, 16)
                     }
-                    .padding(.horizontal, 16)
-                    
                 }
+                .padding(.horizontal, 16)
             })
     }
 }
