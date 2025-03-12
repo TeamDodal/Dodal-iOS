@@ -78,7 +78,6 @@ extension GoalClient: DependencyKey {
                 guard let result = result.data else {
                     throw APIError.parseError
                 }
-                print("여기 데이터", result)
                 return [result.toElement()]
             } catch {
                 throw error

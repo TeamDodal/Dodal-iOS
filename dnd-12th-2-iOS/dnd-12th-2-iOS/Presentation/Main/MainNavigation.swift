@@ -68,12 +68,16 @@ struct MainNavigation {
                     state.path.pop(from: id)
                     return .none
                     // TODO: - 목표달성 연결
-                case let .element(id: _, action: .home(.goToAchieveGoal(goalId))):
-                    // 목표달성 경로 추가
-//                    state.path.append(.achieveGoal(.init(goalId: goalId)))
+                case let .element(id: id, action: .home(.goToAchieveGoal(goalId))):
+                    state.path.pop(from: id)
                     return .send(.goToAchieveGoal(goalId: goalId))
                 case let .element(id: _, action: .home(.goToSetPlan(goalId))):
                     state.path.append(.setGoal(.init(goalId: goalId)))
+                    return .none
+                case .element(id: _, action: .achieveGoal(.goToSetGoal)):
+                    return .send(.goToSetGoalView)
+                case let .element(id: id, action: .achieveGoal(.goToHome)):
+                    state.path.pop(from: id)
                     return .none
                 default:
                     return .none

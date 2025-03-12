@@ -25,6 +25,8 @@ struct AchieveGoal {
         case loadGoalInfo
         case goalInfoLoaded(Goal?)
         case goalInfoFailed(String)
+        case goToSetGoal
+        case goToHome
     }
     
     @Dependency(\.goalClient) var goalClient
@@ -43,10 +45,13 @@ struct AchieveGoal {
                 state.isLoading = false
                 state.goalInfo = goalInfo
                 return .none
-                
             case .goalInfoFailed(let error):
                 state.isLoading = false
                 state.error = error
+                return .none
+            case .goToSetGoal:
+                return .none
+            case .goToHome:
                 return .none
             }
         }
