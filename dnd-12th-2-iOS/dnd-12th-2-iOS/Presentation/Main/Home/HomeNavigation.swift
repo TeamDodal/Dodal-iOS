@@ -86,7 +86,11 @@ struct HomeNavigation {
                 return .send(.goToSetPlan(goalId: state.goalId))
                 // MARK: - FetchPlan
             case .fetchPlan(.cellTapped):
-                state.isShowSheet = true
+                if let planInfo = state.fetchPlan.plan, planInfo.resultType == .ready {
+                    state.isShowSheet = true
+                } else {
+                    
+                }
                 return .none
                 // MARK: - Calendar
             case let .calendar(action):

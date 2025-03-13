@@ -56,7 +56,7 @@ struct MainNavigation {
                 state.path.append(.myPage(.init()))
                 return .none
                 // goalID 넘겨주고 상세화면 이동
-            case let .fetchGoal(.cellTapped(goalInfo)):
+            case let .fetchGoal(.cellTapped(goalInfo)):                
                 state.path.append(.home(.init(goalId: goalInfo.goalId, goalTitle: goalInfo.title)))
                 return .none
             case let .goToAchieveGoal(goalId):
