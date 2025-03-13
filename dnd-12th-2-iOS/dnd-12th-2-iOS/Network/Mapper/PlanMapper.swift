@@ -12,3 +12,23 @@ extension PlanInfo {
               endDate: endDate.toISO8601DateFormat())
     }
 }
+
+extension Array where Element == PlanCompleteResDto {
+    func toDomain() -> [ResultPlan] {
+        self.map { .init(planId: $0.planId,
+                         title: $0.title,
+                         status: $0.status,
+                         guide: $0.guide,
+                         completedDate: $0.completedDate)}
+    }
+}
+
+extension PlanCompleteResDto {
+    func toDomain() -> ResultPlan {
+        .init(planId: planId,
+              title: title,
+              status: status,
+              guide: guide,
+              completedDate: completedDate)
+    }
+}

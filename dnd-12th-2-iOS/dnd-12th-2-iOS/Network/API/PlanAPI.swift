@@ -26,15 +26,16 @@ extension PlanAPI: TargetType {
     
     var method: Moya.Method {
         switch self {
-        default:
-            return .get
+        case .fetchCompletePlan:
+            return .post
         }
     }
     
     var task: Moya.Task {
         switch self {
         case let .fetchCompletePlan(_, status):
-            return .requestParameters(parameters: ["status": status], encoding: URLEncoding.queryString)
+            return .requestCompositeParameters(bodyParameters: ["question": "조금 더 수월하게 도달하기 위해 어떤 점을 바꿔볼까요?",
+                                                                "indicator": "시간 단축을 시도해볼래요."], bodyEncoding: JSONEncoding.default, urlParameters: ["status": status])
         }
     }
     

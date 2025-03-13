@@ -17,14 +17,25 @@ struct FeedbackResult {
     }
         
     enum Action {
-        
+        case fetchCompletePlan
+        case fetchCompletePlanResponse(ResultPlan)
     }
+    @Dependency(\.planClient) var planClient
     
     var body: some Reducer<State, Action> {
         Reduce { state, action in
-            switch action {            
-            default:
+            switch action {
+            case .fetchCompletePlan:
+                let status = state.planInfo.completeType == .success ? "success" : "failure"
+                let planId = state.planInfo.planId
+                return .run { send in
+                   let result = try await planClient.fetchCompletePlan(planId, status)
+                    await send(.fetchCompletePlanResponse(result))
+                }                
+            case let .fetchCompletePlanResponse(response):
                 return .none
+//            default:
+//                return .none
             }
         }
     }
