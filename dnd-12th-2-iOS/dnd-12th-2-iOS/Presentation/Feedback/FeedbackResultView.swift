@@ -80,7 +80,7 @@ extension FeedbackResultView {
                     .foregroundStyle(.gray900)
                     .padding(.top, 24)
                 
-                CompleteList()
+                CompleteList(result: store.resultPlan)
                     .padding(.top, 12)
                 
                 Text("다음에는 이렇게 도달할까요?")
@@ -91,7 +91,7 @@ extension FeedbackResultView {
                 
                 HStack(spacing: 8) {
                     Image("iconCheckSmall")
-                    Text("구체적인 계획을 설정해요.")
+                    Text(store.planInfo.indicators)
                         .font(.pretendard(size: 14, weight: .semibold))
                         .foregroundStyle(Color.gray800)
                     Spacer()
@@ -122,7 +122,7 @@ extension FeedbackResultView {
                     }
                     
                     DDButton(title: "확인") {
-                        
+                        store.send(.completeButtonTapped)
                     }
                 }
             case .failure:

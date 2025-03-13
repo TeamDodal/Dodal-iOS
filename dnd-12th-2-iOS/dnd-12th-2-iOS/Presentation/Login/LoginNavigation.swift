@@ -88,7 +88,7 @@ struct LoginNavigation {
                         }                        
                     } catch: { error, send in
                         // 온보딩 데이터가 없는 경우 예외가 발생한다
-                        await send(.goToOnboarding)
+//                        await send(.goToOnboarding)
                     }
                 ])
             case let .appleLoginComplete(response):

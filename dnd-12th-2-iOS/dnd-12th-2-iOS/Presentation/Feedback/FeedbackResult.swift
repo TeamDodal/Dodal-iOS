@@ -11,6 +11,7 @@ struct FeedbackResult {
     @ObservableState
     struct State {
         let planInfo: Plan
+        var resultPlan: ResultPlan = .init(planId: 0, title: "", status: "", guide: "", completedDate: "")
         init(planInfo: Plan) {
             self.planInfo = planInfo
         }
@@ -19,6 +20,7 @@ struct FeedbackResult {
     enum Action {
         case fetchCompletePlan
         case fetchCompletePlanResponse(ResultPlan)
+        case completeButtonTapped
     }
     @Dependency(\.planClient) var planClient
     
@@ -26,16 +28,16 @@ struct FeedbackResult {
         Reduce { state, action in
             switch action {
             case .fetchCompletePlan:
-                let status = state.planInfo.completeType == .success ? "success" : "failure"
-                let planId = state.planInfo.planId
-                return .run { send in
-                   let result = try await planClient.fetchCompletePlan(planId, status)
+                            
+                return .run { [state] send in
+                    let result = try await planClient.fetchCompletePlan(state.planInfo)
                     await send(.fetchCompletePlanResponse(result))
                 }                
             case let .fetchCompletePlanResponse(response):
+                state.resultPlan = response
                 return .none
-//            default:
-//                return .none
+            default:
+                return .none
             }
         }
     }

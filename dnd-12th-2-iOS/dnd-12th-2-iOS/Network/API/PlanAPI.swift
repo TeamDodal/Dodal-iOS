@@ -9,7 +9,7 @@ import Foundation
 import Moya
 
 enum PlanAPI {
-    case fetchCompletePlan(planId: Int, status: String)
+    case fetchCompletePlan(planInfo: Plan)
 }
 
 extension PlanAPI: TargetType {
@@ -19,8 +19,8 @@ extension PlanAPI: TargetType {
     
     var path: String {
         switch self {
-        case let .fetchCompletePlan(planId, _):
-            return "/\(planId)/complete"
+        case let .fetchCompletePlan(planInfo):
+            return "/\(planInfo.planId)/complete"
         }
     }
     
@@ -33,9 +33,10 @@ extension PlanAPI: TargetType {
     
     var task: Moya.Task {
         switch self {
-        case let .fetchCompletePlan(_, status):
-            return .requestCompositeParameters(bodyParameters: ["question": "조금 더 수월하게 도달하기 위해 어떤 점을 바꿔볼까요?",
-                                                                "indicator": "시간 단축을 시도해볼래요."], bodyEncoding: JSONEncoding.default, urlParameters: ["status": status])
+        case let .fetchCompletePlan(planInfo):
+            let status = planInfo.completeType == .success ? "success" : "failure"
+            return .requestCompositeParameters(bodyParameters: ["question": planInfo.question,
+                                                                "indicator": planInfo.indicators], bodyEncoding: JSONEncoding.default, urlParameters: ["status": status])
         }
     }
     

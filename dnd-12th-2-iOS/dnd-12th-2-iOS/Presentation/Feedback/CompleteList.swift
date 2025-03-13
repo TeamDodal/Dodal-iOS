@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct CompleteList: View {
+    let result: ResultPlan
     var body: some View {
         LazyVStack(alignment: .leading, spacing: 16) {
-            ForEach(1...2, id: \.self) { index in
-                HStack(alignment: index != 3 ? .top : .center, spacing: 12) {
+            ForEach(1...1, id: \.self) { index in
+                HStack(alignment: .center, spacing: 12) {
                     Circle()
                         .foregroundStyle(Color.white)
                         .frame(width: 28, height: 28, alignment: .top)
@@ -19,21 +20,21 @@ struct CompleteList: View {
                         .padding(1)
                     
                     VStack(spacing: 4) {
-                        Text("운동 1시간 하기")
+                        Text(result.title)
                             .font(.pretendard(size: 14, weight: .semibold))
                             .foregroundStyle(Color.gray900)
                             .frame(maxWidth: .infinity, alignment: .leading)
                         
-                        if index != 3 {
-                            Text("진행 상황을 수시로 확인해요.")
-                                .font(.pretendard(size: 12, weight: .medium))
-                                .foregroundStyle(Color.gray700)
-                                .padding(.vertical, 6)
-                                .padding(.horizontal, 12)
-                                .background(.white)
-                                .cornerRadius(8)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                        }
+//                        if index != 3 {
+//                            Text("진행 상황을 수시로 확인해요.")
+//                                .font(.pretendard(size: 12, weight: .medium))
+//                                .foregroundStyle(Color.gray700)
+//                                .padding(.vertical, 6)
+//                                .padding(.horizontal, 12)
+//                                .background(.white)
+//                                .cornerRadius(8)
+//                                .frame(maxWidth: .infinity, alignment: .leading)
+//                        }
                     }
                     
                     Spacer()
@@ -52,6 +53,6 @@ struct CompleteList: View {
     }
 }
 
-#Preview {
-    CompleteList()
-}
+//#Preview {
+//    CompleteList()
+//}

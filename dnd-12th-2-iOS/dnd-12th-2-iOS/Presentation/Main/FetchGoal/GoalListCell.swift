@@ -26,7 +26,7 @@ struct GoalListCell: View {
                         .frame(width: 1, height: 14)
                         .foregroundStyle(Color.gray400)
                     
-                    Text("\(goal.successCount)%")
+                    Text("\(goal.successCount / goal.totalCount * 100)%")
                         .bodySmallBold()
                         .foregroundStyle(Color.purple600)
                     

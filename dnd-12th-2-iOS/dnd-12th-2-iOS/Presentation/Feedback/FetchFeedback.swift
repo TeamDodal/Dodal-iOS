@@ -13,9 +13,9 @@ import ComposableArchitecture
 struct FetchFeedback {
     @ObservableState
     struct State {
-        let planInfo: Plan
+        var planInfo: Plan
         var feedbacks: [Feedback]
-        var selectedText = ""
+        var selectedText = ""        
         var buttonDisabled: Bool {
             selectedText.isEmpty
         }
@@ -53,6 +53,10 @@ struct FetchFeedback {
                 state.selectedText = text
                 return .none
             case .completeButtonTapped:
+                if let feedback = state.feedbacks.first{
+                    state.planInfo.question = feedback.question
+                    state.planInfo.indicators = state.selectedText
+                }
                 return .send(.goToFeedbackResult(planInfo: state.planInfo))
             default:
                 return  .none
