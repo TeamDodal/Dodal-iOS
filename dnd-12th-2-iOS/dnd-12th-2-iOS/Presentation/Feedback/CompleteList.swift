@@ -10,7 +10,7 @@ import SwiftUI
 struct CompleteList: View {
     var body: some View {
         LazyVStack(alignment: .leading, spacing: 16) {
-            ForEach(1...3, id: \.self) { index in
+            ForEach(1...2, id: \.self) { index in
                 HStack(alignment: index != 3 ? .top : .center, spacing: 12) {
                     Circle()
                         .foregroundStyle(Color.white)
@@ -30,7 +30,7 @@ struct CompleteList: View {
                                 .foregroundStyle(Color.gray700)
                                 .padding(.vertical, 6)
                                 .padding(.horizontal, 12)
-                                .background(Color.gray100)
+                                .background(.white)
                                 .cornerRadius(8)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
