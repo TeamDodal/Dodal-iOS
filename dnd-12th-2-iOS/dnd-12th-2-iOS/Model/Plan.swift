@@ -52,4 +52,7 @@ struct Plan: Hashable {
         case success
         case failure
     }
+    
+    var question = ""
+    var indicators = ""
 }

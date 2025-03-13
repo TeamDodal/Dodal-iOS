@@ -108,6 +108,9 @@ struct MainNavigation {
                 case let .element(id: id, action: .fetchFeedback(.backButtonTapped)):
                     state.path.pop(from: id)
                     return .none
+                case .element(id: _, action: .feedbackResult(.completeButtonTapped)):
+                    state.path.removeSubrange(state.path.count-3..<state.path.count)
+                    return .none
                 default:
                     return .none
                 }

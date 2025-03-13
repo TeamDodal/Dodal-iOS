@@ -10,15 +10,15 @@ import ComposableArchitecture
 import Moya
 
 struct PlanClient {
-    var fetchCompletePlan: (Int, String) async throws -> ResultPlan
+    var fetchCompletePlan: (Plan) async throws -> ResultPlan
     static let provider = MoyaProvider<PlanAPI>(session: Session(interceptor: AuthIntercepter.shared), plugins: [MoyaLoggingPlugin()])
 }
 
 extension PlanClient: DependencyKey {
     static let liveValue = Self (
-        fetchCompletePlan: { planId, status in
+        fetchCompletePlan: { planInfo in
             do {
-                let result: BaseResponse<PlanCompleteResDto> = try await provider.async.request(.fetchCompletePlan(planId: planId, status: status))
+                let result: BaseResponse<PlanCompleteResDto> = try await provider.async.request(.fetchCompletePlan(planInfo: planInfo))
                 guard let result = result.data else {
                     throw APIError.parseError
                 }
