@@ -48,6 +48,8 @@ extension FeedbackResultView {
             .frame(maxWidth: .infinity)
             .background(Color.success.overlay(alignment: .top, content: {
                 Image("feedbackBackground")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
             }))
             
         case .failure:

@@ -27,8 +27,7 @@ struct FeedbackResult {
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
-            case .fetchCompletePlan:
-                            
+            case .fetchCompletePlan:                            
                 return .run { [state] send in
                     let result = try await planClient.fetchCompletePlan(state.planInfo)
                     await send(.fetchCompletePlanResponse(result))

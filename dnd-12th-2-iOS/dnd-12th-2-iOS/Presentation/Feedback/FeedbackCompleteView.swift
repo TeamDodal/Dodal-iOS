@@ -108,15 +108,22 @@ extension FeedbackCompleteView {
         case .success:
             VStack {
                 Image("feedbackBackground")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
                     .offset(y: -safeAreaInsets.top)
+                
                 Spacer()
                 Image("stairSuccess")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
                     .offset(y: safeAreaInsets.bottom)
             }
         case .failure:
             VStack {
                 Spacer()
                 Image("stairSuccess")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
                     .offset(y: safeAreaInsets.bottom)
             }
         }
