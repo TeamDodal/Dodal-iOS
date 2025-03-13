@@ -13,6 +13,6 @@ struct Goal: Hashable {
     let totalCount: Int
     
     var successPercent: Int {
-        successCount / totalCount * 100
+        totalCount != 0 ? successCount / totalCount * 100 : 0
     }
 }

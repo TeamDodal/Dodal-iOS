@@ -12,6 +12,7 @@ struct HomeNavigation {
     
     @ObservableState
     struct State {
+        var isShowSheet = false
         var isShowMenu = false
         var isShowGoalList = false
         var isCustomAlertPresented = false
@@ -40,6 +41,12 @@ struct HomeNavigation {
         
         // 목표달성
         case goToAchieveGoal(goalId: Int)
+        
+        case completeButtonTapped
+        
+        case failureButtonTapped
+        
+        case goToFeedback(planInfo: Plan)
         
         case addPlanButtonTapped
         
@@ -77,6 +84,14 @@ struct HomeNavigation {
                 return .none
             case .addPlanButtonTapped:
                 return .send(.goToSetPlan(goalId: state.goalId))
+                // MARK: - FetchPlan
+            case .fetchPlan(.cellTapped):
+                if let planInfo = state.fetchPlan.plan, planInfo.resultType == .ready {
+                    state.isShowSheet = true
+                } else {
+                    
+                }
+                return .none
                 // MARK: - Calendar
             case let .calendar(action):
                 switch action {
@@ -103,6 +118,20 @@ struct HomeNavigation {
                     try await goalClient.achieveGoal(goalId)
                     await send(.goToAchieveGoal(goalId: state.goalId))
                 }
+            case .completeButtonTapped:
+                state.isShowSheet = false
+                guard var planInfo = state.fetchPlan.plan else {
+                    return .none
+                }
+                planInfo.completeType = .success
+                return .send(.goToFeedback(planInfo: planInfo))
+            case .failureButtonTapped:
+                state.isShowSheet = false
+                guard var planInfo = state.fetchPlan.plan else {
+                    return .none
+                }
+                planInfo.completeType = .failure
+                return .send(.goToFeedback(planInfo: planInfo))
             default:
                 return .none
             }
