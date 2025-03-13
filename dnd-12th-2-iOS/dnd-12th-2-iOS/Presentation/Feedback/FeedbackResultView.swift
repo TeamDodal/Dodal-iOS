@@ -20,6 +20,9 @@ struct FeedbackResultView: View {
         }
         .ignoresSafeArea(.container, edges: .top)
         .navigationBarHidden(true)
+        .onAppear {
+            store.send(.fetchCompletePlan)
+        }
     }
 }
 
@@ -95,7 +98,7 @@ extension FeedbackResultView {
                 }
                 .padding(.vertical, 16)
                 .padding(.horizontal, 12)
-                .background(Color.purple100)
+                .background(Color.purple50)
                 .cornerRadius(8)
                 .padding(.top, 12)
                 
