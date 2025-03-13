@@ -28,7 +28,7 @@ struct DDResultRow: View {
                 .padding(.leading, 12)
                 Spacer()
                 
-                Button(action: {}, label: {
+                Button(action: action, label: {
                     if planInfo.resultType == .ready {
                         Text("실행하셨나요?")
                             .bodySmallSemibold()

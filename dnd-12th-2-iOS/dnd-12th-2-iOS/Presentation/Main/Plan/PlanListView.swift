@@ -41,7 +41,10 @@ struct PlanListVIew: View {
                                         })
                                     LazyVStack(spacing: 8) {
                                         ForEach(planDictionary[section] ?? [], id: \.self) { plan in
-                                            DDResultRow(planInfo: plan, action: {})
+                                            DDResultRow(planInfo: plan, action: {
+                                                
+                                                store.send(.cellTapped(plan))
+                                            })
                                         }
                                     }
                                 }

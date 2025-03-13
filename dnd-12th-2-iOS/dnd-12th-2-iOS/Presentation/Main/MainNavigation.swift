@@ -16,6 +16,9 @@ struct MainNavigation {
         case myPage(MyPage)
         case goalResult(GoalResult)
         case achieveGoal(AchieveGoal)
+        case feedbackComplete(FeedbackComplete)
+        case fetchFeedback(FetchFeedback)
+        case feedbackResult(FeedbackResult)
     }
     
     @ObservableState
@@ -53,7 +56,7 @@ struct MainNavigation {
                 state.path.append(.myPage(.init()))
                 return .none
                 // goalID 넘겨주고 상세화면 이동
-            case let .fetchGoal(.cellTapped(goalInfo)):
+            case let .fetchGoal(.cellTapped(goalInfo)):                
                 state.path.append(.home(.init(goalId: goalInfo.goalId, goalTitle: goalInfo.title)))
                 return .none
             case let .goToAchieveGoal(goalId):
@@ -88,6 +91,25 @@ struct MainNavigation {
                     return .send(.goToSetGoalView)
                 case let .element(id: id, action: .achieveGoal(.goToHome)):
                     state.path.pop(from: id)
+                    return .none
+                    // Feedback
+                case let .element(id: _, action: .home(.goToFeedback(planInfo))):
+                    state.path.append(.feedbackComplete(.init(planInfo: planInfo)))
+                    return .none
+                case let .element(id: id, action: .feedbackComplete(.backButtonTapped)):
+                    state.path.pop(from: id)
+                    return .none
+                case let .element(id: _, action: .feedbackComplete(.goToFeedback(planInfo))):
+                    state.path.append(.fetchFeedback(.init(planInfo: planInfo)))
+                    return .none
+                case let .element(id: _, action: .fetchFeedback(.goToFeedbackResult(planInfo))):
+                    state.path.append(.feedbackResult(.init(planInfo: planInfo)))
+                    return .none
+                case let .element(id: id, action: .fetchFeedback(.backButtonTapped)):
+                    state.path.pop(from: id)
+                    return .none
+                case .element(id: _, action: .feedbackResult(.completeButtonTapped)):
+                    state.path.removeSubrange(state.path.count-3..<state.path.count)
                     return .none
                 default:
                     return .none

@@ -13,12 +13,26 @@ import ComposableArchitecture
 struct FetchFeedback {
     @ObservableState
     struct State {
-        var feedbacks: [Feedback] = []
+        var planInfo: Plan
+        var feedbacks: [Feedback]
+        var selectedText = ""        
+        var buttonDisabled: Bool {
+            selectedText.isEmpty
+        }
+        
+        init(planInfo: Plan, feedbacks: [Feedback] = []) {
+            self.planInfo = planInfo
+            self.feedbacks = feedbacks
+        }
     }
     
     enum Action {
         case loadFeedback
         case fetchFeedbackResponse([Feedback])
+        case cellTapped(text: String)
+        case completeButtonTapped
+        case goToFeedbackResult(planInfo: Plan)
+        case backButtonTapped
     }
     
     @Dependency(\.feedbackClient) var feedbackClient
@@ -27,13 +41,25 @@ struct FetchFeedback {
         Reduce { state, action in
             switch action {
             case .loadFeedback:
+                let requestText = state.planInfo.completeType == .success ? "SUCCESS" : "FAILURE"
                 return .run { send in
-                    let result = try await feedbackClient.fetchFeedbacks("SUCCESS")
+                    let result = try await feedbackClient.fetchFeedbacks(requestText)
                     await send(.fetchFeedbackResponse(result))
                 }
             case let .fetchFeedbackResponse(response):
                 state.feedbacks = response
                 return .none
+            case let .cellTapped(text):
+                state.selectedText = text
+                return .none
+            case .completeButtonTapped:
+                if let feedback = state.feedbacks.first{
+                    state.planInfo.question = feedback.question
+                    state.planInfo.indicators = state.selectedText
+                }
+                return .send(.goToFeedbackResult(planInfo: state.planInfo))
+            default:
+                return  .none
             }
         }
     }

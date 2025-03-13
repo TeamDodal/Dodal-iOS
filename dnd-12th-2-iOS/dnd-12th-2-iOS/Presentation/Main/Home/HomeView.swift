@@ -53,11 +53,17 @@ struct HomeView: View {
                     MenuItem()
                 }
             }
+            .bottomSheet($store.isShowSheet) {
+                VStack {
+                    CompleteView()
+                }
+            }
         }
     }
 }
 
 extension HomeView {
+    @ViewBuilder
     private func HomeNavigation() -> some View {
         HStack {
             DDBackButton(action: {
@@ -80,6 +86,7 @@ extension HomeView {
         }
     }
     
+    @ViewBuilder
     private func MenuItem() -> some View {
         VStack(spacing: 8) {
             HStack {
@@ -125,6 +132,44 @@ extension HomeView {
             }
             .padding(.vertical, 14.5)
             .padding(.horizontal, 12)
+        }
+    }
+    
+    @ViewBuilder
+    func CompleteView() -> some View {
+        VStack(spacing: 0) {
+            if let selectedPlan = store.fetchPlan.plan {
+                HStack {
+                    VStack {
+                        Text(selectedPlan.period)
+                            .bodySmallRegular()
+                            .alignmentLeading()
+                            .foregroundStyle(.gray500)
+                        Text(selectedPlan.title)
+                            .bodyLargeSemibold()
+                            .alignmentLeading()
+                            .foregroundStyle(.gray900)
+                    }
+                    Spacer()
+                    Button(action: {
+                        
+                    }, label: {
+                        Text("삭제")
+                            .bodyMediumMedium()
+                            .foregroundStyle(Color.purple700)
+                    })
+                }
+                
+                DDButton(title: "완료하지 못했어요", backgroundColor: .purple50, textColor: .purple500) {
+                    store.send(.failureButtonTapped)
+                }
+                .padding(.top, 20)
+                
+                DDButton(title: "완료했어요") {
+                    store.send(.completeButtonTapped)
+                }
+                .padding(.top, 8)
+            }
         }
     }
 }
