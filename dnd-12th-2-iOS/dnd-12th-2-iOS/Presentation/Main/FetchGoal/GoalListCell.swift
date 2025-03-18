@@ -40,9 +40,9 @@ struct GoalListCell: View {
             
             Spacer()
             Image("iconRight")
-                .onTapGesture {
-                    action()
-                }
+//                .onTapGesture {
+//                    action()
+//                }
         }
         .padding(16)
         .background(.white)
