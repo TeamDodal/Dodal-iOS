@@ -74,7 +74,7 @@ struct DDatePicker: View {
             Spacer()
                 .frame(width: 45)
         }
-        .frame(width: 307, height: 198)
+        .frame(width: 307, height: 168)
         .onAppear {
             selectedHour = calendar.component(.hour, from: date)
             selectedMinute = calendar.component(.minute, from: date)
