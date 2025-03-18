@@ -37,6 +37,8 @@ struct DDResultRow: View {
                             .padding(.horizontal, 8)
                             .background(Color.purple50)
                             .cornerRadius(6)
+                    } else if planInfo.resultType == .failure {
+                        Image("")
                     } else {
                         Image(.iconRight)
                     }
@@ -45,7 +47,7 @@ struct DDResultRow: View {
             .padding(.vertical, 13)
             .padding(.horizontal, 12)
         }
-        .background(.white)
+        .background(planInfo.resultType == .failure ? Color.pink100 : Color.white)
         .cornerRadius(12)
     }
 }

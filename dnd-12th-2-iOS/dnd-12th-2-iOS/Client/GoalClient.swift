@@ -17,7 +17,7 @@ struct GoalClient {
     var fetchPlans: (Int, String, Int) async throws -> [Plan]
     var achieveGoal: (Int) async throws -> Void
     var fetchGoalRate: (Int) async throws -> [Goal]
-    var improvePlan: (Int, Int, Int, PlanRequestDto) async throws -> Voi
+    var improvePlan: (Int, Int, Int, PlanInfo) async throws -> Void
     
     static let provider = MoyaProvider<GoalAPI>(session: Session(interceptor: AuthIntercepter.shared), plugins: [MoyaLoggingPlugin()])
 }
@@ -89,7 +89,7 @@ extension GoalClient: DependencyKey {
                     goalId: goalId,
                     planHistoryId: planHistoryId,
                     planId: planId,
-                    requestBody: planInfo
+                    requestBody: planInfo.toDto()
                 ))
             } catch {
                 throw error
