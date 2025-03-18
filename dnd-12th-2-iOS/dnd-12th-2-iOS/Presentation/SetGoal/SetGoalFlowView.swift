@@ -107,6 +107,7 @@ extension SetGoalFlowView {
                 Image("iconUp")
                     .rotationEffect(.degrees(store.isShowStartPicker ? 0 : 180))
             }
+            .frame(height: 44)
             .onTapGesture {
                 store.send(.startPickerTapped)
             }
@@ -127,6 +128,7 @@ extension SetGoalFlowView {
                 Image("iconUp")
                     .rotationEffect(.degrees(store.isShowEndPicker ? 0 : 180))
             }
+            .frame(height: 44)
             .onTapGesture {
                 store.send(.endPickerTapped)
             }
