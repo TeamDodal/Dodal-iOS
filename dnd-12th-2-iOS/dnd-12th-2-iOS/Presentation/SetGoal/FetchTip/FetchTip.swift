@@ -28,6 +28,9 @@ struct FetchTip {
         // 새로운 계획 설정
         case newPlan
         
+        // 계획 재설정
+        case improvePlan
+        
         // 타입에따른 pathParameter
         var path: String {
             switch self {
@@ -35,6 +38,8 @@ struct FetchTip {
                 return "new-goal"
             case .newPlan:
                 return "new-plan"
+            case .improvePlan:
+                return "update-plan"
             }
         }
     }
