@@ -24,9 +24,12 @@ struct DDRoundTextFiled: View {
                     .foregroundStyle(Color.black)
                     .focused($isFocused)
                 
-                Text("0/50")
-                    .font(.pretendard(size: 12, weight: .regular))
-                    .foregroundStyle(Color.gray500)
+                if !text.isEmpty {
+                    Image("iconTextField")
+                         .onTapGesture {
+                             text.removeAll()
+                         }
+                }
             }
             .padding(.horizontal, 8)
         }
