@@ -92,6 +92,7 @@ struct LoginNavigation {
                     }
                 ])
             case let .appleLoginComplete(response):
+                KeyChainManager.addItem(key: .userInfo, value: response.email)
                 KeyChainManager.addItem(key: .accessToken, value: response.jwtTokenDto.accessToken)
                 KeyChainManager.addItem(key: .refreshToken, value: response.jwtTokenDto.refreshToken)
                 return .none
