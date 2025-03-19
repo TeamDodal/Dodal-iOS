@@ -48,7 +48,7 @@ struct SetGoalFlowView: View {
                         TipView(store: store.scope(state: \.fetchTip, action: \.fetchTip))
                             .padding(.top, 8)
                         DateGroup()
-                            .padding(.top, 40)
+                            .padding(.top, 36)
                         Spacer()
                         DDButton(title: store.buttonText, isDisable: store.buttonDisabled){
                             store.send(.nextButtonTapped)
@@ -107,10 +107,11 @@ extension SetGoalFlowView {
                 Image("iconUp")
                     .rotationEffect(.degrees(store.isShowStartPicker ? 0 : 180))
             }
+            .frame(height: 44)
             .onTapGesture {
                 store.send(.startPickerTapped)
             }
-            .padding(.top, 16)
+            .padding(.top, 8)
             if store.isShowStartPicker {
                 DDatePicker(date: $store.startDate)
                     .padding(.top, 8)
@@ -127,10 +128,11 @@ extension SetGoalFlowView {
                 Image("iconUp")
                     .rotationEffect(.degrees(store.isShowEndPicker ? 0 : 180))
             }
+            .frame(height: 44)
             .onTapGesture {
                 store.send(.endPickerTapped)
             }
-            .padding(.top, 16)
+            .padding(.top, 8)
             if store.isShowEndPicker {
                 DDatePicker(date: $store.endDate)
                     .padding(.top, 8)
