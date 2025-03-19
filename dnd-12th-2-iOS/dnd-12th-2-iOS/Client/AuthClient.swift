@@ -13,6 +13,7 @@ import Moya
 struct AuthClient {
     var signIn: (String) async throws -> AppleLoginResDto
     var signOut: () async throws -> Void
+    var withdraw: () async throws -> Void
     
     static let provider = MoyaProvider<AuthAPI>(session: Session(interceptor: AuthIntercepter.shared), plugins: [MoyaLoggingPlugin()])
 }
@@ -34,6 +35,14 @@ extension AuthClient: DependencyKey {
         signOut: {
             do {
                 try await provider.async.requestPlain(.logout)
+            } catch {
+                print(error.localizedDescription)
+                throw error
+            }
+        },
+        withdraw: {
+            do {
+                try await provider.async.requestPlain(.withdraw)
             } catch {
                 print(error.localizedDescription)
                 throw error

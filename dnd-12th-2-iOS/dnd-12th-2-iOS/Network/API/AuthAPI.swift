@@ -12,6 +12,7 @@ enum AuthAPI {
     case appleLogin(AppleLoginReqDto)
     case logout
     case refreshToken
+    case withdraw
 }
 
 extension AuthAPI: TargetType {
@@ -27,6 +28,8 @@ extension AuthAPI: TargetType {
             "/sign-out"
         case .refreshToken:
             "/refresh"
+        case .withdraw:
+            "/withdraw"
         }
     }
     
@@ -38,6 +41,8 @@ extension AuthAPI: TargetType {
                 .post
         case .refreshToken:
                 .post
+        case .withdraw:
+                .delete
         }
     }
     
@@ -49,6 +54,8 @@ extension AuthAPI: TargetType {
             return .requestPlain
         case .refreshToken:
             return .requestPlain
+        case .withdraw:
+            return .requestPlain
         }
     }
     
@@ -57,6 +64,9 @@ extension AuthAPI: TargetType {
         case .refreshToken:
             return ["Content-type": "application/json",
                     "Authorization": "Bearer \(KeyChainManager.readItem(key: .refreshToken) ?? "")"]
+        case .withdraw:
+            return ["Content-type": "application/json",
+                    "Authorization": "Bearer \(KeyChainManager.readItem(key: .accessToken) ?? "")"]
         default:
             return ["Content-type": "application/json"]
         }
