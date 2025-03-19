@@ -41,6 +41,36 @@ struct HomeView: View {
                     )
                 }
             })
+            .overlay(alignment: .center, content: {
+                if store.state.isShowDeleteAlert {
+                    DDAlert(
+                        title: "목표를 정말 삭제할까요?",
+                        cancelButtonTitle: "취소",
+                        confirmButtonTitle: "삭제",
+                        onCancel: {
+                            store.send(.showDeleteAlertDismissed)
+                        },
+                        onConfirm: {
+                            store.send(.deleteGoal)
+                        }
+                    )
+                }
+            })
+            .overlay(alignment: .center, content: {
+                if store.state.isShowPlanDeleteAlert {
+                    DDAlert(
+                        title: "할 일을 정말 삭제할까요?",
+                        cancelButtonTitle: "취소",
+                        confirmButtonTitle: "확인",
+                        onCancel: {
+                            store.send(.planDeleteAlertDismissed)
+                        },
+                        onConfirm: {
+                            store.send(.deletePlan)
+                        }
+                    )
+                }
+            })
             .overlay(alignment: .bottomTrailing, content: {
                 CTAButton(isScrolling: isScrolling) {
                     store.send(.addPlanButtonTapped)
@@ -53,11 +83,17 @@ struct HomeView: View {
                     MenuItem()
                 }
             }
+            .bottomSheet($store.isShowSheet) {
+                VStack {
+                    CompleteView()
+                }
+            }
         }
     }
 }
 
 extension HomeView {
+    @ViewBuilder
     private func HomeNavigation() -> some View {
         HStack {
             DDBackButton(action: {
@@ -80,6 +116,7 @@ extension HomeView {
         }
     }
     
+    @ViewBuilder
     private func MenuItem() -> some View {
         VStack(spacing: 8) {
             HStack {
@@ -122,9 +159,51 @@ extension HomeView {
                     Spacer()
                     Image("iconGray")
                 }
+                .onTapGesture {
+                    store.send(.showDeleteAlert)
+                    store.send(.hideMenu)
+                }
             }
             .padding(.vertical, 14.5)
             .padding(.horizontal, 12)
+        }
+    }
+    
+    @ViewBuilder
+    func CompleteView() -> some View {
+        VStack(spacing: 0) {
+            if let selectedPlan = store.fetchPlan.plan {
+                HStack {
+                    VStack {
+                        Text(selectedPlan.period)
+                            .bodySmallRegular()
+                            .alignmentLeading()
+                            .foregroundStyle(.gray500)
+                        Text(selectedPlan.title)
+                            .bodyLargeSemibold()
+                            .alignmentLeading()
+                            .foregroundStyle(.gray900)
+                    }
+                    Spacer()
+                    Button(action: {
+                        store.send(.showPlanDeleteAlert)
+                    }, label: {
+                        Text("삭제")
+                            .bodyMediumMedium()
+                            .foregroundStyle(Color.purple700)
+                    })
+                }
+                
+                DDButton(title: "완료하지 못했어요", backgroundColor: .purple50, textColor: .purple500) {
+                    store.send(.failureButtonTapped)
+                }
+                .padding(.top, 20)
+                
+                DDButton(title: "완료했어요") {
+                    store.send(.completeButtonTapped)
+                }
+                .padding(.top, 8)
+            }
         }
     }
 }

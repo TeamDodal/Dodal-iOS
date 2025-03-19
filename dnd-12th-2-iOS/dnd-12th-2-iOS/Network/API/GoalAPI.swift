@@ -11,6 +11,7 @@ import Moya
 enum GoalAPI {
     case makeGoalWithPlan(GoalReqDto)
     case makePlan(goalID: Int, planReqDto: PlanRequestDto)
+    case deleteGoal(goalID: Int)
     case fetchGoal
     case fetchWeeklyGoal(Int, String)
     case fetchPlans(goalId: Int, date: String, range: Int)
@@ -40,6 +41,8 @@ extension GoalAPI: TargetType {
             return "/\(goalId)/statistics"
         case let .improvePlan(goalId, planId, _):
             return "/\(goalId)/plans/\(planId)/failure"
+        case let .deleteGoal(goalID):
+            return "/\(goalID)"
         default:
             return ""
         }
@@ -63,6 +66,8 @@ extension GoalAPI: TargetType {
             return .get
         case .improvePlan:
             return .post
+        case .deleteGoal:
+            return .delete
         }
     }
     

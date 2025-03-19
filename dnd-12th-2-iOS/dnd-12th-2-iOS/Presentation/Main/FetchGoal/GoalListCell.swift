@@ -26,7 +26,7 @@ struct GoalListCell: View {
                         .frame(width: 1, height: 14)
                         .foregroundStyle(Color.gray400)
                     
-                    Text("\(goal.successCount)%")
+                    Text("\(goal.successPercent)%")
                         .bodySmallBold()
                         .foregroundStyle(Color.purple600)
                     
@@ -40,9 +40,9 @@ struct GoalListCell: View {
             
             Spacer()
             Image("iconRight")
-                .onTapGesture {
-                    action()
-                }
+//                .onTapGesture {
+//                    action()
+//                }
         }
         .padding(16)
         .background(.white)

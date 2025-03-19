@@ -74,6 +74,12 @@ struct GoalResultView: View {
                 
                 Spacer()
                 
+                Text("계획을 세운 사람의 42%가 \n목표를 달성한다는 연구 결과가 있어요!")
+                    .bodySmallMedium()
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(.gray500)
+                    .padding(.bottom, 20)
+                
                 DDButton(title: "시작하기") {
                     store.send(.goToMain)
                 }

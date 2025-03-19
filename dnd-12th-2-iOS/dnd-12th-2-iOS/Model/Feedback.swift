@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Feedback: Codable {
+struct Feedback: Codable, Hashable {
     let question: String
     let description: String
     let order: Int

@@ -12,9 +12,12 @@ struct HomeNavigation {
     
     @ObservableState
     struct State {
+        var isShowSheet = false
         var isShowMenu = false
         var isShowGoalList = false
         var isCustomAlertPresented = false
+        var isShowDeleteAlert = false
+        var isShowPlanDeleteAlert = false
         var calendar: MakeCalendar.State
         var fetchPlan: FetchPlan.State
         let goalTitle: String
@@ -41,6 +44,12 @@ struct HomeNavigation {
         // 목표달성
         case goToAchieveGoal(goalId: Int)
         
+        case completeButtonTapped
+        
+        case failureButtonTapped
+        
+        case goToFeedback(planInfo: Plan)
+        
         case addPlanButtonTapped
         
         // 계획설정으로 이동
@@ -55,9 +64,18 @@ struct HomeNavigation {
         case customAlertDismissed
         case confirmButtonTapped
         case achieveGoal(goalId: Int)
+        case showDeleteAlert
+        case showDeleteAlertDismissed
+        case showPlanDeleteAlert
+        case planDeleteAlertDismissed
+        case deleteGoal
+        case deleteGoalCompleted
+        case deletePlan
+        case deletePlanRequest
     }
     
     @Dependency(\.goalClient) var goalClient
+    @Dependency(\.planClient) var planClient
     
     var body: some Reducer<State, Action> {
         BindingReducer()
@@ -77,6 +95,47 @@ struct HomeNavigation {
                 return .none
             case .addPlanButtonTapped:
                 return .send(.goToSetPlan(goalId: state.goalId))
+            case .showDeleteAlert:                
+                state.isShowDeleteAlert = true
+                return .none
+            case .showDeleteAlertDismissed:
+                state.isShowDeleteAlert = false
+                return .none
+            case .deleteGoal:
+                return .run { [state] send in
+                    try await goalClient.deleteGoal(state.goalId)
+                    await send(.deleteGoalCompleted)
+                }
+            case .showPlanDeleteAlert:
+                state.isShowPlanDeleteAlert = true
+                state.isShowSheet = false
+                return .none
+            case .planDeleteAlertDismissed:
+                state.isShowPlanDeleteAlert = false
+                return .none
+            case .deletePlanRequest:
+                guard let planId = state.fetchPlan.plan?.planId else {
+                    return .none
+                }
+                return .run { send in
+                    try await planClient.deletePlan(planId)
+                }
+            case .deletePlan:
+                let date = state.calendar.requestDate
+                return .concatenate([
+                    .send(.deletePlanRequest),
+                    .send(.planDeleteAlertDismissed),
+                    .send(.fetchPlan(.fetchPlans(date))),
+                    .send(.calendar(.fetchWeeklyGoal))
+                ])
+                // MARK: - FetchPlan
+            case .fetchPlan(.cellTapped):
+                if let planInfo = state.fetchPlan.plan, planInfo.resultType == .ready {
+                    state.isShowSheet = true
+                } else {
+                    
+                }
+                return .none
                 // MARK: - Calendar
             case let .calendar(action):
                 switch action {
@@ -103,6 +162,20 @@ struct HomeNavigation {
                     try await goalClient.achieveGoal(goalId)
                     await send(.goToAchieveGoal(goalId: state.goalId))
                 }
+            case .completeButtonTapped:
+                state.isShowSheet = false
+                guard var planInfo = state.fetchPlan.plan else {
+                    return .none
+                }
+                planInfo.completeType = .success
+                return .send(.goToFeedback(planInfo: planInfo))
+            case .failureButtonTapped:
+                state.isShowSheet = false
+                guard var planInfo = state.fetchPlan.plan else {
+                    return .none
+                }
+                planInfo.completeType = .failure
+                return .send(.goToFeedback(planInfo: planInfo))
             default:
                 return .none
             }

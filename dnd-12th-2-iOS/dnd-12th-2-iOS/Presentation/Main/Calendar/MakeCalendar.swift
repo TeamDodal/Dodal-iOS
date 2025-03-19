@@ -18,6 +18,9 @@ struct MakeCalendar {
         var index = 0
         var cellIndex = 0
         
+        var requestDate: Date {
+            dayList[index][3].date
+        }
         init(goalId: Int) {
             self.goalId = goalId
         }

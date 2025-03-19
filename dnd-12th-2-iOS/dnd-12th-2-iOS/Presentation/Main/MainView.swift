@@ -31,6 +31,12 @@ struct MainView: View {
                     GoalResultView(store: store)
                 case let .achieveGoal(store):
                     AchieveGoalView(store: store)
+                case let .feedbackComplete(store):
+                    FeedbackCompleteView(store: store)
+                case let .fetchFeedback(store):
+                    FeedbackQuestionView(store: store)
+                case let .feedbackResult(store):
+                    FeedbackResultView(store: store)
                 }
             }
         }
@@ -40,62 +46,64 @@ struct MainView: View {
 extension MainView {
     @ViewBuilder
     func HeaderView() -> some View {
-        Image("backgroundImage")
-            .overlay(alignment: .top, content: {
-                VStack(spacing: 0) {
-                    HStack {
-                        Image("appLogo")
-                        Spacer()
-                        Button(action: {
-                            store.send(.goToMyPage)
-                        }, label: {
-                            Image("userImage")
-                        })
-                    }
-                    .frame(height: 32)
-                    .padding(.top, safeAreaInsets.top)
-                    
-                    VStack(alignment: .leading, spacing: 4) {
-                        HStack(spacing: 2) {
-                            Text("오늘도")
-                                .headingStyle3()
-                                .foregroundStyle(Color.gray900)
-                            HStack(spacing: 0) {
-                                Text("도달")
-                                    .headingStyle3()
-                                    .foregroundStyle(Color.purple500)
-                                Text("과")
-                                    .headingStyle3()
-                                    .foregroundStyle(Color.gray900)
-                                    .alignmentLeading()
-                            }
-                        }
-                        .padding(.top, 17)
-                        Text("함께 목표를 달성해봐요!")
+            Image("backgroundImage")
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+        .overlay(alignment: .top, content: {
+            VStack(spacing: 0) {
+                HStack {
+                    Image("appLogo")
+                    Spacer()
+                    Button(action: {
+                        store.send(.goToMyPage)
+                    }, label: {
+                        Image("userImage")
+                    })
+                }
+                .frame(height: 32)
+                .padding(.top, safeAreaInsets.top)
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack(spacing: 2) {
+                        Text("오늘도")
                             .headingStyle3()
                             .foregroundStyle(Color.gray900)
-                            .alignmentLeading()
-                        
-                        Button(action: {
-                            store.send(.goToSetGoalView)
-                        }, label: {
-                            HStack(spacing: 4) {
-                                Image("iconPlus")
-                                
-                                Text("목표 추가하기")
-                                    .bodyLargeSemibold()
-                                    .foregroundStyle(Color.white)
-                            }
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 9.5)
-                        })
-                        .background(Color.purple500)
-                        .clipShape(Capsule())
-                        .padding(.top, 16)
+                        HStack(spacing: 0) {
+                            Text("도달")
+                                .headingStyle3()
+                                .foregroundStyle(Color.purple500)
+                            Text("과")
+                                .headingStyle3()
+                                .foregroundStyle(Color.gray900)
+                                .alignmentLeading()
+                        }
                     }
+                    .padding(.top, 17)
+                    Text("함께 목표를 달성해봐요!")
+                        .headingStyle3()
+                        .foregroundStyle(Color.gray900)
+                        .alignmentLeading()
+                    
+                    Button(action: {
+                        store.send(.goToSetGoalView)
+                    }, label: {
+                        HStack(spacing: 4) {
+                            Image("iconPlus")
+                            
+                            Text("목표 추가하기")
+                                .bodyLargeSemibold()
+                                .foregroundStyle(Color.white)
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 9.5)
+                    })
+                    .background(Color.purple500)
+                    .clipShape(Capsule())
+                    .padding(.top, 16)
                 }
-                .padding(.horizontal, 16)
-            })
+            }
+            .padding(.horizontal, 16)
+        })
     }
 }
 
