@@ -20,6 +20,9 @@ struct ImprovePlan {
         // goalID
         var goalId = 0
         
+        // planId
+        var planId = 0
+        
         // 계획타이틀
         var planTitle = ""
         
@@ -29,8 +32,6 @@ struct ImprovePlan {
         // 종료날짜
         var endDate = Date()
         
-        // 화면이동 애니메이션
-        var isFoward = true
         
         // 버튼 활성화여부
         var buttonDisabled: Bool {
@@ -95,15 +96,7 @@ struct ImprovePlan {
             startDateResultStr + " ~ " + endTimeResultStr
         }
         
-        /// 새로운 계획생성(goalID 필수)
-        /// - Parameter goalId: 계획을 생성할 목표의 goalID
-//        init(goalId: Int) {
-//            self.goalId = goalId
-//            self.fetchTip = .init(guideType: .improvePlan)
-//        }
-        
         init() {
-//            self.goalId = goalId
             self.fetchTip = .init(guideType: .improvePlan)
         }
     }
@@ -122,6 +115,9 @@ struct ImprovePlan {
         case startPickerTapped
         case endPickerTapped
         case improvePlan
+        
+        case setGoalId(Int)
+        case setPlanId(Int)
     }
     
     // MARK: - Dependencies
@@ -136,55 +132,30 @@ struct ImprovePlan {
         Reduce { state, action in
             switch action {
                 // UI
-//            case .startPickerTapped:
-//                state.isShowStartPicker = true
-//                state.isShowEndPicker = false
-//                return .none
-//            case .endPickerTapped:
-//                state.isShowEndPicker = true
-//                state.isShowStartPicker = false
-//                return .none
-//            case .nextButtonTapped:
-//                return self.setNextButtonAction(&state)
-//            case .backButtonTapped:
-//                return self.setBackButtonAction(&state)
-//            case .completeAction:
-//                return self.setCompleteAction(&state)
-//            case .nextAction:
-//                let currentIndex = state.viewFlow.rawValue
-//                state.viewFlow = .init(rawValue: currentIndex + 1)!
-//                state.isFoward = true
-//                if let guideType = state.viewFlow.guideType {
-//                    state.fetchTip = .init(guideType: guideType)
-//                }
-//                return .none
-//            case .cancleAction:
-//                let currentIndex = state.viewFlow.rawValue
-//                state.viewFlow = .init(rawValue: currentIndex - 1)!
-//                state.isFoward = false
-//                if let guideType = state.viewFlow.guideType {
-//                    state.fetchTip = .init(guideType: guideType)
-//                }
-//                return .none
-//                // API
-//            case .requestMakePlan:
-//                return .run { [state] send in
-//                    try await goalClient.makePlan(state.goalId, .init(title: state.planTitle, startDate: state.startDate, endDate: state.endDate))
-//                    await send(.requestRemoveFromStack)
-//                }
-//                // TODO: 목표생성 화면나오면 그때연결
-//            case .requestMakeGoal:
-//                return .run { send in
-//                    
-//                }
-//            case .requestMakeFirstGoal:
-//                return .run { [state] send in
-//                    try await goalClient.makeGoal(.init(goalTitle: state.goalTitle, planTitle: state.planTitle, startDate: state.startDate, endDate: state.endDate))
-//                    await send(.submitResult(goalTitle: state.goalTitle, planTitle: state.planTitle, startDate: state.startDate, endDate: state.endDate))
-//                }
-//            case .improvePlan:
-//                return .none
-                
+            case .startPickerTapped:
+                state.isShowStartPicker = true
+                state.isShowEndPicker = false
+                return .none
+            case .endPickerTapped:
+                state.isShowEndPicker = true
+                state.isShowStartPicker = false
+                return .none
+            case .backButtonTapped:
+                return .none
+            case .completeAction:
+                return .none
+                // API
+            case .improvePlan:
+                let planInfo = PlanInfo(title: state.planTitle, startDate: state.startDate, endDate: state.endDate)
+                return .run { [state] send in
+                    try await goalClient.improvePlan(state.goalId, state.planId, planInfo)
+                }
+            case .setGoalId(let goalId):
+                state.goalId = goalId
+                return .none
+            case .setPlanId(let planId):
+                state.planId = planId
+                return .none
             default:
                 return .none
             }
