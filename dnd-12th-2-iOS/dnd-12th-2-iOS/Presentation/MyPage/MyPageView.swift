@@ -9,17 +9,10 @@ import SwiftUI
 import ComposableArchitecture
 
 struct MyPageView: View {
-    let store: StoreOf<MyPage>
+    @Perception.Bindable var store: StoreOf<MyPage>
     var body: some View {
         WithPerceptionTracking {
             VStack(spacing: 0) {
-//                Text("마이페이지")
-//                    .font(.title)
-//                Button(action: {
-//                    store.send(.logoutButtonTapped)
-//                }, label: {
-//                    Text("logout")
-//                })
                 
                 Text("이메일")
                     .bodyXLargeSemibold()
@@ -33,7 +26,7 @@ struct MyPageView: View {
                     .padding(.top, 12)
                 
                 Button(action: {
-                    
+                    store.send(.showWebView)
                 }, label: {
                     Text("1:1 문의")
                         .bodyLargeSemibold()
@@ -61,7 +54,7 @@ struct MyPageView: View {
                 .padding(.top, 16)
                 
                 Button(action: {
-                    
+                    store.send(.showWithdrawAlert)
                 }, label: {
                     Text("회원탈퇴")
                         .bodyLargeSemibold()
@@ -101,6 +94,25 @@ struct MyPageView: View {
                     )
                 }
             })
+            .overlay(alignment: .center, content: {
+                if store.isShowWithdrawAlert {
+                    DDAlert(
+                        title: "회원탈퇴 하시겠습니까?",
+                        cancelButtonTitle: "취소",
+                        confirmButtonTitle: "확인",
+                        onCancel: {
+                            store.send(.hideWithdrawAlert)
+                        },
+                        onConfirm: {
+                            
+                        }
+                    )
+                }
+            })
+            .sheet(isPresented: $store.isShowWebView) {
+                WebView(url: "https://www.instagram.com/dodal_in_ur_goal?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==")
+                    .padding(.top, 40)
+            }
         }
     }
 }

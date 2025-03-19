@@ -12,9 +12,15 @@ struct MyPage {
     @ObservableState
     struct State {
         var isShowLogoutAlert = false
+        var isShowWithdrawAlert = false
+        var isShowWebView = false
     }
     
-    enum Action {
+    enum Action: BindableAction {
+        case binding(BindingAction<State>)
+        case showWebView
+        case showWithdrawAlert
+        case hideWithdrawAlert
         case showLogoutAlert
         case hideLogoutAlert
         case logoutButtonTapped
@@ -25,8 +31,18 @@ struct MyPage {
     @Dependency(\.authClient) var authClient
     
     var body: some Reducer<State, Action> {
+        BindingReducer()
         Reduce { state, action in
             switch action {
+            case .showWebView:
+                state.isShowWebView = true
+                return .none
+            case .showWithdrawAlert:
+                state.isShowWithdrawAlert = true
+                return .none
+            case .hideWithdrawAlert:
+                state.isShowWithdrawAlert = false
+                return .none
             case .showLogoutAlert:
                 state.isShowLogoutAlert = true
                 return .none
