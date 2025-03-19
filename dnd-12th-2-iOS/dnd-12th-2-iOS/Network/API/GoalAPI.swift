@@ -16,7 +16,7 @@ enum GoalAPI {
     case fetchPlans(goalId: Int, date: String, range: Int)
     case achieveGoal(goalId: Int)
     case fetchSuccessRate(goalId: Int)
-    case improvePlan(goalId: Int, planHistoryId: Int, planId: Int, requestBody: PlanRequestDto)
+    case improvePlan(goalId: Int, planId: Int, requestBody: PlanRequestDto)
 }
 
 extension GoalAPI: TargetType {
@@ -38,8 +38,8 @@ extension GoalAPI: TargetType {
             return "/\(goalId)/achieve"
         case let .fetchSuccessRate(goalId):
             return "/\(goalId)/statistics"
-        case let .improvePlan(goalId, planHistoryId, planId, _):
-            return "/\(goalId)/plan-histories/\(planHistoryId)/plans/\(planId)/failure"
+        case let .improvePlan(goalId, planId, _):
+            return "/\(goalId)/plans/\(planId)/failure"
         default:
             return ""
         }
@@ -76,7 +76,7 @@ extension GoalAPI: TargetType {
             return .requestParameters(parameters: ["date": date, "range": range], encoding: URLEncoding.queryString)
         case let .makePlan(_, planReqDto):
             return .requestJSONEncodable(planReqDto)
-        case let .improvePlan(_, _, _, planReqDto):
+        case let .improvePlan(_, _, planReqDto):
             return .requestJSONEncodable(planReqDto)
         default:
             return .requestPlain
