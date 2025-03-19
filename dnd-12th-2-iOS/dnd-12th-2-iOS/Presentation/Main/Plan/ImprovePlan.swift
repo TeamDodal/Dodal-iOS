@@ -16,9 +16,9 @@ struct ImprovePlan {
     struct State {
         // Tip 받아오기
         var fetchTip: FetchTip.State
-        
+        let planInfo: Plan
         // goalID
-        var goalId = 0
+        let goalId: Int
         
         // planId
         var planId = 0
@@ -31,7 +31,6 @@ struct ImprovePlan {
         
         // 종료날짜
         var endDate = Date()
-        
         
         // 버튼 활성화여부
         var buttonDisabled: Bool {
@@ -96,8 +95,10 @@ struct ImprovePlan {
             startDateResultStr + " ~ " + endTimeResultStr
         }
         
-        init() {
+        init(planInfo: Plan, goalId: Int) {
             self.fetchTip = .init(guideType: .improvePlan)
+            self.planInfo = planInfo
+            self.goalId = goalId
         }
     }
     
@@ -115,9 +116,6 @@ struct ImprovePlan {
         case startPickerTapped
         case endPickerTapped
         case improvePlan
-        
-        case setGoalId(Int)
-        case setPlanId(Int)
     }
     
     // MARK: - Dependencies
@@ -150,12 +148,6 @@ struct ImprovePlan {
                 return .run { [state] send in
                     try await goalClient.improvePlan(state.goalId, state.planId, planInfo)
                 }
-            case .setGoalId(let goalId):
-                state.goalId = goalId
-                return .none
-            case .setPlanId(let planId):
-                state.planId = planId
-                return .none
             default:
                 return .none
             }
