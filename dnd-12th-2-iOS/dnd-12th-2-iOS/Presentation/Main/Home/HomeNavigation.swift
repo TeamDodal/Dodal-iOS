@@ -16,6 +16,7 @@ struct HomeNavigation {
         var isShowMenu = false
         var isShowGoalList = false
         var isCustomAlertPresented = false
+        var isShowDeleteAlert = false
         var calendar: MakeCalendar.State
         var fetchPlan: FetchPlan.State
         let goalTitle: String
@@ -62,6 +63,10 @@ struct HomeNavigation {
         case customAlertDismissed
         case confirmButtonTapped
         case achieveGoal(goalId: Int)
+        case showDeleteAlert
+        case showDeleteAlertDismissed
+        case deleteGoal
+        case deleteGoalCompleted
     }
     
     @Dependency(\.goalClient) var goalClient
@@ -84,6 +89,17 @@ struct HomeNavigation {
                 return .none
             case .addPlanButtonTapped:
                 return .send(.goToSetPlan(goalId: state.goalId))
+            case .showDeleteAlert:                
+                state.isShowDeleteAlert = true
+                return .none
+            case .showDeleteAlertDismissed:
+                state.isShowDeleteAlert = false
+                return .none
+            case .deleteGoal:
+                return .run { [state] send in
+                    try await goalClient.deleteGoal(state.goalId)
+                    await send(.deleteGoalCompleted)
+                }
                 // MARK: - FetchPlan
             case .fetchPlan(.cellTapped):
                 if let planInfo = state.fetchPlan.plan, planInfo.resultType == .ready {
