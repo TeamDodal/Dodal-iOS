@@ -71,6 +71,9 @@ struct MainNavigation {
                 case let .element(id: id, action: .home(.backButtonTapped)):
                     state.path.pop(from: id)
                     return .none
+                case let .element(id: id, action: .home(.deleteGoalCompleted)):
+                    state.path.pop(from: id)
+                    return .none
                 case let .element(id: id, action: .setGoal(.requestRemoveFromStack)):
                     state.path.pop(from: id)
                     return .none
