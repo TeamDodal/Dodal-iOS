@@ -118,14 +118,8 @@ extension FeedbackResultView {
         VStack {
             switch store.planInfo.completeType {
             case .success:
-                HStack(spacing: 8) {
-                    DDButton(title: "다음에도 할래요", backgroundColor: .purple50, textColor: .purple600) {
-                        
-                    }
-                    
-                    DDButton(title: "확인") {
-                        store.send(.completeButtonTapped)
-                    }
+                DDButton(title: "확인") {
+                    store.send(.completeButtonTapped)
                 }
             case .failure:
                 DDButton(title: "계획 재설정하기") {
