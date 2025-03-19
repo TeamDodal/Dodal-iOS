@@ -13,6 +13,7 @@ struct GoalClient {
     var makeGoal: (GoalInfo) async throws -> Void
     var makePlan: (Int, PlanInfo) async throws -> Void
     var fetchGoal: () async throws -> [Goal]
+    var deleteGoal: (Int) async throws -> Void
     var fetchWeeklyGoal: (Int, String) async throws -> [Day]
     var fetchPlans: (Int, String, Int) async throws -> [Plan]
     var achieveGoal: (Int) async throws -> Void
@@ -44,6 +45,12 @@ extension GoalClient: DependencyKey {
                     throw APIError.parseError
                 }
                 return result.toDomain()
+            } catch {
+                throw error
+            }
+        } , deleteGoal: { goalId in
+            do {
+                try await provider.async.requestPlain(.deleteGoal(goalID: goalId))                
             } catch {
                 throw error
             }

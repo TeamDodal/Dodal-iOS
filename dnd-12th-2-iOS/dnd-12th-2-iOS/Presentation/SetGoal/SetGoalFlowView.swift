@@ -48,7 +48,7 @@ struct SetGoalFlowView: View {
                         TipView(store: store.scope(state: \.fetchTip, action: \.fetchTip))
                             .padding(.top, 8)
                         DateGroup()
-                            .padding(.top, 40)
+                            .padding(.top, 36)
                         Spacer()
                         DDButton(title: store.buttonText, isDisable: store.buttonDisabled){
                             store.send(.nextButtonTapped)
@@ -96,46 +96,55 @@ extension SetGoalFlowView {
                 .padding(.top, 8)
             Divider()
                 .padding(.top, 8)
-            HStack {
-                Text("시작 시간")
-                    .bodyMediumMedium()
-                    .foregroundStyle(Color.gray600)
-                Spacer()
-                Text(store.startDateResultStr)
-                    .bodyMediumMedium()
-                    .foregroundStyle(Color.purple800)
-                Image("iconUp")
-                    .rotationEffect(.degrees(store.isShowStartPicker ? 0 : 180))
+            VStack(spacing: 0) {
+                HStack {
+                    Text("시작 시간")
+                        .bodyMediumMedium()
+                        .foregroundStyle(Color.gray600)
+                    Spacer()
+                    Text(store.startDateResultStr)
+                        .bodyMediumMedium()
+                        .foregroundStyle(Color.purple800)
+                    Image("iconUp")
+                        .rotationEffect(.degrees(store.isShowStartPicker ? 0 : 180))
+                }
+                .frame(height: 44)
+                .onTapGesture {
+                    store.send(.startPickerTapped)
+                }
+                .padding(.top, 8)
+                if store.isShowStartPicker {
+                    DDatePicker(date: $store.startDate)
+                        .padding(.top, 8)
+                        .animation(nil)
+                      
+                }
             }
-            .onTapGesture {
-                store.send(.startPickerTapped)
+            .animation(.easeInOut, value: store.isShowStartPicker)
+            VStack(spacing: 0) {
+                HStack {
+                    Text("종료 시간")
+                        .bodyMediumMedium()
+                        .foregroundStyle(Color.gray600)
+                    Spacer()
+                    Text(store.endDateResultStr)
+                        .bodyMediumMedium()
+                        .foregroundStyle(Color.purple800)
+                    Image("iconUp")
+                        .rotationEffect(.degrees(store.isShowEndPicker ? 0 : 180))
+                }
+                .frame(height: 44)
+                .onTapGesture {
+                    store.send(.endPickerTapped)
+                }
+                .padding(.top, 8)
+                if store.isShowEndPicker {
+                    DDatePicker(date: $store.endDate)
+                        .padding(.top, 8)
+                        .animation(nil)
+                }
             }
-            .padding(.top, 16)
-            if store.isShowStartPicker {
-                DDatePicker(date: $store.startDate)
-                    .padding(.top, 8)
-                    .animation(.easeInOut, value: store.isShowStartPicker)
-            }
-            HStack {
-                Text("종료 시간")
-                    .bodyMediumMedium()
-                    .foregroundStyle(Color.gray600)
-                Spacer()
-                Text(store.endDateResultStr)
-                    .bodyMediumMedium()
-                    .foregroundStyle(Color.purple800)
-                Image("iconUp")
-                    .rotationEffect(.degrees(store.isShowEndPicker ? 0 : 180))
-            }
-            .onTapGesture {
-                store.send(.endPickerTapped)
-            }
-            .padding(.top, 16)
-            if store.isShowEndPicker {
-                DDatePicker(date: $store.endDate)
-                    .padding(.top, 8)
-                    .animation(.easeInOut, value: store.isShowEndPicker)
-            }
+            .animation(.default, value: store.isShowEndPicker)
         }
         .colorMultiply(!(store.planTitle.isEmpty) && !planFieldFocus ? Color.white : Color.gray.opacity(0.2))
         .disabled(store.planTitle.isEmpty || planFieldFocus)
