@@ -11,6 +11,7 @@ struct KeyChainManager {
     
     // KeyChainName을 enum으로 정의
     enum KeyChainName: String {
+        case userInfo = "userInfo"
         case accessToken = "accessToken"
         case refreshToken = "refreshToken"
     }
