@@ -21,7 +21,7 @@ struct ImprovePlan {
         let goalId: Int
         
         // planId
-        var planId = 0
+        var planId: Int
         
         // 계획타이틀
         var planTitle = ""
@@ -95,10 +95,14 @@ struct ImprovePlan {
             startDateResultStr + " ~ " + endTimeResultStr
         }
         
-        init(planInfo: Plan, goalId: Int) {
+        var fetchPlan: FetchPlan.State
+        
+        init(planInfo: Plan, goalId: Int, planId: Int) {
             self.fetchTip = .init(guideType: .improvePlan)
+            self.fetchPlan = .init(goalId: goalId)
             self.planInfo = planInfo
             self.goalId = goalId
+            self.planId = planId
         }
     }
     
@@ -118,10 +122,14 @@ struct ImprovePlan {
         case startPickerTapped
         case endPickerTapped
         case improvePlan
+        case deletePlanRequest
+        case deletePlan
+        case fetchPlan(FetchPlan.Action)
     }
     
     // MARK: - Dependencies
     @Dependency(\.goalClient) var goalClient
+    @Dependency(\.planClient) var planClient
     
     // MARK: - Reducer
     var body: some Reducer<State, Action> {
@@ -148,6 +156,11 @@ struct ImprovePlan {
                 return .run { [state] send in
                     try await goalClient.improvePlan(state.goalId, state.planId, planInfo)
                     await send(.completeAction)
+                }
+            case .deletePlanRequest:
+                return .run { [state] send in
+                    try await planClient.deletePlan(state.planId)
+                    await send(.deletePlan)
                 }
             default:
                 return .none
