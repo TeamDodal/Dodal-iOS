@@ -41,6 +41,21 @@ struct HomeView: View {
                     )
                 }
             })
+            .overlay(alignment: .center, content: {
+                if store.state.isShowDeleteAlert {
+                    DDAlert(
+                        title: "할 일을 정말 삭제할까요?",
+                        cancelButtonTitle: "취소",
+                        confirmButtonTitle: "삭제",
+                        onCancel: {
+                            store.send(.showDeleteAlertDismissed)
+                        },
+                        onConfirm: {
+                            store.send(.deleteGoal)
+                        }
+                    )
+                }
+            })
             .overlay(alignment: .bottomTrailing, content: {
                 CTAButton(isScrolling: isScrolling) {
                     store.send(.addPlanButtonTapped)
@@ -128,6 +143,10 @@ extension HomeView {
                     }
                     Spacer()
                     Image("iconGray")
+                }
+                .onTapGesture {
+                    store.send(.showDeleteAlert)
+                    store.send(.hideMenu)
                 }
             }
             .padding(.vertical, 14.5)
