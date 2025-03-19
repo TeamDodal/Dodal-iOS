@@ -23,7 +23,8 @@ struct ImprovePlanView: View {
                     }
                     
                     TipView(store: store.scope(state: \.fetchTip, action: \.fetchTip))
-                        .padding(.top, 8)
+                        .padding(.top, 4)
+                    
                     Text("할 일")
                         .font(.pretendard(size: 18, weight: .semibold))
                         .alignmentLeading()
@@ -47,7 +48,6 @@ struct ImprovePlanView: View {
                     planFieldFocus = true
                 }
             }
-            .padding(16)
             .scrollDisabled(true)
             .ignoresSafeArea(.keyboard)
             .navigationBar(
@@ -123,6 +123,8 @@ extension ImprovePlanView {
                     .animation(.easeInOut, value: store.isShowEndPicker)
             }
         }
+        .padding(.leading, 16)
+        .padding(.trailing, 16)
         .colorMultiply(!(store.planTitle.isEmpty) && !planFieldFocus ? Color.white : Color.gray.opacity(0.2))
         .disabled(store.planTitle.isEmpty || planFieldFocus)
     }
