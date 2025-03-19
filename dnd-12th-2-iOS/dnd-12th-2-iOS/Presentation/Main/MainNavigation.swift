@@ -19,6 +19,7 @@ struct MainNavigation {
         case feedbackComplete(FeedbackComplete)
         case fetchFeedback(FetchFeedback)
         case feedbackResult(FeedbackResult)
+        case improvePlan(ImprovePlan)
     }
     
     @ObservableState
@@ -96,23 +97,27 @@ struct MainNavigation {
                     state.path.pop(from: id)
                     return .none
                     // Feedback
-                case let .element(id: _, action: .home(.goToFeedback(planInfo))):
-                    state.path.append(.feedbackComplete(.init(planInfo: planInfo)))
+                case let .element(id: _, action: .home(.goToFeedback(planInfo, goalId))):
+                    state.path.append(.feedbackComplete(.init(planInfo: planInfo, goalId: goalId)))
                     return .none
                 case let .element(id: id, action: .feedbackComplete(.backButtonTapped)):
                     state.path.pop(from: id)
                     return .none
-                case let .element(id: _, action: .feedbackComplete(.goToFeedback(planInfo))):
-                    state.path.append(.fetchFeedback(.init(planInfo: planInfo)))
+                case let .element(id: _, action: .feedbackComplete(.goToFeedback(planInfo, goalId))):
+                    state.path.append(.fetchFeedback(.init(planInfo: planInfo, goalId: goalId)))
                     return .none
-                case let .element(id: _, action: .fetchFeedback(.goToFeedbackResult(planInfo))):
-                    state.path.append(.feedbackResult(.init(planInfo: planInfo)))
+                case let .element(id: _, action: .fetchFeedback(.goToFeedbackResult(planInfo, goalId))):
+                    state.path.append(.feedbackResult(.init(planInfo: planInfo, goalId: goalId)))
                     return .none
                 case let .element(id: id, action: .fetchFeedback(.backButtonTapped)):
                     state.path.pop(from: id)
                     return .none
                 case .element(id: _, action: .feedbackResult(.completeButtonTapped)):
                     state.path.removeSubrange(state.path.count-3..<state.path.count)
+                    return .none
+                    // Improve Plan
+                case let .element(id: _, action: .feedbackResult(.goToImprovePlan(planInfo, goalId))):
+                    state.path.append(.improvePlan(.init(planInfo: planInfo, goalId: goalId)))
                     return .none
                 default:
                     return .none

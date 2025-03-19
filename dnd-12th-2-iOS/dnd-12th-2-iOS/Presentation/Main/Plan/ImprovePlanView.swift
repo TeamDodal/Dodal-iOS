@@ -12,16 +12,12 @@ import ComposableArchitecture
 struct ImprovePlanView: View {
     @Perception.Bindable var store: StoreOf<ImprovePlan>
     @FocusState var planFieldFocus: Bool
-    let sample = Plan(planId: 1, title: "운동", status: "failure", guide: nil, startDate: "2020-03-22", endDate: "2020-03-22", completedDate: "2020-03-22")
     
     var body: some View {
         WithPerceptionTracking {
             ScrollView {
                 VStack(spacing: 0) {
-                    DDResultRow(planInfo: sample) {
-                        "dd"
-                    }
-                    
+                    DDResultRow(planInfo: store.planInfo) { }.disabled(true)
                     TipView(store: store.scope(state: \.fetchTip, action: \.fetchTip))
                         .padding(.top, 4)
                     
@@ -130,8 +126,8 @@ extension ImprovePlanView {
     }
 }
 
-#Preview {
-    ImprovePlanView(store: Store(initialState: ImprovePlan.State()) {
-        ImprovePlan()
-    })
-}
+//#Preview {
+//    ImprovePlanView(store: Store(initialState: ImprovePlan.State()) {
+//        ImprovePlan()
+//    })
+//}
