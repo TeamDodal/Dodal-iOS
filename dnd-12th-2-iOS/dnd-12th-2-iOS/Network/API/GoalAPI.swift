@@ -17,7 +17,7 @@ enum GoalAPI {
     case fetchPlans(goalId: Int, date: String, range: Int)
     case achieveGoal(goalId: Int)
     case fetchSuccessRate(goalId: Int)
-    case improvePlan(goalId: Int, planId: Int, requestBody: PlanRequestDto)
+    case improvePlan(goalId: Int, planId: Int, planReqDto: PlanRequestDto)
 }
 
 extension GoalAPI: TargetType {

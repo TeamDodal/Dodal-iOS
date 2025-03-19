@@ -119,6 +119,12 @@ struct MainNavigation {
                 case let .element(id: _, action: .feedbackResult(.goToImprovePlan(planInfo, goalId))):
                     state.path.append(.improvePlan(.init(planInfo: planInfo, goalId: goalId)))
                     return .none
+                case .element(id: _, action: .improvePlan(.backButtonTapped)):
+                    state.path.removeSubrange(state.path.count-4..<state.path.count)
+                    return .none
+                case .element(id: _, action: .improvePlan(.completeAction)):
+                    state.path.removeSubrange(state.path.count-4..<state.path.count)
+                    return .none
                 default:
                     return .none
                 }
