@@ -9,9 +9,14 @@ import ComposableArchitecture
 
 @Reducer
 struct MyPage {
-    struct State {}
+    @ObservableState
+    struct State {
+        var isShowLogoutAlert = false
+    }
     
     enum Action {
+        case showLogoutAlert
+        case hideLogoutAlert
         case logoutButtonTapped
         case logoutComplete
         case backButtonTapped
@@ -22,6 +27,12 @@ struct MyPage {
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
+            case .showLogoutAlert:
+                state.isShowLogoutAlert = true
+                return .none
+            case .hideLogoutAlert:
+                state.isShowLogoutAlert = false
+                return .none
             case .logoutButtonTapped:
                 return .run { send in
                     try await authClient.signOut()                    
