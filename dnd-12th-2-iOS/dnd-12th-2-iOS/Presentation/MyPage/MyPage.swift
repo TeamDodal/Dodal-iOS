@@ -29,6 +29,8 @@ struct MyPage {
         case logoutButtonTapped
         case logoutComplete
         case backButtonTapped
+        case withdrawButtonTapped
+        case withdrawComplete
     }
     
     @Dependency(\.authClient) var authClient
@@ -58,6 +60,16 @@ struct MyPage {
                     await send(.logoutComplete)
                 }
             case .logoutComplete:
+                KeyChainManager.deleteItem(key: .userInfo)
+                KeyChainManager.deleteItem(key: .accessToken)
+                KeyChainManager.deleteItem(key: .refreshToken)
+                return .none
+            case .withdrawButtonTapped:
+                return .run { send in
+                    try await authClient.withdraw()
+                    await send(.withdrawComplete)
+                }
+            case .withdrawComplete:
                 KeyChainManager.deleteItem(key: .userInfo)
                 KeyChainManager.deleteItem(key: .accessToken)
                 KeyChainManager.deleteItem(key: .refreshToken)

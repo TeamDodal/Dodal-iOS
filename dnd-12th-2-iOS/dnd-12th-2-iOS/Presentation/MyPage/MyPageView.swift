@@ -104,7 +104,7 @@ struct MyPageView: View {
                             store.send(.hideWithdrawAlert)
                         },
                         onConfirm: {
-                            
+                            store.send(.withdrawButtonTapped)
                         }
                     )
                 }
