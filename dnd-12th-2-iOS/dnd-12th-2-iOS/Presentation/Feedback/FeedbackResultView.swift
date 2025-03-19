@@ -123,7 +123,7 @@ extension FeedbackResultView {
                 }
             case .failure:
                 DDButton(title: "계획 재설정하기") {
-                    
+                    store.send(.improveButtonTapped)
                 }
             }
         }

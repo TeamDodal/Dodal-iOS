@@ -12,8 +12,10 @@ struct FeedbackComplete {
     @ObservableState
     struct State {
         let planInfo: Plan
-        init(planInfo: Plan) {
+        let goalId: Int
+        init(planInfo: Plan, goalId: Int) {
             self.planInfo = planInfo
+            self.goalId = goalId
         }
     }
     
@@ -24,14 +26,14 @@ struct FeedbackComplete {
     enum Action {
         case backButtonTapped
         case nextButtonTapped
-        case goToFeedback(planInfo: Plan)
+        case goToFeedback(planInfo: Plan, goalId: Int)
     }
     
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
             case .nextButtonTapped:
-                return .send(.goToFeedback(planInfo: state.planInfo))
+                return .send(.goToFeedback(planInfo: state.planInfo, goalId: state.goalId))
             default:
                 return .none
             }

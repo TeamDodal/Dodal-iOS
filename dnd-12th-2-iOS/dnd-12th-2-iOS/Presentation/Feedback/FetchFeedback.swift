@@ -19,10 +19,12 @@ struct FetchFeedback {
         var buttonDisabled: Bool {
             selectedText.isEmpty
         }
+        let goalId: Int
         
-        init(planInfo: Plan, feedbacks: [Feedback] = []) {
+        init(planInfo: Plan, feedbacks: [Feedback] = [], goalId: Int) {
             self.planInfo = planInfo
             self.feedbacks = feedbacks
+            self.goalId = goalId
         }
     }
     
@@ -31,7 +33,7 @@ struct FetchFeedback {
         case fetchFeedbackResponse([Feedback])
         case cellTapped(text: String)
         case completeButtonTapped
-        case goToFeedbackResult(planInfo: Plan)
+        case goToFeedbackResult(planInfo: Plan, goalId: Int)
         case backButtonTapped
     }
     
@@ -57,7 +59,7 @@ struct FetchFeedback {
                     state.planInfo.question = feedback.question
                     state.planInfo.indicators = state.selectedText
                 }
-                return .send(.goToFeedbackResult(planInfo: state.planInfo))
+                return .send(.goToFeedbackResult(planInfo: state.planInfo, goalId: state.goalId))
             default:
                 return  .none
             }
