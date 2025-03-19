@@ -11,6 +11,7 @@ import Moya
 
 struct PlanClient {
     var fetchCompletePlan: (Plan) async throws -> ResultPlan
+    var deletePlan: (Int) async throws -> Void
     static let provider = MoyaProvider<PlanAPI>(session: Session(interceptor: AuthIntercepter.shared), plugins: [MoyaLoggingPlugin()])
 }
 
@@ -24,6 +25,12 @@ extension PlanClient: DependencyKey {
                 }
                 return result.toDomain()
             } catch {                
+                throw error
+            }
+        }, deletePlan: { planId in
+            do {
+                try await provider.async.requestPlain(.deletePlan(planId: planId))
+            } catch {
                 throw error
             }
         }

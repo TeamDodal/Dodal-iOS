@@ -10,6 +10,7 @@ import Moya
 
 enum PlanAPI {
     case fetchCompletePlan(planInfo: Plan)
+    case deletePlan(planId: Int)
 }
 
 extension PlanAPI: TargetType {
@@ -21,6 +22,8 @@ extension PlanAPI: TargetType {
         switch self {
         case let .fetchCompletePlan(planInfo):
             return "/\(planInfo.planId)/complete"
+        case let .deletePlan(planId):
+            return "/\(planId)"
         }
     }
     
@@ -28,6 +31,8 @@ extension PlanAPI: TargetType {
         switch self {
         case .fetchCompletePlan:
             return .post
+        case .deletePlan:
+            return .delete
         }
     }
     
@@ -37,6 +42,8 @@ extension PlanAPI: TargetType {
             let status = planInfo.completeType == .success ? "success" : "failure"
             return .requestCompositeParameters(bodyParameters: ["question": planInfo.question,
                                                                 "indicator": planInfo.indicators], bodyEncoding: JSONEncoding.default, urlParameters: ["status": status])
+        default:
+            return .requestPlain
         }
     }
     
