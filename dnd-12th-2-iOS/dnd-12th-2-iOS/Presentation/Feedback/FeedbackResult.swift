@@ -24,7 +24,7 @@ struct FeedbackResult {
         case fetchCompletePlanResponse(ResultPlan)
         case completeButtonTapped
         case improveButtonTapped
-        case goToImprovePlan(planInfo: Plan, goalId: Int)
+        case goToImprovePlan(planInfo: Plan, goalId: Int, planId: Int)
     }
     
     @Dependency(\.planClient) var planClient
@@ -41,7 +41,7 @@ struct FeedbackResult {
                 state.resultPlan = response
                 return .none
             case .improveButtonTapped:
-                return .send(.goToImprovePlan(planInfo: state.planInfo, goalId: state.goalId))
+                return .send(.goToImprovePlan(planInfo: state.planInfo, goalId: state.goalId, planId: state.planInfo.planId))
             default:
                 return .none
             }

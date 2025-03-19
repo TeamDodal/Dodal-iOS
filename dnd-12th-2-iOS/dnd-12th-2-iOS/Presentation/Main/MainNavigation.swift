@@ -116,13 +116,16 @@ struct MainNavigation {
                     state.path.removeSubrange(state.path.count-3..<state.path.count)
                     return .none
                     // Improve Plan
-                case let .element(id: _, action: .feedbackResult(.goToImprovePlan(planInfo, goalId))):
-                    state.path.append(.improvePlan(.init(planInfo: planInfo, goalId: goalId)))
+                case let .element(id: _, action: .feedbackResult(.goToImprovePlan(planInfo, goalId, planId))):
+                    state.path.append(.improvePlan(.init(planInfo: planInfo, goalId: goalId, planId: planId)))
                     return .none
                 case .element(id: _, action: .improvePlan(.backButtonTapped)):
                     state.path.removeSubrange(state.path.count-4..<state.path.count)
                     return .none
                 case .element(id: _, action: .improvePlan(.completeAction)):
+                    state.path.removeSubrange(state.path.count-4..<state.path.count)
+                    return .none
+                case .element(id: _, action: .improvePlan(.deletePlan)):
                     state.path.removeSubrange(state.path.count-4..<state.path.count)
                     return .none
                 default:

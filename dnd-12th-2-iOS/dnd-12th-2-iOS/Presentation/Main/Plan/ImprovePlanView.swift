@@ -54,7 +54,7 @@ struct ImprovePlanView: View {
             }, left: { DDBackButton(action: {
                     store.send(.backButtonTapped)
                 })}, right: { Button(action: {
-                // delete action
+                    store.send(.deletePlanRequest)
             }) {
                 Text("삭제")
                     .font(.pretendard(size: 14, weight: .medium))
