@@ -32,6 +32,7 @@ struct ImprovePlanView: View {
                         .padding(.top, 32)
                     Spacer()
                     DDButton(title: "확인", isDisable: store.buttonDisabled){
+                        store.send(.completeButtonTapped)
                     }
                     .padding(.top, 38)
                     .padding(.bottom, 26)

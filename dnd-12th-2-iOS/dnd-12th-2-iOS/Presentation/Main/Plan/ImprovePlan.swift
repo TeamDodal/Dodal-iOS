@@ -112,6 +112,8 @@ struct ImprovePlan {
         
         // 완료액션
         case completeAction
+        case completeButtonTapped
+        
         
         case startPickerTapped
         case endPickerTapped
@@ -138,15 +140,14 @@ struct ImprovePlan {
                 state.isShowEndPicker = true
                 state.isShowStartPicker = false
                 return .none
-            case .backButtonTapped:
-                return .none
-            case .completeAction:
-                return .none
+            case .completeButtonTapped:
+                return .send(.improvePlan)
                 // API
             case .improvePlan:
                 let planInfo = PlanInfo(title: state.planTitle, startDate: state.startDate, endDate: state.endDate)
                 return .run { [state] send in
                     try await goalClient.improvePlan(state.goalId, state.planId, planInfo)
+                    await send(.completeAction)
                 }
             default:
                 return .none

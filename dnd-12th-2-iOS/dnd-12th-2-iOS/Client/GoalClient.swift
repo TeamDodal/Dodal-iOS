@@ -95,7 +95,7 @@ extension GoalClient: DependencyKey {
                 try await provider.async.requestPlain(.improvePlan(
                     goalId: goalId,
                     planId: planId,
-                    requestBody: planInfo.toDto()
+                    planReqDto: planInfo.toDto()
                 ))
             } catch {
                 throw error
