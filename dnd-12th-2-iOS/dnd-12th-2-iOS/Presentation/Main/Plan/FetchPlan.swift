@@ -34,7 +34,7 @@ struct FetchPlan {
     
     enum Action {
         case requestPlan(Date)
-        case fetchPlans(Date)
+        case fetchPlans(Date)     
         case fetchPlanResponse([Plan])
         case responseScrollId(Date)
         case cellTapped(Plan)
