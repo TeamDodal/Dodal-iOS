@@ -14,6 +14,9 @@ struct MyPage {
         var isShowLogoutAlert = false
         var isShowWithdrawAlert = false
         var isShowWebView = false
+        var userInfo: String? {
+            KeyChainManager.readItem(key: .userInfo)
+        }
     }
     
     enum Action: BindableAction {
@@ -55,6 +58,7 @@ struct MyPage {
                     await send(.logoutComplete)
                 }
             case .logoutComplete:
+                KeyChainManager.deleteItem(key: .userInfo)
                 KeyChainManager.deleteItem(key: .accessToken)
                 KeyChainManager.deleteItem(key: .refreshToken)
                 return .none

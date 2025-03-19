@@ -19,7 +19,7 @@ struct MyPageView: View {
                     .alignmentLeading()
                     .foregroundStyle(.gray900)
                     .padding(.top, 40)
-                Text("email")
+                Text(store.userInfo ?? "-")
                     .bodyMediumMedium()
                     .alignmentLeading()
                     .foregroundStyle(.gray900)
