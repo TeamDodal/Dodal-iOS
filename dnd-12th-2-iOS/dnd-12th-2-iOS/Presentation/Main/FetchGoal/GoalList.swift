@@ -51,10 +51,14 @@ struct GoalList: View {
                 ScrollView(showsIndicators: false) {
                     LazyVStack(spacing: 16) {
                         ForEach(store.goalList, id: \.self) { item in
-                            GoalListCell(goal: item) { store.send(.cellTapped(item)) }
+                            GoalListCell(goal: item) { }
+                                .onTapGesture {
+                                    store.send(.cellTapped(item))
+                                }
                         }
                     }
                     .padding(.horizontal, 16)
+                    .padding(.bottom, 20)
                 }
             }
         }

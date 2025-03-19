@@ -28,19 +28,31 @@ struct DDResultRow: View {
                 .padding(.leading, 12)
                 Spacer()
                 
-                Button(action: action, label: {
-                    if planInfo.resultType == .ready {
-                        Text("실행하셨나요?")
-                            .bodySmallSemibold()
-                            .foregroundStyle(Color.purple600)
-                            .padding(.vertical, 6)
-                            .padding(.horizontal, 8)
-                            .background(Color.purple50)
-                            .cornerRadius(6)
-                    } else {
-                        Image(.iconRight)
-                    }
-                })
+                if planInfo.resultType == .ready {
+                    Text("실행하셨나요?")
+                        .bodySmallSemibold()
+                        .foregroundStyle(Color.purple600)
+                        .padding(.vertical, 6)
+                        .padding(.horizontal, 8)
+                        .background(Color.purple50)
+                        .cornerRadius(6)
+                } else {
+                    Image(.iconRight)
+                }
+                
+                //                Button(action: action, label: {
+                //                    if planInfo.resultType == .ready {
+                //                        Text("실행하셨나요?")
+                //                            .bodySmallSemibold()
+                //                            .foregroundStyle(Color.purple600)
+                //                            .padding(.vertical, 6)
+                //                            .padding(.horizontal, 8)
+                //                            .background(Color.purple50)
+                //                            .cornerRadius(6)
+                //                    } else {
+                //                        Image(.iconRight)
+                //                    }
+                //                })
             }
             .padding(.vertical, 13)
             .padding(.horizontal, 12)
