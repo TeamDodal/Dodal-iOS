@@ -11,9 +11,11 @@ struct FeedbackResult {
     @ObservableState
     struct State {
         let planInfo: Plan
+        let goalId: Int
         var resultPlan: ResultPlan = .init(planId: 0, title: "", status: "", guide: "", completedDate: "")
-        init(planInfo: Plan) {
+        init(planInfo: Plan, goalId: Int) {
             self.planInfo = planInfo
+            self.goalId = goalId
         }
     }
         
@@ -21,7 +23,10 @@ struct FeedbackResult {
         case fetchCompletePlan
         case fetchCompletePlanResponse(ResultPlan)
         case completeButtonTapped
+        case improveButtonTapped
+        case goToImprovePlan(planInfo: Plan, goalId: Int, planId: Int)
     }
+    
     @Dependency(\.planClient) var planClient
     
     var body: some Reducer<State, Action> {
@@ -35,6 +40,8 @@ struct FeedbackResult {
             case let .fetchCompletePlanResponse(response):
                 state.resultPlan = response
                 return .none
+            case .improveButtonTapped:
+                return .send(.goToImprovePlan(planInfo: state.planInfo, goalId: state.goalId, planId: state.planInfo.planId))
             default:
                 return .none
             }

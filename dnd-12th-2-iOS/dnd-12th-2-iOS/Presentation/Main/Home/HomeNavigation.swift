@@ -48,7 +48,7 @@ struct HomeNavigation {
         
         case failureButtonTapped
         
-        case goToFeedback(planInfo: Plan)
+        case goToFeedback(planInfo: Plan, goalId: Int)
         
         case addPlanButtonTapped
         
@@ -168,14 +168,14 @@ struct HomeNavigation {
                     return .none
                 }
                 planInfo.completeType = .success
-                return .send(.goToFeedback(planInfo: planInfo))
+                return .send(.goToFeedback(planInfo: planInfo, goalId: state.goalId))
             case .failureButtonTapped:
                 state.isShowSheet = false
                 guard var planInfo = state.fetchPlan.plan else {
                     return .none
                 }
                 planInfo.completeType = .failure
-                return .send(.goToFeedback(planInfo: planInfo))
+                return .send(.goToFeedback(planInfo: planInfo, goalId: state.goalId))
             default:
                 return .none
             }
