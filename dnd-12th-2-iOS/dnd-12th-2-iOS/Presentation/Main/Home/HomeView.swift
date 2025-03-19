@@ -44,7 +44,7 @@ struct HomeView: View {
             .overlay(alignment: .center, content: {
                 if store.state.isShowDeleteAlert {
                     DDAlert(
-                        title: "할 일을 정말 삭제할까요?",
+                        title: "목표를 정말 삭제할까요?",
                         cancelButtonTitle: "취소",
                         confirmButtonTitle: "삭제",
                         onCancel: {
