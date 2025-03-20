@@ -8,47 +8,110 @@
 import SwiftUI
 
 struct CompleteList: View {
-    let result: ResultPlan
+    let result: [ResultPlan]
     var body: some View {
-        LazyVStack(alignment: .leading, spacing: 16) {
-            ForEach(1...1, id: \.self) { index in
-                HStack(alignment: .center, spacing: 12) {
-                    Circle()
-                        .foregroundStyle(Color.white)
-                        .frame(width: 28, height: 28, alignment: .top)
-                        .overlay(Image("iconFail"))
-                        .padding(1)
-                    
-                    VStack(spacing: 4) {
-                        Text(result.title)
-                            .font(.pretendard(size: 14, weight: .semibold))
-                            .foregroundStyle(Color.gray900)
-                            .frame(maxWidth: .infinity, alignment: .leading)
+        
+        VStack(spacing: 0) {
+            if result.count > 3 {
+                let firstPlan = result[0]
+                let lastPlan = result[result.count - 2]
+                
+                HStack(alignment: .top) {
+                    Image(firstPlan.isSuccess ? "iconFeedbackSuccess" : "iconFeedbackFail")
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(firstPlan.title)
+                            .bodyMediumSemibold()
+                            .alignmentLeading()
+                            .foregroundStyle(.gray900)
                         
-//                        if index != 3 {
-//                            Text("진행 상황을 수시로 확인해요.")
-//                                .font(.pretendard(size: 12, weight: .medium))
-//                                .foregroundStyle(Color.gray700)
-//                                .padding(.vertical, 6)
-//                                .padding(.horizontal, 12)
-//                                .background(.white)
-//                                .cornerRadius(8)
-//                                .frame(maxWidth: .infinity, alignment: .leading)
-//                        }
+                        HStack {
+                            Text("개선할 점 | ")
+                                .bodySmallBold()
+                                .foregroundStyle(.purple700)
+                            Text(firstPlan.guide ?? "")
+                                .bodySmallMedium()
+                                .foregroundStyle(.gray700)
+                        }
+                        .padding(.vertical, 6)
+                        .padding(.horizontal, 12)
+                        .background(.white)
+                        .cornerRadius(8)
                     }
-                    
                     Spacer()
                 }
-       
+                
+                Image("iconHistory")
+                    .padding(.vertical, 16)
+                
+                HStack(alignment: .top) {
+                    Image(lastPlan.isSuccess ? "iconFeedbackSuccess" : "iconFeedbackFail")
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(lastPlan.title)
+                            .bodyMediumSemibold()
+                            .alignmentLeading()
+                            .foregroundStyle(.gray900)
+                        
+                        HStack {
+                            Text("개선할 점 | ")
+                                .bodySmallBold()
+                                .foregroundStyle(.purple700)
+                            Text(lastPlan.guide ?? "")
+                                .bodySmallMedium()
+                                .foregroundStyle(.gray700)
+                        }
+                        .padding(.vertical, 6)
+                        .padding(.horizontal, 12)
+                        .background(.white)
+                        .cornerRadius(8)
+                    }
+                    Spacer()
+                }
+            }
+            else if result.count > 1  {
+                LazyVStack(spacing: 20) {
+                    ForEach(Array(result.prefix(result.count > 2 ? 2 : 1)), id: \.self) { plan in
+                        HStack(alignment: .top) {
+                            Image(plan.isSuccess ? "iconFeedbackSuccess" : "iconFeedbackFail")
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text(plan.title)
+                                    .bodyMediumSemibold()
+                                    .alignmentLeading()
+                                    .foregroundStyle(.gray900)
+                                
+                                HStack {
+                                    Text("개선할 점 | ")
+                                        .bodySmallBold()
+                                        .foregroundStyle(.purple700)
+                                    Text(plan.guide ?? "")
+                                        .bodySmallMedium()
+                                        .foregroundStyle(.gray700)
+                                }
+                                .padding(.vertical, 6)
+                                .padding(.horizontal, 12)
+                                .background(.white)
+                                .cornerRadius(8)
+                            }
+                            Spacer()
+                        }
+                    }
+                }
+            }
+            if result.count > 1 {
+                Image("iconLine")
+                    .padding(.vertical, 24)
+            }
+            HStack {
+                if let lastPlan = result.last {
+                    Image(lastPlan.isSuccess ? "iconFeedbackSuccess" : "iconFeedbackFail")
+                    Text(lastPlan.title)
+                        .bodyMediumSemibold()
+                        .foregroundStyle(.gray900)
+                    Spacer()
+                }
             }
         }
-        .background(alignment: .leading, content: {
-            Image("historyLine")
-                .offset(x: 14)
-        })
-        .clipped()
         .padding(16)
-        .background(Color.gray50)
+        .background(.gray50)
         .cornerRadius(12)
     }
 }
