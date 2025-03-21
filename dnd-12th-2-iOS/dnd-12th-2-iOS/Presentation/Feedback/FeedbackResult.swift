@@ -12,7 +12,7 @@ struct FeedbackResult {
     struct State {
         let planInfo: Plan
         let goalId: Int
-        var resultPlan: ResultPlan = .init(planId: 0, title: "", status: "", guide: "", completedDate: "")
+        var resultPlan: [ResultPlan] = []
         init(planInfo: Plan, goalId: Int) {
             self.planInfo = planInfo
             self.goalId = goalId
@@ -21,7 +21,7 @@ struct FeedbackResult {
         
     enum Action {
         case fetchCompletePlan
-        case fetchCompletePlanResponse(ResultPlan)
+        case fetchCompletePlanResponse([ResultPlan])
         case completeButtonTapped
         case improveButtonTapped
         case goToImprovePlan(planInfo: Plan, goalId: Int, planId: Int)
@@ -37,7 +37,7 @@ struct FeedbackResult {
                     let result = try await planClient.fetchCompletePlan(state.planInfo)
                     await send(.fetchCompletePlanResponse(result))
                 }                
-            case let .fetchCompletePlanResponse(response):
+            case let .fetchCompletePlanResponse(response):                
                 state.resultPlan = response
                 return .none
             case .improveButtonTapped:
