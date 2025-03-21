@@ -17,7 +17,7 @@ struct ImprovePlanView: View {
         WithPerceptionTracking {
             ScrollView {
                 VStack(spacing: 0) {
-                    DDResultRow(planInfo: store.planInfo) { }.disabled(true)
+                    DDFailPlanRow(planInfo: store.planInfo)
                     TipView(store: store.scope(state: \.fetchTip, action: \.fetchTip))
                         .padding(.top, 4)
                     
