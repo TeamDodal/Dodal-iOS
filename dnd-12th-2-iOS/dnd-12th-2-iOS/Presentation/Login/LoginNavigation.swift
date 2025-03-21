@@ -70,7 +70,8 @@ struct LoginNavigation {
                 // MARK: - LoginComplete
             case let .appleLoginButtonTapped(authorization):
                 guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential,
-                      let IdentityToken = String(data: appleIDCredential.identityToken!, encoding: .utf8) else {
+                      let IdentityToken = String(data: appleIDCredential.identityToken!, encoding: .utf8)
+                else {
                     return .none
                 }
                 // TODO: 로그인한 유저 온보딩 완료여부 확인 처리
@@ -92,7 +93,7 @@ struct LoginNavigation {
                     }
                 ])
             case let .appleLoginComplete(response):
-                KeyChainManager.addItem(key: .userInfo, value: response.email)
+                KeyChainManager.addItem(key: .userInfo, value: response.nickname)
                 KeyChainManager.addItem(key: .accessToken, value: response.jwtTokenDto.accessToken)
                 KeyChainManager.addItem(key: .refreshToken, value: response.jwtTokenDto.refreshToken)
                 return .none
