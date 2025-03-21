@@ -1,20 +1,19 @@
 //
-//  DDResultRow.swift
+//  DDFailPlanRow.swift
 //  dnd-12th-2-iOS
 //
-//  Created by Allie on 2/6/25.
+//  Created by Allie on 3/21/25.
 //
 
 import SwiftUI
 
-struct DDResultRow: View {
+struct DDFailPlanRow: View {
     let planInfo: Plan
-    let action: () -> Void
     
     var body: some View {
         VStack {
             HStack(spacing: 0) {
-                planInfo.image
+                Image("iconFail")
                 
                 VStack(alignment: .leading, spacing: 0) {
                     Text(planInfo.period)
@@ -27,25 +26,11 @@ struct DDResultRow: View {
                 }
                 .padding(.leading, 12)
                 Spacer()
-                
-                Button(action: {}, label: {
-                    if planInfo.resultType == .ready {
-                        Text("실행하셨나요?")
-                            .bodySmallSemibold()
-                            .foregroundStyle(Color.purple600)
-                            .padding(.vertical, 6)
-                            .padding(.horizontal, 8)
-                            .background(Color.purple50)
-                            .cornerRadius(6)
-                    } else {
-                        Image(.iconRight)
-                    }
-                })
             }
             .padding(.vertical, 13)
             .padding(.horizontal, 12)
         }
-        .background(Color.white)
+        .background(Color.pink100)
         .cornerRadius(12)
     }
 }
