@@ -19,6 +19,7 @@ struct MainNavigation {
         case feedbackComplete(FeedbackComplete)
         case fetchFeedback(FetchFeedback)
         case feedbackResult(FeedbackResult)
+        case feedbackDetail(FeedbackDetail)
         case improvePlan(ImprovePlan)
     }
     
@@ -90,6 +91,9 @@ struct MainNavigation {
                     return .none
                 case .element(id: _, action: .goalResult(.goToMain)):
                     state.path.removeAll()
+                    return .none
+                case .element(id: _, action: .home(.goToFeedbackDeatail)):
+                    state.path.append(.feedbackDetail(.init()))
                     return .none
                 case .element(id: _, action: .achieveGoal(.goToSetGoal)):
                     return .send(.goToSetGoalView)

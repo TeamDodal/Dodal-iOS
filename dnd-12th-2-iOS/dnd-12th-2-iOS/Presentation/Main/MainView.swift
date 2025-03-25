@@ -39,6 +39,8 @@ struct MainView: View {
                     FeedbackResultView(store: store)
                 case let .improvePlan(store):
                     ImprovePlanView(store: store)
+                case let .feedbackDetail(store):
+                    FeedbackDetailView()
                 }
             }
         }
