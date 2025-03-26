@@ -11,6 +11,8 @@ struct ResultPlan: Hashable {
     let status: String
     let guide: String?
     let completedDate: String
+    let startDate: String
+    let endDate: String
     
     var isSuccess: Bool {
         status == "success"

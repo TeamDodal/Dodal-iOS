@@ -21,7 +21,9 @@ struct FeedbackResult {
         
     enum Action {
         case fetchCompletePlan
-        case fetchCompletePlanResponse([ResultPlan])
+        case fetchCompletePlanResponse(ResultPlan)
+        case fetchPlanHistory
+        case fetchPlanHistoryResponse([ResultPlan])
         case completeButtonTapped
         case improveButtonTapped
         case goToImprovePlan(planInfo: Plan, goalId: Int, planId: Int)
@@ -32,13 +34,26 @@ struct FeedbackResult {
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
-            case .fetchCompletePlan:                            
+                // 계획 완료요청
+            case .fetchCompletePlan:
                 return .run { [state] send in
                     let result = try await planClient.fetchCompletePlan(state.planInfo)
                     await send(.fetchCompletePlanResponse(result))
                 }                
             case let .fetchCompletePlanResponse(response):                
-                state.resultPlan = response
+                state.resultPlan.append(response)
+                return .send(.fetchPlanHistory)
+                // 계획 가져오기
+            case .fetchPlanHistory:
+                return .run { [state] send in
+                    let result = try await planClient.fetchPlanHistory(state.planInfo.planId)
+                    await send(.fetchPlanHistoryResponse(result))
+                }
+            case let .fetchPlanHistoryResponse(response):
+                let newArray = response.reversed() + state.resultPlan                
+                state.resultPlan = Array(newArray.reduce(into: [Int: ResultPlan]()) { result, item in
+                    result[item.planId] = item
+                }.values).sorted { $0.completedDate.toDate() < $1.completedDate.toDate() }
                 return .none
             case .improveButtonTapped:
                 return .send(.goToImprovePlan(planInfo: state.planInfo, goalId: state.goalId, planId: state.planInfo.planId))
@@ -46,5 +61,6 @@ struct FeedbackResult {
                 return .none
             }
         }
+        ._printChanges()
     }
 }

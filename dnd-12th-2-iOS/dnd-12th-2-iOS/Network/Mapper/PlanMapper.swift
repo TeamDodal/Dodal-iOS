@@ -19,7 +19,9 @@ extension Array where Element == PlanCompleteResDto {
                          title: $0.title,
                          status: $0.status,
                          guide: $0.guide,
-                         completedDate: $0.completedDate)}
+                         completedDate: $0.completedDate,
+                         startDate: $0.startDate,
+                         endDate: $0.endDate)}
     }
 }
 
@@ -29,6 +31,8 @@ extension PlanCompleteResDto {
               title: title,
               status: status,
               guide: guide,
-              completedDate: completedDate)
+              completedDate: completedDate,
+              startDate: startDate,
+              endDate: endDate)
     }
 }
