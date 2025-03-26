@@ -12,16 +12,18 @@ struct FeedbackResultView: View {
     let store: StoreOf<FeedbackResult>
     @Environment(\.safeAreaInsets) private var safeAreaInsets
     var body: some View {
-        VStack {
-            ImageBackground()
-            FeedbackReslt()
-            Spacer()
-            ResultButton()
-        }
-        .ignoresSafeArea(.container, edges: .top)
-        .navigationBarHidden(true)
-        .onAppear {
-            store.send(.fetchCompletePlan)
+        WithPerceptionTracking {
+            VStack {
+                ImageBackground()
+                FeedbackReslt()
+                Spacer()
+                ResultButton()
+            }
+            .ignoresSafeArea(.container, edges: .top)
+            .navigationBarHidden(true)
+            .onAppear {
+                store.send(.fetchCompletePlan)
+            }
         }
     }
 }
