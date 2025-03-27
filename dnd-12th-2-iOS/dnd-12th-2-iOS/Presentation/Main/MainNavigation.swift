@@ -92,8 +92,17 @@ struct MainNavigation {
                 case .element(id: _, action: .goalResult(.goToMain)):
                     state.path.removeAll()
                     return .none
-                case .element(id: _, action: .home(.goToFeedbackDeatail)):
-                    state.path.append(.feedbackDetail(.init()))
+                case let .element(id: _, action: .home(.goToFeedbackDeatail(planInfo, goalId))):
+                    var newPlanInfo = planInfo
+                    if planInfo.resultType == .success {
+                        newPlanInfo.completeType = .success
+                    } else {
+                        newPlanInfo.completeType = .failure
+                    }
+                    state.path.append(.feedbackResult(.init(planInfo: newPlanInfo)))
+                    return .none
+                case let .element(id: id, action: .feedbackResult(.backButtonTapped)):
+                    state.path.pop(from: id)
                     return .none
                 case .element(id: _, action: .achieveGoal(.goToSetGoal)):
                     return .send(.goToSetGoalView)
