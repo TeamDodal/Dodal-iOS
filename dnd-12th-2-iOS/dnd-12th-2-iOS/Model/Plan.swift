@@ -35,7 +35,7 @@ struct Plan: Hashable {
         default:
             return .ready
         }
-    }
+    }    
     
     var image: Image {
         switch resultType {

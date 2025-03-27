@@ -72,7 +72,7 @@ struct HomeNavigation {
         case deleteGoalCompleted
         case deletePlan
         case deletePlanRequest
-        case goToFeedbackDeatail
+        case goToFeedbackDeatail(planInfo: Plan, goalId: Int)
     }
     
     @Dependency(\.goalClient) var goalClient
@@ -134,7 +134,10 @@ struct HomeNavigation {
                 if let planInfo = state.fetchPlan.plan, planInfo.resultType == .ready {
                     state.isShowSheet = true
                 } else {
-                    return .send(.goToFeedbackDeatail)
+                    guard var planInfo = state.fetchPlan.plan else {
+                        return .none
+                    }
+                    return .send(.goToFeedbackDeatail(planInfo: planInfo, goalId: state.goalId))
                 }
                 return .none
                 // MARK: - Calendar
