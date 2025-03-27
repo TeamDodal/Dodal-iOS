@@ -86,8 +86,11 @@ struct CompleteList: View {
                                             .foregroundStyle(.purple700)
                                         Text(plan.guide ?? "")
                                             .bodySmallMedium()
+                                                                                 
+                                            .multilineTextAlignment(.leading)
                                             .foregroundStyle(.gray700)
                                     }
+                                    .frame(maxWidth: .infinity, alignment: .leading)       
                                     .padding(.vertical, 6)
                                     .padding(.horizontal, 12)
                                     .background(.white)
