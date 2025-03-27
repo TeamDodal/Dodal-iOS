@@ -11,4 +11,6 @@ struct PlanCompleteResDto: Decodable {
     let status: String
     let guide: String
     let completedDate: String
+    let startDate: String
+    let endDate: String
 }

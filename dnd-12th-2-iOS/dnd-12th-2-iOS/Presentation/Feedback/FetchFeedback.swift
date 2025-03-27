@@ -59,6 +59,7 @@ struct FetchFeedback {
                     state.planInfo.question = feedback.question
                     state.planInfo.indicators = state.selectedText
                 }
+                UserDefaults.standard.set(state.selectedText, forKey: "feedback\(state.planInfo.planId)")
                 return .send(.goToFeedbackResult(planInfo: state.planInfo, goalId: state.goalId))
             default:
                 return  .none

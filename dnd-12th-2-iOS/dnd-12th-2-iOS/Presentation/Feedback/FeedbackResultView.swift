@@ -12,16 +12,30 @@ struct FeedbackResultView: View {
     let store: StoreOf<FeedbackResult>
     @Environment(\.safeAreaInsets) private var safeAreaInsets
     var body: some View {
-        VStack {
-            ImageBackground()
-            FeedbackReslt()
-            Spacer()
-            ResultButton()
-        }
-        .ignoresSafeArea(.container, edges: .top)
-        .navigationBarHidden(true)
-        .onAppear {
-            store.send(.fetchCompletePlan)
+        WithPerceptionTracking {
+            VStack {
+                ImageBackground()
+                    .overlay(alignment: .topLeading) {
+                        HStack {
+                            DDBackButton(action: {
+                                store.send(.backButtonTapped)
+                            })
+                                .hidden(store.completeType == .complete)
+                        }
+                        .frame(height: 48)
+                        .padding(.top, safeAreaInsets.top)
+                        .padding(.horizontal, 16)
+                    }
+                FeedbackReslt()
+                Spacer()
+                ResultButton()
+                    .hidden(store.completeType == .detail)
+            }
+            .ignoresSafeArea(.container, edges: .top)
+            .navigationBarHidden(true)
+            .onAppear {
+                store.send(.fetchCompletePlan)
+            }
         }
     }
 }
@@ -93,7 +107,7 @@ extension FeedbackResultView {
                 
                 HStack(spacing: 8) {
                     Image("iconCheckSmall")
-                    Text(store.planInfo.indicators)
+                    Text(store.indicator)
                         .font(.pretendard(size: 14, weight: .semibold))
                         .foregroundStyle(Color.gray800)
                     Spacer()

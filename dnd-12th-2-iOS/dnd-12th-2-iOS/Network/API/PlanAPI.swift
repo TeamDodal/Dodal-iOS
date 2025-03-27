@@ -10,6 +10,7 @@ import Moya
 
 enum PlanAPI {
     case fetchCompletePlan(planInfo: Plan)
+    case fetchPlanHistory(planId: Int)
     case deletePlan(planId: Int)
 }
 
@@ -24,6 +25,8 @@ extension PlanAPI: TargetType {
             return "/\(planInfo.planId)/complete"
         case let .deletePlan(planId):
             return "/\(planId)"
+        case let .fetchPlanHistory(planId):
+            return "/\(planId)/history"
         }
     }
     
@@ -33,6 +36,8 @@ extension PlanAPI: TargetType {
             return .post
         case .deletePlan:
             return .delete
+        case .fetchPlanHistory:
+            return .get
         }
     }
     
