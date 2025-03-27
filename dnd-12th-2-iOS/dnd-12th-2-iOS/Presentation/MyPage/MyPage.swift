@@ -6,6 +6,7 @@
 //
 
 import ComposableArchitecture
+import AuthenticationServices
 
 @Reducer
 struct MyPage {
@@ -29,11 +30,12 @@ struct MyPage {
         case logoutButtonTapped
         case logoutComplete
         case backButtonTapped
-        case withdrawButtonTapped
+        case withdrawButtonTapped(String)
         case withdrawComplete
     }
     
     @Dependency(\.authClient) var authClient
+    @Dependency(\.appleSignInManager) var appleSignInManager
     
     var body: some Reducer<State, Action> {
         BindingReducer()
@@ -64,9 +66,9 @@ struct MyPage {
                 KeyChainManager.deleteItem(key: .accessToken)
                 KeyChainManager.deleteItem(key: .refreshToken)
                 return .none
-            case .withdrawButtonTapped:
+            case let .withdrawButtonTapped(authString):
                 return .run { send in
-                    try await authClient.withdraw()
+                    try await authClient.withdraw(authString)
                     await send(.withdrawComplete)
                 }
             case .withdrawComplete:

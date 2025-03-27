@@ -10,6 +10,8 @@ import ComposableArchitecture
 
 struct MyPageView: View {
     @Perception.Bindable var store: StoreOf<MyPage>
+    @StateObject private var appleSignInManager = AppleSignInManager()
+    
     var body: some View {
         WithPerceptionTracking {
             VStack(spacing: 0) {
@@ -104,7 +106,10 @@ struct MyPageView: View {
                             store.send(.hideWithdrawAlert)
                         },
                         onConfirm: {
-                            store.send(.withdrawButtonTapped)
+                            appleSignInManager.startSignInWithAppleFlow()
+                            appleSignInManager.onAuthorizationSuccess = { authorizationCode in
+                                store.send(.withdrawButtonTapped(authorizationCode))
+                            }
                         }
                     )
                 }
@@ -117,6 +122,3 @@ struct MyPageView: View {
     }
 }
 
-//#Preview {
-//    MyPageView()
-//}
