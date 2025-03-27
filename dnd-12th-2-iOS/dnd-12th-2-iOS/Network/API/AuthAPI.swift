@@ -12,7 +12,7 @@ enum AuthAPI {
     case appleLogin(AppleLoginReqDto)
     case logout
     case refreshToken
-    case withdraw
+    case withdraw(WithdrawRequestDto)
 }
 
 extension AuthAPI: TargetType {
@@ -54,8 +54,8 @@ extension AuthAPI: TargetType {
             return .requestPlain
         case .refreshToken:
             return .requestPlain
-        case .withdraw:
-            return .requestPlain
+        case let .withdraw(withdrawRequestDto):
+            return Task.requestJSONEncodable(withdrawRequestDto)
         }
     }
     

@@ -9,5 +9,5 @@ import Foundation
 
 struct WithdrawRequestDto: Encodable {
     let deviceToken: String
-    let accessToken: String
+    let authorizationCode: String
 }
