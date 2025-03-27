@@ -4,6 +4,7 @@
 //
 //  Created by 권석기 on 3/13/25.
 //
+import Foundation
 import ComposableArchitecture
 
 @Reducer
@@ -13,18 +14,33 @@ struct FeedbackResult {
         let planInfo: Plan
         let goalId: Int
         var resultPlan: [ResultPlan] = []
+        var completeType: CompleteType = .complete
+        var indicator: String = ""
+        enum CompleteType {
+            case complete
+            case detail
+        }
         init(planInfo: Plan, goalId: Int) {
             self.planInfo = planInfo
             self.goalId = goalId
+        }
+        
+        init(planInfo: Plan) {
+            self.planInfo = planInfo
+            self.goalId = 0
+            self.completeType = .detail
         }
     }
         
     enum Action {
         case fetchCompletePlan
-        case fetchCompletePlanResponse([ResultPlan])
+        case fetchCompletePlanResponse(ResultPlan)
+        case fetchPlanHistory
+        case fetchPlanHistoryResponse([ResultPlan])
         case completeButtonTapped
         case improveButtonTapped
         case goToImprovePlan(planInfo: Plan, goalId: Int, planId: Int)
+        case backButtonTapped
     }
     
     @Dependency(\.planClient) var planClient
@@ -32,13 +48,32 @@ struct FeedbackResult {
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
-            case .fetchCompletePlan:                            
+                // 계획 완료요청
+            case .fetchCompletePlan:
+                if state.completeType == .complete {
+                    return .run { [state] send in
+                        let result = try await planClient.fetchCompletePlan(state.planInfo)
+                        await send(.fetchCompletePlanResponse(result))
+                    }
+                } else {
+                    return .send(.fetchPlanHistory)
+                }
+            case let .fetchCompletePlanResponse(response):
+                state.resultPlan.append(response)
+                return .send(.fetchPlanHistory)
+                // 계획 가져오기
+            case .fetchPlanHistory:
                 return .run { [state] send in
-                    let result = try await planClient.fetchCompletePlan(state.planInfo)
-                    await send(.fetchCompletePlanResponse(result))
-                }                
-            case let .fetchCompletePlanResponse(response):                
-                state.resultPlan = response
+                    let result = try await planClient.fetchPlanHistory(state.planInfo.planId)
+                    await send(.fetchPlanHistoryResponse(result))
+                }
+            case let .fetchPlanHistoryResponse(response):
+                let newArray = response.reversed() + state.resultPlan                
+                state.resultPlan = Array(newArray.reduce(into: [Int: ResultPlan]()) { result, item in
+                    result[item.planId] = item
+                }.values).sorted { $0.completedDate.toDate() < $1.completedDate.toDate() }
+                let planId = state.resultPlan.last?.planId ?? 0
+                state.indicator = UserDefaults.standard.string(forKey: "feedback\(planId)") ?? ""
                 return .none
             case .improveButtonTapped:
                 return .send(.goToImprovePlan(planInfo: state.planInfo, goalId: state.goalId, planId: state.planInfo.planId))
@@ -46,5 +81,6 @@ struct FeedbackResult {
                 return .none
             }
         }
+        ._printChanges()
     }
 }
