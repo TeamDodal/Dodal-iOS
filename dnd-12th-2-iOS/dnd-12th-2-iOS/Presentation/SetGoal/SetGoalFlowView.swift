@@ -61,7 +61,7 @@ struct SetGoalFlowView: View {
                         planFieldFocus = true
                     }
                 }
-                .scrollDisabled(true)
+                .scrollDisabled(false)
                 .ignoresSafeArea(.keyboard)
             }
         }
