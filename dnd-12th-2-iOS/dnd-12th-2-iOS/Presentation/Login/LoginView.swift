@@ -22,18 +22,25 @@ struct LoginView: View {
                         VStack(spacing: 0) {
                             Spacer()
                            Image("onboardingImage1")
+                                .resizable()
+                                    .scaledToFit()
                         }
                         .tag(0)
                         
                         VStack(spacing: 0) {
                             Spacer()
                             Image("onboardingImage2")
+                                .resizable()
+                                    .scaledToFit()
                         }
                         .tag(1)
                         
                         VStack(spacing: 0) {
                             Spacer()
                             Image("onboardingImage3")
+                                .resizable()
+                                    .scaledToFit()
+                            
                         }
                         .tag(2)
                     }
