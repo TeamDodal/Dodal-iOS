@@ -53,6 +53,9 @@ struct LoginNavigation {
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
+            case .goToOnboarding:
+                state.path.append(.onboarding(.init()))
+                return .none
                 // MARK: - Flow
             case let .path(action):
                 switch action {
@@ -88,8 +91,8 @@ struct LoginNavigation {
                             await send(.goToOnboarding)
                         }                        
                     } catch: { error, send in
-                        // 온보딩 데이터가 없는 경우 예외가 발생한다
-//                        await send(.goToOnboarding)
+//                         온보딩 데이터가 없는 경우 예외가 발생한다
+                        await send(.goToOnboarding)
                     }
                 ])
             case let .appleLoginComplete(response):
