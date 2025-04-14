@@ -45,7 +45,7 @@ struct ImprovePlanView: View {
                     planFieldFocus = true
                 }
             }
-            .scrollDisabled(true)
+//            .scrollDisabled(true)
             .ignoresSafeArea(.keyboard)
             .navigationBar(
                 center: { Text("할 일 개선")
