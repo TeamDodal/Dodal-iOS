@@ -16,18 +16,6 @@ struct AchieveGoalView: View {
     var body: some View {
         WithPerceptionTracking {
             ZStack {
-                Image("goalSuccess")
-                    .resizable()
-                    .scaledToFill()
-                    .edgesIgnoringSafeArea(.all)
-                
-                VStack {
-                    Image("partyBackground")
-                        .resizable()
-                        .scaledToFit()
-                    Spacer()
-                }
-                .edgesIgnoringSafeArea(.all)
                 
                 VStack(alignment: .leading) {
                     Text("축하해요!\n목표 달성을 성공했어요.")
@@ -39,7 +27,7 @@ struct AchieveGoalView: View {
                     Spacer()
                     
                     if let goalInfo = store.goalInfo {
-                    VStack(alignment: .leading, spacing: 20) {
+                        VStack(alignment: .leading, spacing: 20) {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("목표")
                                     .font(.pretendard(size: 14, weight: .medium))
@@ -89,7 +77,19 @@ struct AchieveGoalView: View {
                     .padding(.bottom, 16)
                 }
                 .padding(20)
+                
             }
+            .ignoresSafeArea(.all)
+            .background(alignment: .top) {
+                Image("partyBackground")
+                    .resizable()
+                    .scaledToFit()
+            }
+            .background(
+                Image("goalSuccess")
+                    .resizable()
+                    .scaledToFill()
+            )
         }
         .navigationBarBackButtonHidden(true)
         .onAppear {
