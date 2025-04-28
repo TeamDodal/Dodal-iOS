@@ -27,8 +27,11 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Client/.gitkeep,
+				DesignSystem/UIComponent/.gitkeep,
+				Global/Extensions/.gitkeep,
 				Info.plist,
 				Model/.gitkeep,
+				Presentation/.gitkeep,
 			);
 			target = FB8E73272D40CB60005F935D /* dnd-12th-2-iOS */;
 		};
