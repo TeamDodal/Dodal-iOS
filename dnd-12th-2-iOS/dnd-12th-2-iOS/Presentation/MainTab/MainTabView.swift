@@ -16,7 +16,7 @@ struct MainTabView: View {
     var body: some View {
         WithPerceptionTracking {
             TabView(selection: $store.currentTab) {
-                MainView()
+                MainFlowCoordinatorView(store: store.scope(state: \.mainFlow, action: \.mainFlow))
                     .tag(MainTabFeature.TabInfo.main)
                 
                 TodoView()
