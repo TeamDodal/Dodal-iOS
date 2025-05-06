@@ -11,16 +11,16 @@ import ComposableArchitecture
 struct AppFlowCoordinator {
     
     enum State {
-        case mainTab
+        case mainTab(MainTabFeature.State)
         case onboarding
         
         init() {
-            self = .onboarding
+            self = .mainTab(.init())
         }
     }
     
     enum Action {
-        case mainTab
+        case mainTab(MainTabFeature.Action)
         case onboarding
     }
     
@@ -30,6 +30,9 @@ struct AppFlowCoordinator {
             default:
                 return .none
             }
+        }
+        .ifCaseLet(\.mainTab, action: \.mainTab) {
+            MainTabFeature()
         }
     }
 }
