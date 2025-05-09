@@ -9,10 +9,14 @@ import Foundation
 import CoreData
 
 protocol TodoStorageType {
-    func creteTodoItem()
+    func creteTodoItem(_ todo: TodoItem)
+    func fetchTodoItems()
 }
 
 final class CoreDataStorage: TodoStorageType {
+    
+    static let shared = CoreDataStorage()
+    private init() {}
     
     private let modelName = "DodalModel"
     
@@ -32,9 +36,17 @@ final class CoreDataStorage: TodoStorageType {
         return persistentContainer.viewContext
     }
     
-    func creteTodoItem() {
-        guard let entity = NSEntityDescription.entity(forEntityName: "TodoItem", in: mainContext) else {
-            return
-        }
+    func creteTodoItem(_ todo: TodoItem) {
+        let context = persistentContainer.viewContext
+        let newTodo = TodoItem(context: context)
+        newTodo.id = UUID()
+        newTodo.title = todo.title
+        newTodo.content = todo.content
+        newTodo.dueDate = todo.dueDate
+        try? context.save()
+    }
+    
+    func fetchTodoItems() {
+        
     }
 }
