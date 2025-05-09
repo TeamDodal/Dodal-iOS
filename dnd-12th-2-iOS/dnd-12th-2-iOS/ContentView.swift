@@ -8,11 +8,13 @@
 import SwiftUI
 import ComposableArchitecture
 
-struct ContentView: View {
+struct ContentView: View {        
     
     var body: some View {
-        VStack {
-            Text("test")
+        WithPerceptionTracking {
+            AppFlowCoordinatorView(store: Store(initialState: AppFlowCoordinator.State(), reducer: {
+                AppFlowCoordinator()
+            }))
         }
     }
 }
