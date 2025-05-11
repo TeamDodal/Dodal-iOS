@@ -13,7 +13,7 @@ struct TodoClient {
     var fetchTodoItems: () throws -> [TodoItem]
     var createTodoItem: (_ title: String?, _ content: String?, _ dueDate: Date?) -> Void
     
-    static let storage = CoreDataStorage.shared
+    static let storage = TodoStorage.shared
 }
 
 extension TodoClient: DependencyKey {

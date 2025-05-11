@@ -1,8 +1,8 @@
 //
-//  CoreDataStorage.swift
+//  TodoStorage.swift
 //  dnd-12th-2-iOS
 //
-//  Created by 권석기 on 5/6/25.
+//  Created by 권석기 on 5/12/25.
 //
 
 import Foundation
@@ -13,9 +13,9 @@ protocol TodoStorageType {
     func fetchTodoItems() throws -> [TodoItem]
 }
 
-final class CoreDataStorage: TodoStorageType {
+final class TodoStorage: TodoStorageType {
     
-    static let shared = CoreDataStorage()
+    static let shared = TodoStorage()
     private init() {}
     
     private let modelName = "TodoItem"
