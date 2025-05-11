@@ -10,30 +10,35 @@ import SwiftUI
 import ComposableArchitecture
 
 struct MainView: View {
-    fileprivate let store: StoreOf<MainViewFeature>
+    @Perception.Bindable fileprivate var store: StoreOf<MainViewFeature>
+    
+    init(store: StoreOf<MainViewFeature>) {
+        self.store = store
+    }
     
     var body: some View {
-        VStack {
-            Spacer()
-            Button(action: {
-                
-            }, label: {
-                Text("Todo create")
-            })
-            .buttonStyle(.borderedProminent)
-            
+        WithPerceptionTracking {
+            VStack {
+                Spacer()
+                Button(action: {
+                    store.send(.view(.addTodoButtonTapped))
+                }, label: {
+                    Text("Todo create")
+                })
+                .buttonStyle(.borderedProminent)
+            }
+            .sheet(isPresented: $store.isShowAddTodoSheet ) {
+                VStack {
+                    TextField("title", text: $store.title)
+                        .textFieldStyle(.roundedBorder)
+                    
+                    Button(action: {}, label: {
+                        Text("Todo create")
+                    })
+                    .buttonStyle(.borderedProminent)
+                }
+            }
         }
-        //        .sheet(isPresented: $isShowSheet) {
-        //            VStack {
-        //                TextField("title", text: $title)
-        //                    .textFieldStyle(.roundedBorder)
-        //
-        //                Button(action: {}, label: {
-        //                    Text("Todo create")
-        //                })
-        //                .buttonStyle(.borderedProminent)
-        //            }
-        //        }
     }
 }
 
