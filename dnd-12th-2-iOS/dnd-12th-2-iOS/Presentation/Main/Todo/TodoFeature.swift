@@ -27,6 +27,7 @@ struct TodoFeature {
         enum ViewAction: BindableAction {
             case binding(BindingAction<State>)
             case addTodoButtonTapped
+            case addTodoComplete
         }
         
         enum DestinationAction {}
@@ -47,6 +48,8 @@ struct TodoFeature {
                     return .none
                 case .addTodoButtonTapped:
                     todoClient.createTodoItem(state.title, nil, nil)
+                    return .send(.view(.addTodoComplete))
+                default:
                     return .none
                 }
             }
