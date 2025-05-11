@@ -21,22 +21,14 @@ struct MainView: View {
             VStack {
                 Spacer()
                 Button(action: {
-                    store.send(.view(.addTodoButtonTapped))
+                    store.send(.view(.showAddTodoButtonTapped))
                 }, label: {
                     Text("Todo create")
                 })
                 .buttonStyle(.borderedProminent)
             }
             .sheet(isPresented: $store.isShowAddTodoSheet ) {
-                VStack {
-                    TextField("title", text: $store.title)
-                        .textFieldStyle(.roundedBorder)
-                    
-                    Button(action: {}, label: {
-                        Text("Todo create")
-                    })
-                    .buttonStyle(.borderedProminent)
-                }
+                AddTodoView(store: store.scope(state: \.todo, action: \.todo))
             }
         }
     }
