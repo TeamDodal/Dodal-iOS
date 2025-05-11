@@ -9,16 +9,45 @@ import ComposableArchitecture
 
 @Reducer
 struct TodoFeature {
-    struct State {}
+    @ObservableState
+    struct State {
+        var title = ""
+    }
     
-    enum Action {}
+    enum Action: ViewAction, TCAAction {
+        // view에서 일어나는 액션을 정의합니다.
+        case view(ViewAction)
+        
+        // 외부의존성과 일어나는 액션을 정의합니다.
+        case external(ExternalAction)
+        
+        // 뷰이동 관련 액션
+        case destination(DestinationAction)
+        
+        enum ViewAction: BindableAction {
+            case binding(BindingAction<State>)
+            case addTodoButtonTapped
+        }
+        
+        enum DestinationAction {}
+        
+        enum ExternalAction {}
+    }
     
     var body: some Reducer<State, Action> {
+        BindingReducer(action: \.view)
         Reduce { state, action in
             switch action {
-            default:
-                return .none
+                // MARK: - View
+            case let .view(viewAction):
+                switch viewAction {
+                case .binding:
+                    return .none
+                case .addTodoButtonTapped:
+                    return .none
+                }
             }
+            
         }
     }
 }

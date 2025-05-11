@@ -12,7 +12,7 @@ struct MainViewFeature {
     @ObservableState
     struct State {
         var isShowAddTodoSheet = false
-        var title = ""
+        var todo = TodoFeature.State()
     }
     
     enum Action: ViewAction, TCAAction {
@@ -24,10 +24,12 @@ struct MainViewFeature {
         
         // 뷰이동 관련 액션
         case destination(DestinationAction)
-                
+        
+        case todo(TodoFeature.Action)
+        
         enum ViewAction: BindableAction {
             case binding(BindingAction<State>)
-            case addTodoButtonTapped
+            case showAddTodoButtonTapped
         }
         
         enum DestinationAction {}
@@ -37,6 +39,9 @@ struct MainViewFeature {
     
     var body: some Reducer<State, Action> {
         BindingReducer(action: \.view)
+        Scope(state: \.todo, action: \.todo) {
+            TodoFeature()
+        }
         Reduce { state, action in
             switch action {
                 // MARK: - View
@@ -44,10 +49,21 @@ struct MainViewFeature {
                 switch viewAction {
                 case .binding:
                     return .none
-                case .addTodoButtonTapped:
+                case .showAddTodoButtonTapped:
                     state.isShowAddTodoSheet = true
                     return .none
                 }
+                // MARK: - TodoView
+            case let .todo(todoAction):
+                switch todoAction {
+                case .view(.addTodoButtonTapped):
+                    print("버튼탭!")
+                    return .none
+                default:
+                    return .none
+                }
+            default:
+                return .none
             }
         }
     }
