@@ -18,15 +18,18 @@ struct MainView: View {
     
     var body: some View {
         WithPerceptionTracking {
-            VStack {
-                Spacer()
-                Button(action: {
-                    store.send(.view(.showAddTodoButtonTapped))
-                }, label: {
-                    Text("Todo create")
+            TodoListView(store: store.scope(state: \.todoList, action: \.todoList))
+                .overlay(alignment: .bottom, content: {
+                    VStack {
+                        Spacer()
+                        Button(action: {
+                            store.send(.view(.showAddTodoButtonTapped))
+                        }, label: {
+                            Text("Todo create")
+                        })
+                        .buttonStyle(.borderedProminent)
+                    }
                 })
-                .buttonStyle(.borderedProminent)
-            }
             .sheet(isPresented: $store.isShowAddTodoSheet ) {
                 AddTodoView(store: store.scope(state: \.todo, action: \.todo))
             }

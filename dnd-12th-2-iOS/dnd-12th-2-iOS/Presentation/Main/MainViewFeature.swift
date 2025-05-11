@@ -13,6 +13,7 @@ struct MainViewFeature {
     struct State {
         var isShowAddTodoSheet = false
         var todo = TodoFeature.State()
+        var todoList = TodoListFeature.State()
     }
     
     enum Action: ViewAction, TCAAction {
@@ -26,6 +27,7 @@ struct MainViewFeature {
         case destination(DestinationAction)
         
         case todo(TodoFeature.Action)
+        case todoList(TodoListFeature.Action)
         
         enum ViewAction: BindableAction {
             case binding(BindingAction<State>)
@@ -41,6 +43,9 @@ struct MainViewFeature {
         BindingReducer(action: \.view)
         Scope(state: \.todo, action: \.todo) {
             TodoFeature()
+        }
+        Scope(state: \.todoList, action: \.todoList) {
+            TodoListFeature()
         }
         Reduce { state, action in
             switch action {

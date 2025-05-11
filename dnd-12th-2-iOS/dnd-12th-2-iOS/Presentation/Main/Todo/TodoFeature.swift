@@ -34,6 +34,8 @@ struct TodoFeature {
         enum ExternalAction {}
     }
     
+    @Dependency(\.todoClient) var todoClient
+    
     var body: some Reducer<State, Action> {
         BindingReducer(action: \.view)
         Reduce { state, action in
@@ -44,6 +46,7 @@ struct TodoFeature {
                 case .binding:
                     return .none
                 case .addTodoButtonTapped:
+                    todoClient.createTodoItem(state.title, nil, nil)
                     return .none
                 }
             }

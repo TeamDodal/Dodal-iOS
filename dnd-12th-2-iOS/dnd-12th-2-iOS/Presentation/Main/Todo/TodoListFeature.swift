@@ -18,21 +18,43 @@ struct TodoListFeature {
         case view(ViewAction)
         case external(ExternalAction)
         case destination(DestinationAction)
+        
         enum ViewAction {
             case viewonAppear
+            case responseTodoItem([TodoItem])
         }
-        enum ExternalAction {}
+        
+        enum ExternalAction {
+            case fetchTodoItem
+        }
+        
         enum DestinationAction {}
     }
+    
+    @Dependency(\.todoClient) var todoClient
     
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
-                // MARK: - ViewAction
+                // MARK: - view
             case let .view(viewAction):
                 switch viewAction {
                 case .viewonAppear:
+                    return .run { send in
+                        await send(.external(.fetchTodoItem))
+                    }
+                case let .responseTodoItem(todoItem):
+                    state.todoItems = todoItem
                     return .none
+                }
+                // MARK: - external
+            case let .external(externalAction):
+                switch externalAction {
+                case .fetchTodoItem:
+                    return .run { send in
+                        let response = try todoClient.fetchTodoItems()
+                        await send(.view(.responseTodoItem(response)))
+                    }
                 }
             default:
                 return .none
