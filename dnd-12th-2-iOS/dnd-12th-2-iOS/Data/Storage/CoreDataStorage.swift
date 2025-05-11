@@ -10,7 +10,7 @@ import CoreData
 
 protocol TodoStorageType {
     func creteTodoItem(title: String?, content: String?, dueDate: Date?)
-    func fetchTodoItems()
+    func fetchTodoItems() throws -> [TodoItem]
 }
 
 final class CoreDataStorage: TodoStorageType {
@@ -18,11 +18,12 @@ final class CoreDataStorage: TodoStorageType {
     static let shared = CoreDataStorage()
     private init() {}
     
-    private let modelName = "DodalModel"
+    private let modelName = "TodoItem"
+    private let containerName = "DodalModel"
     
     // container
     private lazy var persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: modelName)
+        let container = NSPersistentContainer(name: containerName)
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
@@ -46,7 +47,16 @@ final class CoreDataStorage: TodoStorageType {
         try? context.save()
     }
     
-    func fetchTodoItems() {
-        
+    func fetchTodoItems() throws -> [TodoItem] {
+        do {
+            let fetchRequest = NSFetchRequest<TodoItem>(entityName: modelName)
+            let data = try mainContext.fetch(fetchRequest)
+            
+            return data
+        } catch {
+            throw error
+        }
     }
 }
+
+
