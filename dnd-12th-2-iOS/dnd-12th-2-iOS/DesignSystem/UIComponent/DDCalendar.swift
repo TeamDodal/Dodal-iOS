@@ -193,18 +193,6 @@ private extension DDCalendar {
     }
 }
 
-extension Date {
-    static let calendarDayDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM yyyy dd"
-        return formatter
-    }()
-    
-    var formattedCalendarDayDate: String {
-        Date.calendarDayDateFormatter.string(from: self)
-    }
-}
-
 
 #Preview {
     DDCalendar()
