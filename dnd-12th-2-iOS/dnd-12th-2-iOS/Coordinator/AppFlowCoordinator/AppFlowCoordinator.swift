@@ -9,7 +9,7 @@ import ComposableArchitecture
 
 @Reducer
 struct AppFlowCoordinator {
-    
+    @ObservableState
     enum State {
         case mainTab(MainTabFeature.State)
         case onboarding

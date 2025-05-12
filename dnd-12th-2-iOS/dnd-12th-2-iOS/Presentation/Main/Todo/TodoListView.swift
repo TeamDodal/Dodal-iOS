@@ -20,6 +20,9 @@ struct TodoListView: View {
         WithPerceptionTracking {
             List(store.todoItems, id: \.self) { todo in
                 Text(todo.title ?? "")
+                    .onTapGesture {
+                        store.send(.view(.todoCellTapped(todo)))
+                    }
             }
             .onAppear {
                 store.send(.view(.viewonAppear))

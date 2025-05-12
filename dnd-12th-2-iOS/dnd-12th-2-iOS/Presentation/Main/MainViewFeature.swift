@@ -34,7 +34,9 @@ struct MainViewFeature {
             case showAddTodoButtonTapped
         }
         
-        enum DestinationAction {}
+        enum DestinationAction {
+            case goToTodoDetail
+        }
         
         enum ExternalAction {}
     }
@@ -64,6 +66,14 @@ struct MainViewFeature {
                 case .view(.addTodoComplete):
                     state.isShowAddTodoSheet = false
                     return .send(.todoList(.view(.viewonAppear)))
+                default:
+                    return .none
+                }
+                // MARK: - TodoListView
+            case let .todoList(todoListAction):
+                switch todoListAction {
+                case let .view(.todoCellTapped(todo)):
+                    return .send(.destination(.goToTodoDetail))
                 default:
                     return .none
                 }

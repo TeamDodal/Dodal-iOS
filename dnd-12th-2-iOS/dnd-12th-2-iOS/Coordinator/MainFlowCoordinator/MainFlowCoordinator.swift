@@ -16,22 +16,31 @@ struct MainFlowCoordinator {
     
     @ObservableState
     struct State {
-        var path = StackState<Path.State>()   
+        var path = StackState<Path.State>()
+        var root = MainViewFeature.State()
     }
     
     enum Action {
         case path(StackActionOf<Path>)
+        case root(MainViewFeature.Action)
     }
     
-    
     var body: some Reducer<State, Action> {
+        Scope(state: \.root, action: \.root) {
+            MainViewFeature()
+        }
         Reduce { state, action in
             switch action {
             case let .path(action):
-                switch action {
+                switch action {                
                 default:
                     return .none
                 }
+            case .root(.destination(.goToTodoDetail)):
+                state.path.append(.todoDetail)
+                return .none
+            default:
+                return .none
             }
         }.forEach(\.path, action: \.path)
     }
