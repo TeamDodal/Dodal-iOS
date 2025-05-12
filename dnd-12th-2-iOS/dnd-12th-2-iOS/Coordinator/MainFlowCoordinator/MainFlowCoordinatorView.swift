@@ -17,9 +17,9 @@ struct MainFlowCoordinatorView: View {
             NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
                 MainView(store: store.scope(state: \.root, action: \.root))
             } destination: { store in
-                switch store.case {                
-                case .todoDetail:
-                    Text("todoDetail")
+                switch store.case {
+                case let .todoDetail(store):
+                    TodoDetailView(store: store)
                 }
             }
         }

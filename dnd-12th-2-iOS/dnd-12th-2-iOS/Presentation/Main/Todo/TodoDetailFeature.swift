@@ -12,13 +12,27 @@ import ComposableArchitecture
 @Reducer
 struct TodoDetailFeature {
     @ObservableState
-    struct State {}
+    struct State {
+        var todo: TodoItem
+        var isShowAddTodoSheet = false
+        
+        init(todo: TodoItem) {
+            self.todo = todo
+        }
+    }
     
-    enum Action {}
+    enum Action: BindableAction {
+        case binding(BindingAction<State>)
+        case showAddTodoButtonTapped
+    }
     
     var body: some Reducer<State, Action> {
+        BindingReducer()
         Reduce { state, action in
             switch action {
+            case .showAddTodoButtonTapped:
+                state.isShowAddTodoSheet = true
+                return .none
             default:
                 return .none
             }
