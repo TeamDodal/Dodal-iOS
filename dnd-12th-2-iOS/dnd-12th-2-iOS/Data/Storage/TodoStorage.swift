@@ -9,8 +9,9 @@ import Foundation
 import CoreData
 
 protocol TodoStorageType {
-    func creteTodoItem(title: String?, content: String?, dueDate: Date?)
+    func creteTodoItem(title: String, content: String?, dueDate: Date?)
     func fetchTodoItems() throws -> [TodoItem]
+    func createSubTodoItem(id: UUID, title: String, content: String?, dueDate: Date?) throws
 }
 
 final class TodoStorage: TodoStorageType {
@@ -37,7 +38,7 @@ final class TodoStorage: TodoStorageType {
         return persistentContainer.viewContext
     }
     
-    func creteTodoItem(title: String?, content: String?, dueDate: Date?) {
+    func creteTodoItem(title: String, content: String?, dueDate: Date?) {
         let context = persistentContainer.viewContext
         let newTodo = TodoItem(context: context)
         newTodo.id = UUID()
@@ -50,9 +51,34 @@ final class TodoStorage: TodoStorageType {
     func fetchTodoItems() throws -> [TodoItem] {
         do {
             let fetchRequest = NSFetchRequest<TodoItem>(entityName: modelName)
+            fetchRequest.predicate = NSPredicate(format: "parent == nil")
             let data = try mainContext.fetch(fetchRequest)
             
             return data
+        } catch {
+            throw error
+        }
+    }
+    
+    func createSubTodoItem(id: UUID, title: String, content: String?, dueDate: Date?) throws {
+        let fetchRequest = NSFetchRequest<TodoItem>(entityName: modelName)
+        fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+        do {
+            let data = try mainContext.fetch(fetchRequest)
+            if let todo = data.first {
+                let subTodo = TodoItem(context: mainContext)
+                subTodo.id = UUID()
+                subTodo.title = title
+                subTodo.content = content
+                subTodo.dueDate = dueDate
+                
+                todo.addToItems(subTodo)
+                
+                do {
+                    try mainContext.save()
+                } catch {}
+            }
+            
         } catch {
             throw error
         }

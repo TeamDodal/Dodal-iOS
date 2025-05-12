@@ -5,13 +5,20 @@
 //  Created by 권석기 on 5/10/25.
 //
 
+import Foundation
+
 import ComposableArchitecture
 
 @Reducer
 struct TodoFeature {
     @ObservableState
     struct State {
+        var parentId: UUID?
         var title = ""
+        
+        init(parentId: UUID? = nil) {
+            self.parentId = parentId            
+        }
     }
     
     enum Action: ViewAction, TCAAction {
@@ -47,7 +54,13 @@ struct TodoFeature {
                 case .binding:
                     return .none
                 case .addTodoButtonTapped:
-                    todoClient.createTodoItem(state.title, nil, nil)
+                    return .run { [state] send in
+                        if let uuid = state.parentId {
+                            try  todoClient.createSubTodoItem(uuid, state.title, nil, nil)
+                        } else {
+                            try todoClient.createTodoItem(state.title, nil, nil)
+                        }
+                    }
                     return .send(.view(.addTodoComplete))
                 default:
                     return .none
