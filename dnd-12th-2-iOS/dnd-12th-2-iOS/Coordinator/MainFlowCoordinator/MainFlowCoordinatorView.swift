@@ -15,11 +15,9 @@ struct MainFlowCoordinatorView: View {
     var body: some View {
         WithPerceptionTracking {
             NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
-                MainView(store: .init(initialState: MainViewFeature.State(), reducer: {
-                    MainViewFeature()
-                }))
+                MainView(store: store.scope(state: \.root, action: \.root))
             } destination: { store in
-                switch store.case {
+                switch store.case {                
                 case .todoDetail:
                     Text("todoDetail")
                 }

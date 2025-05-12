@@ -22,6 +22,7 @@ struct TodoListFeature {
         enum ViewAction {
             case viewonAppear
             case responseTodoItem([TodoItem])
+            case todoCellTapped(TodoItem)
         }
         
         enum ExternalAction {
@@ -45,6 +46,8 @@ struct TodoListFeature {
                     }
                 case let .responseTodoItem(todoItem):
                     state.todoItems = todoItem
+                    return .none
+                default:
                     return .none
                 }
                 // MARK: - external
