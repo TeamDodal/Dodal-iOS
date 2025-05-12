@@ -5,6 +5,7 @@
 //  Created by Allie on 5/12/25.
 //
 
+import Foundation
 
 extension Date {
     static let calendarDayDateFormatter: DateFormatter = {
