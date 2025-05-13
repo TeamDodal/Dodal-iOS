@@ -18,9 +18,9 @@ struct TodoDetailView: View {
     var body: some View {
         WithPerceptionTracking {
             VStack {
-                HStack {
-                    Spacer()
+                HStack {                    
                     Text(store.todoItem.title)
+                        .font(.largeTitle)
                     Spacer()
                     Button(action: {
                         store.send(.view(.deleteButtonTapped))
