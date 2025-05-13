@@ -34,7 +34,8 @@ struct TodoDetailView: View {
                     })
                 }
                 .padding(.horizontal, 20)
-                Text("parent: \(store.todoItem.parent?.title ?? "root")")
+                Text("depth: \(store.todoItem.depth)")
+                Text("path: \(store.todoItem.path)")
                     .foregroundStyle(.gray)
                 if let subTodos = store.todoItem.items {
                     List(Array(subTodos), id: \.self) { todo in
@@ -50,8 +51,12 @@ struct TodoDetailView: View {
                     store.send(.view(.showAddTodoButtonTapped))
                 }, label: {
                     Text("SubTodo 추가")
+                        .foregroundStyle(.white)
+                        .padding(15)
                 })
-                .buttonStyle(.borderedProminent)
+                .background(store.isOverDepthLimit ? .gray : .blue)
+                .disabled(store.isOverDepthLimit)
+                .cornerRadius(5)
             }
             .sheet(isPresented: $store.isShowAddTodoSheet) {
                 AddTodoView(store: store.scope(state: \.todo, action: \.todo))

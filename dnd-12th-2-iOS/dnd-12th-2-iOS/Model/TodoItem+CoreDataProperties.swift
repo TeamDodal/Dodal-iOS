@@ -28,3 +28,25 @@ extension TodoItem {
 extension TodoItem : Identifiable {
 
 }
+
+extension TodoItem {
+    var depth: Int {
+        var count = 1
+        var pointer = self.parent
+        while pointer != nil {
+            pointer = pointer?.parent
+            count += 1
+        }
+        return count
+    }
+    
+    var path: String {
+        var path = self.title
+        var pointer = self.parent
+        while pointer != nil {
+            path = "\(pointer?.title ?? "")/" + path
+            pointer = pointer?.parent
+        }
+        return path
+    }
+}

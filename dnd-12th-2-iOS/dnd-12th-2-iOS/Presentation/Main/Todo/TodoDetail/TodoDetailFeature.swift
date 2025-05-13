@@ -17,6 +17,10 @@ struct TodoDetailFeature {
         var isShowAddTodoSheet = false
         var todo: TodoFeature.State
         
+        var isOverDepthLimit: Bool {
+            todoItem.depth > 3
+        }
+        
         init(todoItem: TodoItem) {
             self.todoItem = todoItem
             self.todo = TodoFeature.State(parentId: todoItem.id, isEdit: false)
