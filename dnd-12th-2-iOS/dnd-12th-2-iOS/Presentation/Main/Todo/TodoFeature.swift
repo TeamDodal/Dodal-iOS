@@ -17,7 +17,7 @@ struct TodoFeature {
         var title = ""
         
         init(parentId: UUID? = nil) {
-            self.parentId = parentId            
+            self.parentId = parentId
         }
     }
     
@@ -55,13 +55,17 @@ struct TodoFeature {
                     return .none
                 case .addTodoButtonTapped:
                     return .run { [state] send in
-                        if let uuid = state.parentId {
-                            try  todoClient.createSubTodoItem(uuid, state.title, nil, nil)
-                        } else {
-                            try todoClient.createTodoItem(state.title, nil, nil)
+                        do {
+                            if let uuid = state.parentId {
+                                try  todoClient.createSubTodoItem(uuid, state.title, nil, nil)
+                            } else {
+                                todoClient.createTodoItem(state.title, nil, nil)
+                            }
+                            await send(.view(.addTodoComplete))
+                        } catch {
+                            
                         }
                     }
-                    return .send(.view(.addTodoComplete))
                 default:
                     return .none
                 }

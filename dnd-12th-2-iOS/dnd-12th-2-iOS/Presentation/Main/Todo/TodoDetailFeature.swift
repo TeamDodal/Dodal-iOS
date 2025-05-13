@@ -13,15 +13,18 @@ import ComposableArchitecture
 struct TodoDetailFeature {
     @ObservableState
     struct State {
-        var todo: TodoItem
+        var todoItem: TodoItem
         var isShowAddTodoSheet = false
+        var todo: TodoFeature.State
         
-        init(todo: TodoItem) {
-            self.todo = todo
+        init(todoItem: TodoItem) {
+            self.todoItem = todoItem
+            self.todo = TodoFeature.State(parentId: todoItem.id)
         }
     }
     
     enum Action: ViewAction, TCAAction {
+        case todo(TodoFeature.Action)
         
         // view에서 일어나는 액션을 정의합니다.
         case view(ViewAction)
@@ -44,6 +47,9 @@ struct TodoDetailFeature {
     }
     
     var body: some Reducer<State, Action> {
+        Scope(state: \.todo, action: \.todo) {
+            TodoFeature()
+        }
         BindingReducer(action: \.view)
         Reduce { state, action in
             switch action {
@@ -56,6 +62,10 @@ struct TodoDetailFeature {
                 default:
                     return .none
                 }
+                // MARK: - Todo
+            case .todo(.view(.addTodoComplete)):
+                state.isShowAddTodoSheet = false
+                return .none
             default:
                 return .none
             }
