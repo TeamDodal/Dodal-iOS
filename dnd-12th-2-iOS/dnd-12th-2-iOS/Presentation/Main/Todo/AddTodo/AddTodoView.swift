@@ -19,6 +19,7 @@ struct AddTodoView: View {
     var body: some View {
         WithPerceptionTracking {
             VStack {
+                Text(store.isEdit ? "수정중" : "생성중")
                 TextField("title", text: $store.title)
                     .textFieldStyle(.roundedBorder)
                 
@@ -33,8 +34,8 @@ struct AddTodoView: View {
     }
 }
 
-#Preview {
-    AddTodoView(store: .init(initialState: TodoFeature.State(), reducer: {
-        TodoFeature()
-    }))
-}
+//#Preview {
+//    AddTodoView(store: .init(initialState: TodoFeature.State(), reducer: {
+//        TodoFeature()
+//    }))
+//}
