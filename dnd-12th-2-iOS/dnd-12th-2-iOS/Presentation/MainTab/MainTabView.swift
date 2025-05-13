@@ -35,26 +35,23 @@ struct MainTabView: View {
                                     Spacer()
                                     VStack {
                                         // TODO: 머지하고 이미지 추가예정
-                                        Image("")
-                                            .resizable()
-                                            .frame(width: 24, height: 24)
-                                            .background(.blue)
+                                        Image(tabInfo == store.currentTab ? tabInfo.iconSelected : tabInfo.icon)
                                         Text(tabInfo.rawValue)
                                             .font(.pretendard(size: 10, weight: .regular))
                                             .foregroundStyle(store.currentTab == tabInfo ? .blue : .black)
                                     }
                                     Spacer()
-                                }                                
+                                }
                                 .padding(.top, 12)
                                 .padding(.bottom, 4)
                             }
-                            
                         }
                     }
-                    
                     .overlay(alignment: .top) {
                         Divider()
                     }
+                    .background(.white)
+                    .allowsHitTesting(false)
                 }
             }
         }
