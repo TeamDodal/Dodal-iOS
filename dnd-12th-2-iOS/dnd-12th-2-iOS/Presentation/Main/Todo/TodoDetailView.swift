@@ -19,17 +19,20 @@ struct TodoDetailView: View {
         WithPerceptionTracking {
             VStack {
                 Text(store.todo.title)
-                Text("path: \(store.todo.parent?.title ?? "root")")
+                Text("parent: \(store.todo.parent?.title ?? "root")")
                     .foregroundStyle(.gray)
-                if let subTodo = store.todo.items {
-                    List(Array(subTodo), id: \.self) {
-                        Text("title: \($0.title)")
+                if let subTodos = store.todo.items {
+                    List(Array(subTodos), id: \.self) { todo in
+                        Text("title: \(todo.title)")
+                            .onTapGesture { _ in
+                                store.send(.view(.totoCellTapped(todo)))
+                            }
                     }
                 }
             }
             .overlay(alignment: .bottom) {
                 Button(action: {
-                    store.send(.showAddTodoButtonTapped)
+                    store.send(.view(.showAddTodoButtonTapped))
                 }, label: {
                     Text("SubTodo 추가")
                 })

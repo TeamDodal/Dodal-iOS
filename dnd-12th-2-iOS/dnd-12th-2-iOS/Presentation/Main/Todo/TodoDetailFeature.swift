@@ -21,18 +21,41 @@ struct TodoDetailFeature {
         }
     }
     
-    enum Action: BindableAction {
-        case binding(BindingAction<State>)
-        case showAddTodoButtonTapped
+    enum Action: ViewAction, TCAAction {
+        
+        // view에서 일어나는 액션을 정의합니다.
+        case view(ViewAction)
+        
+        // 외부의존성과 일어나는 액션을 정의합니다.
+        case external(ExternalAction)
+        
+        // 뷰이동 관련 액션
+        case destination(DestinationAction)
+        
+        enum ViewAction: BindableAction {
+            case binding(BindingAction<State>)
+            case showAddTodoButtonTapped
+            case totoCellTapped(TodoItem)
+        }
+        
+        enum DestinationAction {}
+        
+        enum ExternalAction {}
     }
     
     var body: some Reducer<State, Action> {
-        BindingReducer()
+        BindingReducer(action: \.view)
         Reduce { state, action in
             switch action {
-            case .showAddTodoButtonTapped:
-                state.isShowAddTodoSheet = true
-                return .none
+                // MARK: - View Action
+            case let .view(viewAction):
+                switch viewAction {
+                case .showAddTodoButtonTapped:
+                    state.isShowAddTodoSheet = true
+                    return .none
+                default:
+                    return .none
+                }
             default:
                 return .none
             }
