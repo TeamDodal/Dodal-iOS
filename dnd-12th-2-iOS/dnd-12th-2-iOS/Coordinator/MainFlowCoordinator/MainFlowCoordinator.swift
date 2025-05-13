@@ -34,13 +34,13 @@ struct MainFlowCoordinator {
             case let .path(action):
                 switch action {
                 case let .element(id: _, action: .todoDetail(.view(.totoCellTapped(todo)))):
-                    state.path.append(.todoDetail(.init(todo: todo)))
+                    state.path.append(.todoDetail(.init(todoItem: todo)))
                     return .none
                 default:
                     return .none
                 }
             case let .root(.destination(.goToTodoDetail(todo))):
-                state.path.append(.todoDetail(.init(todo: todo)))
+                state.path.append(.todoDetail(.init(todoItem: todo)))
                 return .none
             default:
                 return .none

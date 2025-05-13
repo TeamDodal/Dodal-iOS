@@ -18,10 +18,10 @@ struct TodoDetailView: View {
     var body: some View {
         WithPerceptionTracking {
             VStack {
-                Text(store.todo.title)
-                Text("parent: \(store.todo.parent?.title ?? "root")")
+                Text(store.todoItem.title)
+                Text("parent: \(store.todoItem.parent?.title ?? "root")")
                     .foregroundStyle(.gray)
-                if let subTodos = store.todo.items {
+                if let subTodos = store.todoItem.items {
                     List(Array(subTodos), id: \.self) { todo in
                         Text("title: \(todo.title)")
                             .onTapGesture { _ in
@@ -38,9 +38,7 @@ struct TodoDetailView: View {
                 })
             }
             .sheet(isPresented: $store.isShowAddTodoSheet) {
-                AddTodoView(store: .init(initialState: TodoFeature.State(parentId: store.todo.id), reducer: {
-                    TodoFeature()
-                }))
+                AddTodoView(store: store.scope(state: \.todo, action: \.todo))
             }
         }
     }
