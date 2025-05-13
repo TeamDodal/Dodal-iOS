@@ -13,6 +13,7 @@ protocol TodoStorageType {
     func fetchTodoItems() throws -> [TodoItem]
     func createSubTodoItem(id: UUID, title: String, content: String?, dueDate: Date?) throws
     func editTodoItem(id: UUID, title: String, content: String?, dueDate: Date?) throws
+    func deleteTodoItem(id: UUID) throws -> Void
 }
 
 final class TodoStorage: TodoStorageType {
@@ -100,6 +101,20 @@ final class TodoStorage: TodoStorageType {
                 } catch {}
             }
             
+        } catch {
+            throw error
+        }
+    }
+    
+    func deleteTodoItem(id: UUID) throws {
+        let fetchRequest = NSFetchRequest<TodoItem>(entityName: modelName)
+        fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+        do {
+            let data = try mainContext.fetch(fetchRequest)
+            if let todo = data.first {
+                mainContext.delete(todo)
+                try mainContext.save()
+            }
         } catch {
             throw error
         }
