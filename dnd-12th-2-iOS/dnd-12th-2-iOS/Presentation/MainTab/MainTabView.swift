@@ -18,40 +18,17 @@ struct MainTabView: View {
             NavigationStack {
                 TabView(selection: $store.currentTab) {
                     MainFlowCoordinatorView(store: store.scope(state: \.mainFlow, action: \.mainFlow))
-                        .tag(MainTabFeature.TabInfo.main)
+                        .tag(TabInfo.main)
                     
                     TodoView()
-                        .tag(MainTabFeature.TabInfo.todo)
+                        .tag(TabInfo.todo)
                     
                     SettingView()
-                        .tag(MainTabFeature.TabInfo.setting)
+                        .tag(TabInfo.setting)
                     
                 }
                 .overlay(alignment: .bottom) {
-                    HStack {
-                        ForEach(MainTabFeature.TabInfo.allCases, id: \.self) { tabInfo in
-                            HStack {
-                                HStack {
-                                    Spacer()
-                                    VStack {
-                                        // TODO: 머지하고 이미지 추가예정
-                                        Image(tabInfo == store.currentTab ? tabInfo.iconSelected : tabInfo.icon)
-                                        Text(tabInfo.rawValue)
-                                            .font(.pretendard(size: 10, weight: .regular))
-                                            .foregroundStyle(store.currentTab == tabInfo ? .blue : .black)
-                                    }
-                                    Spacer()
-                                }
-                                .padding(.top, 12)
-                                .padding(.bottom, 4)
-                            }
-                        }
-                    }
-                    .overlay(alignment: .top) {
-                        Divider()
-                    }
-                    .background(.white)
-                    .allowsHitTesting(false)
+                    TabBarView(currentTab: store.currentTab)
                 }
             }
         }

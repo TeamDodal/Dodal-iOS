@@ -10,29 +10,7 @@ import SwiftUI
 import ComposableArchitecture
 
 @Reducer
-struct MainTabFeature {
-    
-    enum TabInfo: String, CaseIterable {
-        case main = "홈"
-        case todo = "할일"
-        case setting = "설정"
-        
-        var icon: ImageResource {
-            switch self {
-            case .main: .iconHomeGray
-            case .todo: .iconTaskGray
-            case .setting: .iconSettingGray
-            }
-        }
-        
-        var iconSelected: ImageResource {
-            switch self {
-            case .main: .iconHome
-            case .todo: .iconTask
-            case .setting:.iconSetting
-            }
-        }
-    }
+struct MainTabFeature {    
     
     @ObservableState
     struct State {
