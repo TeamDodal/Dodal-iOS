@@ -14,10 +14,15 @@ struct TodoFeature {
     @ObservableState
     struct State {
         var parentId: UUID?
+        var isEdit: Bool
         var title = ""
         
-        init(parentId: UUID? = nil) {
+        init(parentId: UUID? = nil,
+             title: String = "",
+             isEdit: Bool) {
             self.parentId = parentId
+            self.isEdit = isEdit
+            self.title = title
         }
     }
     
@@ -39,7 +44,11 @@ struct TodoFeature {
         
         enum DestinationAction {}
         
-        enum ExternalAction {}
+        enum ExternalAction {
+            case addTodoItem
+            case addSubTodoItem(id: UUID)
+            case editTodoItem(id: UUID, title: String)
+        }
     }
     
     @Dependency(\.todoClient) var todoClient
@@ -48,29 +57,50 @@ struct TodoFeature {
         BindingReducer(action: \.view)
         Reduce { state, action in
             switch action {
-                // MARK: - View
+                // MARK: - view
             case let .view(viewAction):
                 switch viewAction {
                 case .binding:
                     return .none
                 case .addTodoButtonTapped:
-                    return .run { [state] send in
-                        do {
-                            if let uuid = state.parentId {
-                                try  todoClient.createSubTodoItem(uuid, state.title, nil, nil)
-                            } else {
-                                todoClient.createTodoItem(state.title, nil, nil)
-                            }
-                            await send(.view(.addTodoComplete))
-                        } catch {
-                            
-                        }
+                    if state.isEdit, let uuid = state.parentId {
+                        return .concatenate([
+                            .send(.external(.editTodoItem(id: uuid, title: state.title))),
+                            .send(.view(.addTodoComplete))
+                        ])
                     }
-                default:
-                    return .none
+                    else if let uuid = state.parentId {
+                        return .concatenate([
+                            .send(.external(.addSubTodoItem(id: uuid))),
+                            .send(.view(.addTodoComplete))
+                        ])
+                    } else {
+                        return .concatenate([
+                            .send(.external(.addTodoItem)),
+                            .send(.view(.addTodoComplete))
+                        ])
+                    }
+                default: return .none
+                }
+                // MARK: - external
+            case let .external(externalAction):
+                switch externalAction {
+                case .addTodoItem:
+                    return .run { [state] send in
+                        todoClient.createTodoItem(state.title, nil, nil)
+                    }
+                case let .addSubTodoItem(id):
+                    return .run { [state] send in
+                        try todoClient.createSubTodoItem(id, state.title, nil, nil)
+                    }
+                case let .editTodoItem(id, title):
+                    return .run { send in
+                        try todoClient.editTodoItem(id, title, nil, nil)
+                    }
                 }
             }
             
         }
     }
 }
+

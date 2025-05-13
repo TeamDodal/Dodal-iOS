@@ -19,7 +19,7 @@ struct TodoDetailFeature {
         
         init(todoItem: TodoItem) {
             self.todoItem = todoItem
-            self.todo = TodoFeature.State(parentId: todoItem.id)
+            self.todo = TodoFeature.State(parentId: todoItem.id, isEdit: false)
         }
     }
     
@@ -39,6 +39,7 @@ struct TodoDetailFeature {
             case binding(BindingAction<State>)
             case showAddTodoButtonTapped
             case totoCellTapped(TodoItem)
+            case editButtonTapped
         }
         
         enum DestinationAction {}
@@ -56,18 +57,21 @@ struct TodoDetailFeature {
                 // MARK: - View Action
             case let .view(viewAction):
                 switch viewAction {
-                case .showAddTodoButtonTapped:
+                case .showAddTodoButtonTapped:                    
+                    state.todo = TodoFeature.State(parentId: state.todoItem.id, isEdit: false)
                     state.isShowAddTodoSheet = true
                     return .none
-                default:
+                case .editButtonTapped:
+                    state.todo = TodoFeature.State(parentId: state.todoItem.id, title: state.todoItem.title, isEdit: true)
+                    state.isShowAddTodoSheet = true
                     return .none
+                default: return .none
                 }
                 // MARK: - Todo
             case .todo(.view(.addTodoComplete)):
                 state.isShowAddTodoSheet = false
                 return .none
-            default:
-                return .none
+            default: return .none
             }
         }
     }

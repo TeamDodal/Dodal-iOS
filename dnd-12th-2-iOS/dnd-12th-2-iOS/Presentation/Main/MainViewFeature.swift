@@ -12,7 +12,7 @@ struct MainViewFeature {
     @ObservableState
     struct State {
         var isShowAddTodoSheet = false
-        var todo = TodoFeature.State()
+        var todo = TodoFeature.State(isEdit: false)
         var todoList = TodoListFeature.State()
     }
     

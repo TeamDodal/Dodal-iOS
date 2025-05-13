@@ -18,7 +18,17 @@ struct TodoDetailView: View {
     var body: some View {
         WithPerceptionTracking {
             VStack {
-                Text(store.todoItem.title)
+                HStack {
+                    Spacer()
+                    Text(store.todoItem.title)
+                    Spacer()
+                    Button(action: {
+                        store.send(.view(.editButtonTapped))
+                    }, label: {
+                        Image(systemName: "pencil")
+                    })
+                }
+                .padding(.horizontal, 20)
                 Text("parent: \(store.todoItem.parent?.title ?? "root")")
                     .foregroundStyle(.gray)
                 if let subTodos = store.todoItem.items {
@@ -36,6 +46,7 @@ struct TodoDetailView: View {
                 }, label: {
                     Text("SubTodo 추가")
                 })
+                .buttonStyle(.borderedProminent)
             }
             .sheet(isPresented: $store.isShowAddTodoSheet) {
                 AddTodoView(store: store.scope(state: \.todo, action: \.todo))
