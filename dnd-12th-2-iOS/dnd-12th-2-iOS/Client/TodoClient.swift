@@ -14,6 +14,7 @@ struct TodoClient {
     var createTodoItem: (_ title: String, _ content: String?, _ dueDate: Date?) -> Void
     var createSubTodoItem: (_ id: UUID, _ title: String, _ content: String?, _ dueDate: Date?) throws -> Void
     var editTodoItem: (_ id: UUID, _ title: String, _ content: String?, _ dueDate: Date?) throws -> Void
+    var deleteTodoItem: (_ id: UUID) throws -> Void
     
     static let storage = TodoStorage.shared
 }
@@ -40,6 +41,13 @@ extension TodoClient: DependencyKey {
         }, editTodoItem: { id, title, content, dueDate in
             do {
                 try  storage.editTodoItem(id: id, title: title, content: content, dueDate: dueDate)
+            } catch {
+                throw error
+            }
+        },
+        deleteTodoItem: { id in
+            do {
+                try  storage.deleteTodoItem(id: id)
             } catch {
                 throw error
             }

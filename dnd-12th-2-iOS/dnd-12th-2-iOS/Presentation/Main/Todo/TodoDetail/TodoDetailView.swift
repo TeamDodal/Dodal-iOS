@@ -23,6 +23,11 @@ struct TodoDetailView: View {
                     Text(store.todoItem.title)
                     Spacer()
                     Button(action: {
+                        store.send(.view(.deleteButtonTapped))
+                    }, label: {
+                        Image(systemName: "trash")
+                    })
+                    Button(action: {
                         store.send(.view(.editButtonTapped))
                     }, label: {
                         Image(systemName: "pencil")

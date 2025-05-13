@@ -40,12 +40,19 @@ struct TodoDetailFeature {
             case showAddTodoButtonTapped
             case totoCellTapped(TodoItem)
             case editButtonTapped
+            case deleteButtonTapped
         }
         
-        enum DestinationAction {}
+        enum DestinationAction {
+            case popNavigationStack
+        }
         
-        enum ExternalAction {}
+        enum ExternalAction {
+            case deleteTodoItem(id: UUID)
+        }
     }
+    
+    @Dependency(\.todoClient) var todoClient
     
     var body: some Reducer<State, Action> {
         Scope(state: \.todo, action: \.todo) {
@@ -57,7 +64,7 @@ struct TodoDetailFeature {
                 // MARK: - View Action
             case let .view(viewAction):
                 switch viewAction {
-                case .showAddTodoButtonTapped:                    
+                case .showAddTodoButtonTapped:
                     state.todo = TodoFeature.State(parentId: state.todoItem.id, isEdit: false)
                     state.isShowAddTodoSheet = true
                     return .none
@@ -65,12 +72,28 @@ struct TodoDetailFeature {
                     state.todo = TodoFeature.State(parentId: state.todoItem.id, title: state.todoItem.title, isEdit: true)
                     state.isShowAddTodoSheet = true
                     return .none
+                case .deleteButtonTapped:
+                    return .send(.external(.deleteTodoItem(id: state.todoItem.id)))
                 default: return .none
                 }
                 // MARK: - Todo
             case .todo(.view(.addTodoComplete)):
                 state.isShowAddTodoSheet = false
                 return .none
+                // MARK: - external
+            case let .external(externalAction):
+                switch externalAction {
+                case let .deleteTodoItem(id):
+                    return .run { send in
+                        try todoClient.deleteTodoItem(id)
+                        await send(.destination(.popNavigationStack))
+                    }
+                }
+            case let .destination(destination):
+                switch destination {
+                case .popNavigationStack:
+                    return .none
+                }
             default: return .none
             }
         }
