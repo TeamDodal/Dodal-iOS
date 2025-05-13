@@ -32,7 +32,10 @@ struct MainFlowCoordinator {
         Reduce { state, action in
             switch action {
             case let .path(action):
-                switch action {                
+                switch action {
+                case let .element(id: _, action: .todoDetail(.view(.totoCellTapped(todo)))):
+                    state.path.append(.todoDetail(.init(todo: todo)))
+                    return .none
                 default:
                     return .none
                 }
