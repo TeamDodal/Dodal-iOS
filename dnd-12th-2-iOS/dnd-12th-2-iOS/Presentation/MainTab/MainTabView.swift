@@ -23,7 +23,9 @@ struct MainTabView: View {
                     TodoView()
                         .tag(TabInfo.todo)
                     
-                    SettingView()
+                    SettingView(store: .init(initialState: SettingFeature.State(), reducer: {
+                        SettingFeature()
+                    }))
                         .tag(TabInfo.setting)
                     
                 }
