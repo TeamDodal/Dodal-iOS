@@ -5,16 +5,12 @@
 //  Created by 권석기 on 5/6/25.
 //
 
+import SwiftUI
+
 import ComposableArchitecture
 
 @Reducer
-struct MainTabFeature {
-    
-    enum TabInfo: String, CaseIterable {
-        case main = "홈"
-        case todo = "할일"
-        case setting = "설정"
-    }
+struct MainTabFeature {    
     
     @ObservableState
     struct State {

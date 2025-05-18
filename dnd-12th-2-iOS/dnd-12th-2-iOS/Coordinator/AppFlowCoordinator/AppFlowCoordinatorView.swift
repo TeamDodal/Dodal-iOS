@@ -19,7 +19,7 @@ struct AppFlowCoordinatorView: View {
                 switch state {
                 case .mainTab:
                     CaseLet(/AppFlowCoordinator.State.mainTab, action: AppFlowCoordinator.Action.mainTab) {
-                        MainTabView(store: $0)
+                        MainTabView(store: $0)                         
                     }
                 case .onboarding:
                     Text("Onboarding")
