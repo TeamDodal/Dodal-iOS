@@ -7,12 +7,38 @@
 
 import SwiftUI
 
+import ComposableArchitecture
+
 struct MainView: View {
+    @Perception.Bindable fileprivate var store: StoreOf<MainViewFeature>
+    
+    init(store: StoreOf<MainViewFeature>) {
+        self.store = store
+    }
+    
     var body: some View {
-        Text("MainView")
+        WithPerceptionTracking {
+            TodoListView(store: store.scope(state: \.todoList, action: \.todoList))
+                .overlay(alignment: .bottom, content: {
+                    VStack {
+                        Spacer()
+                        Button(action: {
+                            store.send(.view(.showAddTodoButtonTapped))
+                        }, label: {
+                            Text("Todo create")
+                        })
+                        .buttonStyle(.borderedProminent)
+                    }
+                })
+            .sheet(isPresented: $store.isShowAddTodoSheet ) {
+                AddTodoView(store: store.scope(state: \.todo, action: \.todo))
+            }
+        }
     }
 }
 
 #Preview {
-    MainView()
+    MainView(store: .init(initialState: MainViewFeature.State(), reducer: {
+        MainViewFeature()
+    }))
 }

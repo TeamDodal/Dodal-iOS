@@ -9,5 +9,5 @@ import Foundation
 
 struct SecretKey {
     static var baseUrl: String { Bundle.main.object(forInfoDictionaryKey: "BaseURL") as? String ?? "" }
-    static var apiKey: String { Bundle.main.object(forInfoDictionaryKey: "ApiKey") as? String ?? "" }
+    static var apiKey: String { Bundle.main.object(forInfoDictionaryKey: "ApiKey") as? String ?? "" }    
 }
