@@ -5,13 +5,15 @@
 //  Created by 권석기 on 5/10/25.
 //
 
+import Foundation
+
 import ComposableArchitecture
 
 @Reducer
 struct TodoListFeature {
     @ObservableState
     struct State {
-        var todoItems: [TodoItem] = []
+        var todoItems: [Todo] = []
     }
     
     enum Action: TCAAction {
@@ -21,8 +23,8 @@ struct TodoListFeature {
         
         enum ViewAction {
             case viewonAppear
-            case responseTodoItem([TodoItem])
-            case todoCellTapped(TodoItem)
+            case responseTodoItem([Todo])
+            case todoCellTapped(UUID)
         }
         
         enum ExternalAction {
@@ -55,8 +57,8 @@ struct TodoListFeature {
                 switch externalAction {
                 case .fetchTodoItem:
                     return .run { send in
-                        let response = try todoClient.fetchTodoItems()
-                        await send(.view(.responseTodoItem(response)))
+                        let todos = try todoClient.fetchTodoItems()
+                        await send(.view(.responseTodoItem(todos)))
                     }
                 }
             default:
