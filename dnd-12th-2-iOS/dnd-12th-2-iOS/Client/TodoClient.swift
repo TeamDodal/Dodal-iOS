@@ -10,7 +10,7 @@ import Foundation
 import ComposableArchitecture
 
 struct TodoClient {
-    var fetchTodoItems: () throws -> [TodoItem]
+    var fetchTodoItems: () throws -> [Todo]
     var createTodoItem: (_ title: String, _ content: String?, _ dueDate: Date?) -> Void
     var createSubTodoItem: (_ id: UUID, _ title: String, _ content: String?, _ dueDate: Date?) throws -> Void
     var editTodoItem: (_ id: UUID, _ title: String, _ content: String?, _ dueDate: Date?) throws -> Void
@@ -23,13 +23,13 @@ extension TodoClient: DependencyKey {
     static let liveValue = Self (
         fetchTodoItems: {
             do {
-                return try storage.fetchTodoItems()
+                return try storage.fetchTodoItems().map { $0.toDto() }
             } catch {
                 throw error
             }
         },
         createTodoItem: { title, content, dueDate in
-            storage.creteTodoItem(title: title, content: content, dueDate: dueDate)
+            storage.createTodoItem(title: title, content: content, dueDate: dueDate)
         },
         createSubTodoItem: { id, title, content, dueDate in
             do {

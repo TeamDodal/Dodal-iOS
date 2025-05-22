@@ -73,7 +73,8 @@ struct MainViewFeature {
             case let .todoList(todoListAction):
                 switch todoListAction {
                 case let .view(.todoCellTapped(todo)):
-                    return .send(.destination(.goToTodoDetail(todo)))
+                    return .none
+//                    return .send(.destination(.goToTodoDetail(todo)))
                 default:
                     return .none
                 }
