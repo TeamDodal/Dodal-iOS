@@ -18,16 +18,39 @@ struct TodoListView: View {
     
     var body: some View {
         WithPerceptionTracking {
-            List(store.todoItems, id: \.self) { todo in
-                Text(todo.title)
-                    .onTapGesture {
-                        store.send(.view(.todoCellTapped(todo)))
+            VStack(alignment: .leading, spacing: 0) {
+                DDHeader(dateText: dateString) {
+                    
+                }
+                ScrollView {
+                    LazyVStack(spacing: 12) {
+                        ForEach(store.todoItems) { todo in
+                            DDTodoCard(todos: [todo])
+                                .background(.gray0)
+                                .cornerRadius(12)
+                                .padding(.horizontal, 16)
+                        }
                     }
+                    .padding(.top, 8)
+                }
+                Spacer()
             }
+            .background(.gray50)
             .onAppear {
                 store.send(.view(.viewonAppear))
             }
         }
+    }
+    
+    private var dateString: String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.dateFormat = "M월 d일"
+        let date = formatter.string(from: Date())
+        formatter.dateFormat = "E"
+        let day = formatter.string(from: Date())
+        
+        return "\(date) (\(day))"
     }
 }
 
