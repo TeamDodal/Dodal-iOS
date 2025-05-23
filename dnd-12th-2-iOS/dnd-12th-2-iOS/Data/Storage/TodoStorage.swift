@@ -9,7 +9,7 @@ import Foundation
 import CoreData
 
 protocol TodoStorageType {
-    func creteTodoItem(title: String, content: String?, dueDate: Date?)
+    func createTodoItem(title: String, content: String?, dueDate: Date?)
     func fetchTodoItems() throws -> [TodoItem]
     func createSubTodoItem(id: UUID, title: String, content: String?, dueDate: Date?) throws
     func editTodoItem(id: UUID, title: String, content: String?, dueDate: Date?) throws
@@ -40,7 +40,7 @@ final class TodoStorage: TodoStorageType {
         return persistentContainer.viewContext
     }
     
-    func creteTodoItem(title: String, content: String?, dueDate: Date?) {
+    func createTodoItem(title: String, content: String?, dueDate: Date?) {
         let context = persistentContainer.viewContext
         let newTodo = TodoItem(context: context)
         newTodo.id = UUID()
