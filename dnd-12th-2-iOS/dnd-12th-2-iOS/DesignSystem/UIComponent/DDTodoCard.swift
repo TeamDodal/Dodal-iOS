@@ -8,11 +8,12 @@
 import SwiftUI
 
 struct DDTodoCard: View {
+    let title: String
     let todos: [Todo]
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text("최근")
+            Text(title)
                 .font(.pretendard(size: 14, weight: .semibold))
                 .foregroundStyle(.gray900)
                 .padding(.leading, 12)

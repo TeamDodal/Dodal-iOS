@@ -24,14 +24,13 @@ struct TodoListView: View {
                 }
                 ScrollView {
                     LazyVStack(spacing: 12) {
-                        ForEach(store.todoItems) { todo in
-                            DDTodoCard(todos: [todo])
-                                .background(.gray0)
-                                .cornerRadius(12)
-                                .padding(.horizontal, 16)
-                        }
+                        DDTodoCard(title:"마감일까지 d-1", todos: store.todoItems)
+                            .background(.gray0)
+                            .cornerRadius(12)
+                    
                     }
                     .padding(.top, 8)
+                    .padding(.horizontal, 16)
                 }
                 Spacer()
             }
