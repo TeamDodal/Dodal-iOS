@@ -19,18 +19,22 @@ struct TodoView: View {
                     
                 }
                 if todos.isEmpty {
-                    VStack(spacing: 12) {
-                        Image(.iconCheck)
+                    VStack {
+                        Image(.imgEmpty)
                             .resizable()
-                            .frame(width: 46, height: 46)
-                            .foregroundStyle(.mainBlue)
+                            .frame(width: 261, height: 267)
+                            .padding(.bottom, 16)
+                        Text("모든 할 일을 완수했어요!")
+                            .font(.pretendard(size: 24, weight: .bold))
+                            .foregroundStyle(.gray900)
+                            .padding(.bottom, 8)
                         Text("할 일을 추가해보세요. 스케줄을 관리하고\n설정하기 어려운 할 일을 만들어드립니다.")
                             .font(.pretendard(size: 14, weight: .medium))
                             .foregroundStyle(.gray600)
                             .multilineTextAlignment(.center)
                     }
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 37)
+                    .padding(.vertical, 127)
                     .padding(.bottom, 12)
                 } else {
                     ScrollView {
@@ -65,44 +69,44 @@ struct TodoView: View {
 
 #Preview {
     TodoView(todos: [
-        Todo(
-            id: UUID(),
-            title: "운동하기",
-            content: "헬스장 가기",
-            dueDate: Calendar.current.date(byAdding: .day, value: 1, to: Date()),
-            children: [
-                Todo(
-                    id: UUID(),
-                    title: "스트레칭",
-                    content: nil,
-                    dueDate: Date(),
-                    parentID: nil,
-                    depth: 1,
-                    path: "운동하기 > 스트레칭"
-                ),
-                Todo(
-                    id: UUID(),
-                    title: "웨이트 트레이닝",
-                    content: nil,
-                    dueDate: nil,
-                    parentID: nil,
-                    depth: 1,
-                    path: "운동하기 > 웨이트 트레이닝"
-                )
-            ],
-            parentID: nil,
-            depth: 0,
-            path: "운동하기"
-        ),
-        Todo(
-            id: UUID(),
-            title: "책 읽기",
-            content: "자기계발서 30분",
-            dueDate: nil,
-            children: [],
-            parentID: nil,
-            depth: 0,
-            path: "책 읽기"
-        )
+        //        Todo(
+        //            id: UUID(),
+        //            title: "운동하기",
+        //            content: "헬스장 가기",
+        //            dueDate: Calendar.current.date(byAdding: .day, value: 1, to: Date()),
+        //            children: [
+        //                Todo(
+        //                    id: UUID(),
+        //                    title: "스트레칭",
+        //                    content: nil,
+        //                    dueDate: Date(),
+        //                    parentID: nil,
+        //                    depth: 1,
+        //                    path: "운동하기 > 스트레칭"
+        //                ),
+        //                Todo(
+        //                    id: UUID(),
+        //                    title: "웨이트 트레이닝",
+        //                    content: nil,
+        //                    dueDate: nil,
+        //                    parentID: nil,
+        //                    depth: 1,
+        //                    path: "운동하기 > 웨이트 트레이닝"
+        //                )
+        //            ],
+        //            parentID: nil,
+        //            depth: 0,
+        //            path: "운동하기"
+        //        ),
+        //        Todo(
+        //            id: UUID(),
+        //            title: "책 읽기",
+        //            content: "자기계발서 30분",
+        //            dueDate: nil,
+        //            children: [],
+        //            parentID: nil,
+        //            depth: 0,
+        //            path: "책 읽기"
+        //        )
     ])
 }
