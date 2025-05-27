@@ -10,7 +10,11 @@ import SwiftUI
 import ComposableArchitecture
 
 struct TodoView: View {
-    let todos: [Todo]
+    let store: StoreOf<TodoTabFeature>
+    
+    init(store: StoreOf<TodoTabFeature>) {
+        self.store = store
+    }
     
     var body: some View {
         WithPerceptionTracking {
@@ -18,7 +22,7 @@ struct TodoView: View {
                 DDHeader(dateText: dateString) {
                     
                 }
-                if todos.isEmpty {
+                if store.todoItems.isEmpty {
                     VStack {
                         Image(.imgEmpty)
                             .resizable()
@@ -39,7 +43,7 @@ struct TodoView: View {
                 } else {
                     ScrollView {
                         LazyVStack(spacing: 8) {
-                            ForEach(todos) { todo in
+                            ForEach(store.todoItems) { todo in
                                 DDTodoRow(todo: todo) {
                                     // 마감일 설정 처리
                                 }
@@ -52,6 +56,9 @@ struct TodoView: View {
                 Spacer()
             }
             .background(.gray50)
+            .onAppear {
+                store.send(.view(.viewonAppear))
+            }
         }
     }
     
@@ -65,48 +72,4 @@ struct TodoView: View {
         
         return "\(date) (\(day))"
     }
-}
-
-#Preview {
-    TodoView(todos: [
-        //        Todo(
-        //            id: UUID(),
-        //            title: "운동하기",
-        //            content: "헬스장 가기",
-        //            dueDate: Calendar.current.date(byAdding: .day, value: 1, to: Date()),
-        //            children: [
-        //                Todo(
-        //                    id: UUID(),
-        //                    title: "스트레칭",
-        //                    content: nil,
-        //                    dueDate: Date(),
-        //                    parentID: nil,
-        //                    depth: 1,
-        //                    path: "운동하기 > 스트레칭"
-        //                ),
-        //                Todo(
-        //                    id: UUID(),
-        //                    title: "웨이트 트레이닝",
-        //                    content: nil,
-        //                    dueDate: nil,
-        //                    parentID: nil,
-        //                    depth: 1,
-        //                    path: "운동하기 > 웨이트 트레이닝"
-        //                )
-        //            ],
-        //            parentID: nil,
-        //            depth: 0,
-        //            path: "운동하기"
-        //        ),
-        //        Todo(
-        //            id: UUID(),
-        //            title: "책 읽기",
-        //            content: "자기계발서 30분",
-        //            dueDate: nil,
-        //            children: [],
-        //            parentID: nil,
-        //            depth: 0,
-        //            path: "책 읽기"
-        //        )
-    ])
 }
