@@ -17,6 +17,7 @@ struct TodoListFeature {
         private let calendar = Calendar.current
         var todoItems: [Todo] = []
         
+        // 마감일 하루전
         var dDayTodos: [Todo] {
             return todoItems.filter { todo in
                 guard let dueDate = todo.dueDate else { return false }
@@ -24,6 +25,7 @@ struct TodoListFeature {
             }
         }
         
+        // 이번주
         var thisWeekTodos: [Todo] {
             guard let weekInterval = calendar.dateInterval(of: .weekOfYear, for: Date()) else {
                 return []
@@ -32,6 +34,10 @@ struct TodoListFeature {
                 guard let dueDate = todo.dueDate else { return false }
                 return weekInterval.contains(dueDate)
             }
+        }
+        
+        var recentTodos: [Todo] {
+            return []
         }
     }
     

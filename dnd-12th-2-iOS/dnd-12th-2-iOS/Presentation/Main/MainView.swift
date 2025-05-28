@@ -20,7 +20,7 @@ struct MainView: View {
         WithPerceptionTracking {
             DDHeader(dateText: "5월 12일 (월)") {
                 
-            }           
+            }
             TodoListView(store: store.scope(state: \.todoList, action: \.todoList))
                 .overlay(alignment: .bottom, content: {
                     VStack {
@@ -37,6 +37,7 @@ struct MainView: View {
                     AddTodoView(store: store.scope(state: \.todo, action: \.todo))
                 }
         }
+        .background(.gray50)
     }
 }
 
