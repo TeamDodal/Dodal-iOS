@@ -11,6 +11,7 @@ struct DDTodoCardList: View {
     let todos: [Todo]
     let title: String
     var itemsPerPage: Int = 3
+    var pageLimit = 3
     var action: ((Todo)->())? = nil
     var cancelAction: (()->())? = nil
     
@@ -54,7 +55,7 @@ struct DDTodoCardList: View {
                 .padding(.vertical, 37)
                 .padding(.bottom, 12)
             } else {                
-                let tabBarCount = todos.count / itemsPerPage + (todos.count % itemsPerPage > 0 ? 1 : 0)
+                let tabBarCount = min(pageLimit, todos.count / itemsPerPage + (todos.count % itemsPerPage > 0 ? 1 : 0))
                 VStack {
                     // TabView
                     VStack(spacing: 8) {
