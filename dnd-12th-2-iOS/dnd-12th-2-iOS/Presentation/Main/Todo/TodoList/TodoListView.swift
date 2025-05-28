@@ -35,15 +35,13 @@ struct TodoListView: View {
                     DDTodoCardList(todos: store.thisWeekTodos, title:"이번주") { todo in
                         
                     }
-                    DDTodoCardList(todos: store.todoItems, title:"최근", itemsPerPage: 7) { todo in
+                    DDTodoCardList(todos: store.recentTodos, title:"최근", itemsPerPage: 7) { todo in
                         
-                    }
-                    
+                    }                    
                 }
-                .padding(.top, 8)
+                .padding(.top, 16)
                 .padding(.horizontal, 16)
             }
-            .background(.gray50)
             .onAppear {
                 store.send(.view(.viewonAppear))
             }
