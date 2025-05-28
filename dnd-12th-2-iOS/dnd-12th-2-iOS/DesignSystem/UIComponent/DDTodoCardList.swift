@@ -8,18 +8,37 @@
 import SwiftUI
 
 struct DDTodoCardList: View {
-    let title: String
     let todos: [Todo]
-    let action: ((Todo) -> ())?
+    let title: String
+    var itemsPerPage: Int = 3
+    var action: ((Todo)->())? = nil
+    var cancelAction: (()->())? = nil
+    
+    @State private var selectedIndex = 0
+    
+    var isRemovable: Bool {
+        cancelAction != nil
+    }
     
     var body: some View {
-        VStack(alignment: .leading) {
-            Text(title)
-                .font(.pretendard(size: 16, weight: .semibold))
-                .foregroundStyle(.gray700)
-                .padding(.leading, 12)
-                .padding(.top, 12)
+        VStack(alignment: .leading, spacing: 8) {
             
+            HStack(alignment: .center) {
+                Text(title)
+                    .font(.pretendard(size: 16, weight: .semibold))
+                    .foregroundStyle(isRemovable ? .mainBlue : .gray700)
+                
+                Spacer()
+                if isRemovable {
+                    Button {
+                        cancelAction?()
+                    } label: {
+                        Image(.iconX)
+                    }
+                }
+            }
+            .padding(.horizontal, 12)
+            .padding(.top, 12)
             if todos.isEmpty {
                 VStack(spacing: 12) {
                     Image(.iconCheck)
@@ -35,19 +54,52 @@ struct DDTodoCardList: View {
                 .padding(.vertical, 37)
                 .padding(.bottom, 12)
             } else {
-                VStack(spacing: 8) {
-                    ForEach(todos) { todo in
-                        Button(action: {
-                            action?(todo)
-                        }, label: {
-                            DDTodoCard(todo: todo)
-                        })
+                let tabBarCount = todos.count / itemsPerPage + (todos.count % itemsPerPage > 0 ? 1 : 0)
+                VStack {
+                    // TabView
+                    VStack(spacing: 8) {
+                        ForEach(0...itemsPerPage, id: \.self) { _ in
+                            DDTodoCard(todo: Todo(id: UUID(), title: "", depth: 0, path: ""))
+                        }
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.top, 8)
-                    .padding(.horizontal, 12)
+                    .opacity(0)
+                    .overlay (
+                        TabView(selection: $selectedIndex) {
+                            ForEach(0..<tabBarCount, id: \.self) { index in
+                                VStack(spacing: 8) {
+                                    let startIdx = index*itemsPerPage
+                                    let lastIdx = startIdx + min(itemsPerPage, todos.count - startIdx)
+                                    
+                                    ForEach(todos[startIdx..<lastIdx], id: \.self) { todo in
+                                        DDTodoCard(todo: todo)
+                                            .onTapGesture {
+                                                action?(todo)
+                                            }
+                                    }
+                                    Spacer()
+                                }
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.top, 8)
+                            .padding(.horizontal, 12)
+                        }
+                            .tabViewStyle(
+                                PageTabViewStyle(
+                                    indexDisplayMode: .never
+                                )
+                            )
+                    )
+                    
+                    HStack(spacing: 8) {
+                        ForEach(0..<tabBarCount, id: \.self) { index in
+                            Circle()
+                                .frame(width: 8, height: 8)
+                                .foregroundStyle(selectedIndex == index ? .gray900 : .gray100)
+                        }
+                    }
+                    .padding(.bottom, 12)
                 }
-                .padding(.bottom, 36)
+                .padding(.top, 8)
             }
         }
         .background(.gray0)
