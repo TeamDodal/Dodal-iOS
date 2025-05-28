@@ -18,37 +18,26 @@ struct TodoListView: View {
     
     var body: some View {
         WithPerceptionTracking {
-            VStack(alignment: .leading, spacing: 0) {
-                DDHeader(dateText: dateString) {
-                    
-                }
-                ScrollView {
-                    VStack(spacing: 12) {
-                        DDTodoCardList(title:"마감일까지 d-1", todos: store.todoItems)
-                        DDTodoCardList(title:"마감일까지 d-1", todos: store.todoItems)
-                        DDTodoCardList(title:"마감일까지 d-1", todos: store.todoItems)
+            ScrollView {
+                VStack(spacing: 12) {
+                    DDTodoCardList(title:"마감일까지 d-1", todos: store.todoItems) { todo in
+                        
                     }
-                    .padding(.top, 8)
-                    .padding(.horizontal, 16)
+                    DDTodoCardList(title:"이번주", todos: store.todoItems) { todo in
+                        
+                    }
+                    DDTodoCardList(title:"최근", todos: store.todoItems) { todo in
+                        
+                    }
                 }
-                Spacer()
+                .padding(.top, 8)
+                .padding(.horizontal, 16)
             }
             .background(.gray50)
             .onAppear {
                 store.send(.view(.viewonAppear))
             }
         }
-    }
-    
-    private var dateString: String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateFormat = "M월 d일"
-        let date = formatter.string(from: Date())
-        formatter.dateFormat = "E"
-        let day = formatter.string(from: Date())
-        
-        return "\(date) (\(day))"
     }
 }
 

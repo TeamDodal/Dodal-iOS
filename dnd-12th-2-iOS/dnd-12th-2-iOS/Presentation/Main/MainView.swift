@@ -18,6 +18,9 @@ struct MainView: View {
     
     var body: some View {
         WithPerceptionTracking {
+            DDHeader(dateText: "5월 12일 (월)") {
+                
+            }           
             TodoListView(store: store.scope(state: \.todoList, action: \.todoList))
                 .overlay(alignment: .bottom, content: {
                     VStack {
@@ -30,9 +33,9 @@ struct MainView: View {
                         .buttonStyle(.borderedProminent)
                     }
                 })
-            .sheet(isPresented: $store.isShowAddTodoSheet ) {
-                AddTodoView(store: store.scope(state: \.todo, action: \.todo))
-            }
+                .sheet(isPresented: $store.isShowAddTodoSheet ) {
+                    AddTodoView(store: store.scope(state: \.todo, action: \.todo))
+                }
         }
     }
 }
