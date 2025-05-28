@@ -37,7 +37,7 @@ struct TodoListView: View {
                     }
                     DDTodoCardList(todos: store.recentTodos, title:"최근", itemsPerPage: 7) { todo in
                         
-                    }                    
+                    }
                 }
                 .padding(.top, 16)
                 .padding(.horizontal, 16)
