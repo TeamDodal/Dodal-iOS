@@ -23,11 +23,10 @@ struct TodoListView: View {
                     
                 }
                 ScrollView {
-                    LazyVStack(spacing: 12) {
-                        DDTodoCard(title:"마감일까지 d-1", todos: store.todoItems)
-                            .background(.gray0)
-                            .cornerRadius(12)
-                    
+                    VStack(spacing: 12) {
+                        DDTodoCardList(title:"마감일까지 d-1", todos: store.todoItems)
+                        DDTodoCardList(title:"마감일까지 d-1", todos: store.todoItems)
+                        DDTodoCardList(title:"마감일까지 d-1", todos: store.todoItems)
                     }
                     .padding(.top, 8)
                     .padding(.horizontal, 16)
