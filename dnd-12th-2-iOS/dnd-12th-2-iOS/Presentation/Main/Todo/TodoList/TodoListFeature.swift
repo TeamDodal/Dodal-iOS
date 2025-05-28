@@ -11,9 +11,18 @@ import ComposableArchitecture
 
 @Reducer
 struct TodoListFeature {
+    
     @ObservableState
     struct State {
+        private let calendar = Calendar.current
         var todoItems: [Todo] = []
+        
+        var dDayTodos: [Todo] {
+            return todoItems.filter { todo in
+                guard let dueDate = todo.dueDate else { return false }                
+                return calendar.isDateInTomorrow(dueDate)
+            }
+        }
     }
     
     enum Action: TCAAction {
@@ -58,6 +67,7 @@ struct TodoListFeature {
                 case .fetchTodoItem:
                     return .run { send in
                         let todos = try todoClient.fetchTodoItems()
+                    print(todos)
                         await send(.view(.responseTodoItem(todos)))
                     }
                 }

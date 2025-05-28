@@ -19,6 +19,7 @@ struct AddTodoView: View {
     var body: some View {
         WithPerceptionTracking {
             VStack {
+                DatePicker("dueDate", selection: $store.selectedDate)
                 Text(store.isEdit ? "수정중" : "생성중")
                 TextField("title", text: $store.title)
                     .textFieldStyle(.roundedBorder)

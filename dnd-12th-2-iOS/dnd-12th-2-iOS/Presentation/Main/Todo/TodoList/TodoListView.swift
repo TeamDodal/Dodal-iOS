@@ -23,7 +23,7 @@ struct TodoListView: View {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 12) {
                     if isShowDdayView {
-                        DDTodoCardList(todos: store.todoItems, title:"마감일까지 d-1") { todo in
+                        DDTodoCardList(todos: store.dDayTodos, title:"마감일까지 d-1") { todo in
                             
                         } cancelAction: {
                             withAnimation(.default) {
