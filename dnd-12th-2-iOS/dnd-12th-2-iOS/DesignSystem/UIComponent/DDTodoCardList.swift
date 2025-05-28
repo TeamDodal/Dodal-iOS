@@ -53,12 +53,12 @@ struct DDTodoCardList: View {
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 37)
                 .padding(.bottom, 12)
-            } else {
+            } else {                
                 let tabBarCount = todos.count / itemsPerPage + (todos.count % itemsPerPage > 0 ? 1 : 0)
                 VStack {
                     // TabView
                     VStack(spacing: 8) {
-                        ForEach(0...itemsPerPage, id: \.self) { _ in
+                        ForEach(0...min(todos.count, itemsPerPage), id: \.self) { _ in
                             DDTodoCard(todo: Todo(id: UUID(), title: "", depth: 0, path: ""))
                         }
                     }
@@ -91,10 +91,12 @@ struct DDTodoCardList: View {
                     )
                     
                     HStack(spacing: 8) {
-                        ForEach(0..<tabBarCount, id: \.self) { index in
-                            Circle()
-                                .frame(width: 8, height: 8)
-                                .foregroundStyle(selectedIndex == index ? .gray900 : .gray100)
+                        if todos.count > itemsPerPage {
+                            ForEach(0..<tabBarCount, id: \.self) { index in
+                                Circle()
+                                    .frame(width: 8, height: 8)
+                                    .foregroundStyle(selectedIndex == index ? .gray900 : .gray100)
+                            }
                         }
                     }
                     .padding(.bottom, 12)

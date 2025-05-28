@@ -35,7 +35,7 @@ struct TodoListView: View {
                     DDTodoCardList(todos: store.todoItems, title:"이번주") { todo in
                         
                     }
-                    DDTodoCardList(todos: store.todoItems, title:"최근") { todo in
+                    DDTodoCardList(todos: store.todoItems, title:"최근", itemsPerPage: 7) { todo in
                         
                     }
                     
