@@ -10,6 +10,7 @@ import SwiftUI
 struct DDTodoCardList: View {
     let title: String
     let todos: [Todo]
+    let action: ((Todo) -> ())?
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -36,7 +37,11 @@ struct DDTodoCardList: View {
             } else {
                 VStack(spacing: 8) {
                     ForEach(todos) { todo in
-                        DDTodoCard(todo: todo)
+                        Button(action: {
+                            action?(todo)
+                        }, label: {
+                            DDTodoCard(todo: todo)
+                        })
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.top, 8)
