@@ -32,7 +32,7 @@ struct TodoListView: View {
                         }
                         .shadow(color: .mainBlue.opacity(0.25), radius: 12, x: 0, y: 0)
                     }
-                    DDTodoCardList(todos: store.todoItems, title:"이번주") { todo in
+                    DDTodoCardList(todos: store.thisWeekTodos, title:"이번주") { todo in
                         
                     }
                     DDTodoCardList(todos: store.todoItems, title:"최근", itemsPerPage: 7) { todo in

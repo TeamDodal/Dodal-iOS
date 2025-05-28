@@ -19,8 +19,18 @@ struct TodoListFeature {
         
         var dDayTodos: [Todo] {
             return todoItems.filter { todo in
-                guard let dueDate = todo.dueDate else { return false }                
+                guard let dueDate = todo.dueDate else { return false }
                 return calendar.isDateInTomorrow(dueDate)
+            }
+        }
+        
+        var thisWeekTodos: [Todo] {
+            guard let weekInterval = calendar.dateInterval(of: .weekOfYear, for: Date()) else {
+                return []
+            }
+            return todoItems.filter { todo in
+                guard let dueDate = todo.dueDate else { return false }
+                return weekInterval.contains(dueDate)
             }
         }
     }
@@ -67,7 +77,7 @@ struct TodoListFeature {
                 case .fetchTodoItem:
                     return .run { send in
                         let todos = try todoClient.fetchTodoItems()
-                    print(todos)
+                        print(todos)
                         await send(.view(.responseTodoItem(todos)))
                     }
                 }
