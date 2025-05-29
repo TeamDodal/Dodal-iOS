@@ -18,6 +18,8 @@ extension TodoItem {
     
     @NSManaged public var content: String?
     @NSManaged public var dueDate: Date?
+    @NSManaged public var createDate: Date
+    @NSManaged public var updateDate: Date
     @NSManaged public var id: UUID
     @NSManaged public var title: String
     @NSManaged public var items: Set<TodoItem>?
@@ -58,8 +60,10 @@ extension TodoItem {
             title: self.title,
             content: self.content,
             dueDate: self.dueDate,
+            createDate: self.createDate,
+            updateDate: self.updateDate,
             children: (self.items ?? [])
-                .sorted { ($0.dueDate ?? Date()) < ($1.dueDate ?? Date()) }
+                .sorted { $0.createDate < $1.createDate }
                 .map { $0.toDto() },
             parentID: self.parent?.id,
             depth: self.depth,

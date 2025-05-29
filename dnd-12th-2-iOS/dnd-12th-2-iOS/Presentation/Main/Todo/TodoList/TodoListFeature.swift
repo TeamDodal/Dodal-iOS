@@ -37,7 +37,7 @@ struct TodoListFeature {
         }
         
         var recentTodos: [Todo] {
-            return []
+            return todoItems.sorted { $0.updateDate > $1.updateDate }
         }
     }
     
@@ -93,3 +93,4 @@ struct TodoListFeature {
         }
     }
 }
+
