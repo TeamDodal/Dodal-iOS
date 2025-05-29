@@ -91,15 +91,17 @@ struct DDTodoCardList: View {
                             )
                     )
                     
+                    if todos.count > itemsPerPage {
                     HStack(spacing: 8) {
-                        if todos.count > itemsPerPage {
                             ForEach(0..<tabBarCount, id: \.self) { index in
                                 Circle()
                                     .frame(width: 8, height: 8)
                                     .foregroundStyle(selectedIndex == index ? .gray900 : .gray100)
-                                    .padding(.bottom, 12)
+                                   
                             }
                         }
+                    .frame(height: 16)
+                    .padding(.bottom, 12)
                     }
               
                 }
