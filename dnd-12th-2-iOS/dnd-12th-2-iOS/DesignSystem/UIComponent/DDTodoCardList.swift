@@ -60,7 +60,7 @@ struct DDTodoCardList: View {
                     // TabView
                     VStack(spacing: 8) {
                         ForEach(0...min(todos.count, itemsPerPage), id: \.self) { _ in
-                            DDTodoCard(todo: Todo(id: UUID(), title: "", depth: 0, path: ""))
+                            DDTodoCard(todo: Todo(id: UUID(), title: "", createDate: Date(), updateDate: Date(), depth: 0, path: ""))
                         }
                     }
                     .opacity(0)
