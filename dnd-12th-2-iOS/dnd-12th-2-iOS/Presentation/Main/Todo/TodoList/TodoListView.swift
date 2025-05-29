@@ -16,19 +16,15 @@ struct TodoListView: View {
         self.store = store
     }
     
-    @State var isShowDdayView = true
-    
     var body: some View {
         WithPerceptionTracking {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 12) {
-                    if isShowDdayView {
-                        DDTodoCardList(todos: store.dDayTodos, title:"마감일까지 d-1") { todo in
+                    if store.isShowDdayPopup {
+                        DDTodoCardList(todos: store.dDayTodos, title:"마감일까지 D-1") { todo in
                             
                         } cancelAction: {
-                            withAnimation(.default) {
-                                isShowDdayView = false
-                            }
+                            store.send(.view(.dismissDdayPopup), animation: .easeInOut)
                         }
                         .shadow(color: .mainBlue.opacity(0.25), radius: 12, x: 0, y: 0)
                     }
@@ -41,6 +37,7 @@ struct TodoListView: View {
                 }
                 .padding(.top, 16)
                 .padding(.horizontal, 16)
+                
             }
             .onAppear {
                 store.send(.view(.viewonAppear))

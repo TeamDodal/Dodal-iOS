@@ -17,6 +17,8 @@ struct TodoListFeature {
         private let calendar = Calendar.current
         var todoItems: [Todo] = []
         
+        var isShowDdayPopup = false
+        
         // 마감일 하루전
         var dDayTodos: [Todo] {
             return todoItems.filter { todo in
@@ -50,6 +52,8 @@ struct TodoListFeature {
             case viewonAppear
             case responseTodoItem([Todo])
             case todoCellTapped(UUID)
+            case dismissDdayPopup
+            case showDdayPopup
         }
         
         enum ExternalAction {
@@ -73,6 +77,15 @@ struct TodoListFeature {
                     }
                 case let .responseTodoItem(todoItem):
                     state.todoItems = todoItem
+                    return .run { send in
+                        try await Task.sleep(for: .seconds(0.5))
+                        await send(.view(.showDdayPopup), animation: .easeInOut)
+                        }
+                case .showDdayPopup:
+                    state.isShowDdayPopup = true
+                    return .none
+                case .dismissDdayPopup:
+                    state.isShowDdayPopup = false
                     return .none
                 default:
                     return .none
@@ -83,7 +96,6 @@ struct TodoListFeature {
                 case .fetchTodoItem:
                     return .run { send in
                         let todos = try todoClient.fetchTodoItems()
-                        print(todos)
                         await send(.view(.responseTodoItem(todos)))
                     }
                 }
