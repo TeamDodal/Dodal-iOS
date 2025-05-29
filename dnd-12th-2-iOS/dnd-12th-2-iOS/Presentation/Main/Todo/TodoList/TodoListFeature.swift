@@ -33,7 +33,7 @@ struct TodoListFeature {
             return todoItems.filter { todo in
                 guard let dueDate = todo.dueDate else { return false }
                 return weekInterval.contains(dueDate)
-            }
+            }.sorted { $0.dueDate ?? $0.createDate < $1.dueDate ?? $1.createDate }
         }
         
         var recentTodos: [Todo] {

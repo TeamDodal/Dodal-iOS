@@ -97,10 +97,11 @@ struct DDTodoCardList: View {
                                 Circle()
                                     .frame(width: 8, height: 8)
                                     .foregroundStyle(selectedIndex == index ? .gray900 : .gray100)
+                                    .padding(.bottom, 12)
                             }
                         }
                     }
-                    .padding(.bottom, 12)
+              
                 }
                 .padding(.top, 8)
             }
