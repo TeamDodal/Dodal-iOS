@@ -7,15 +7,21 @@
 
 import SwiftUI
 
+import ComposableArchitecture
+
 struct TodoDetail: View {
-    let todos: [Todo]
+    @Perception.Bindable private var store: StoreOf<DetailFeature>
+    
+    init(store: StoreOf<DetailFeature>) {
+        self.store = store
+    }
     
     var body: some View {
         VStack {
             VStack {
                 HStack {
                     Button(action: {
-                        
+                        store.send(.destination(.popNavigationStack))
                     }) {
                         Image(.iconBack)
                             .foregroundStyle(.gray900)
@@ -101,9 +107,11 @@ struct TodoDetail: View {
             
             ScrollView {
                 LazyVStack(spacing: 8) {
-                    ForEach(todos) { todo in
+                    ForEach(store.todoItem.children) { todo in
                         DDTodoRow(todo: todo) {
                             
+                        } onTap: {
+                            store.send(.view(.todoCellTapped(todo)))
                         }
                     }
                 }
@@ -115,45 +123,45 @@ struct TodoDetail: View {
     }
 }
 
-#Preview {
-    TodoDetail(todos: [Todo(
-        id: UUID(),
-        title: "운동하기",
-        content: "헬스장 가기",
-        dueDate: Calendar.current.date(byAdding: .day, value: 1, to: Date()),
-        children: [
-            Todo(
-                id: UUID(),
-                title: "스트레칭",
-                content: nil,
-                dueDate: Date(),
-                parentID: nil,
-                depth: 1,
-                path: "운동하기 > 스트레칭"
-            ),
-            Todo(
-                id: UUID(),
-                title: "웨이트 트레이닝",
-                content: nil,
-                dueDate: nil,
-                parentID: nil,
-                depth: 1,
-                path: "운동하기 > 웨이트 트레이닝"
-            )
-        ],
-        parentID: nil,
-        depth: 0,
-        path: "운동하기"
-    ),
-                       Todo(
-                        id: UUID(),
-                        title: "책 읽기",
-                        content: "자기계발서 30분",
-                        dueDate: nil,
-                        children: [],
-                        parentID: nil,
-                        depth: 0,
-                        path: "책 읽기"
-                       )
-    ])
-}
+//#Preview {
+//    TodoDetail(todos: [Todo(
+//        id: UUID(),
+//        title: "운동하기",
+//        content: "헬스장 가기",
+//        dueDate: Calendar.current.date(byAdding: .day, value: 1, to: Date()),
+//        children: [
+//            Todo(
+//                id: UUID(),
+//                title: "스트레칭",
+//                content: nil,
+//                dueDate: Date(),
+//                parentID: nil,
+//                depth: 1,
+//                path: "운동하기 > 스트레칭"
+//            ),
+//            Todo(
+//                id: UUID(),
+//                title: "웨이트 트레이닝",
+//                content: nil,
+//                dueDate: nil,
+//                parentID: nil,
+//                depth: 1,
+//                path: "운동하기 > 웨이트 트레이닝"
+//            )
+//        ],
+//        parentID: nil,
+//        depth: 0,
+//        path: "운동하기"
+//    ),
+//                       Todo(
+//                        id: UUID(),
+//                        title: "책 읽기",
+//                        content: "자기계발서 30분",
+//                        dueDate: nil,
+//                        children: [],
+//                        parentID: nil,
+//                        depth: 0,
+//                        path: "책 읽기"
+//                       )
+//    ])
+//}

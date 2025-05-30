@@ -1,21 +1,21 @@
 //
-//  MainFlowCoordinatorView.swift
+//  TodoFlowCoordinatorView.swift
 //  dnd-12th-2-iOS
 //
-//  Created by 권석기 on 5/6/25.
+//  Created by Allie on 5/30/25.
 //
 
 import SwiftUI
 
 import ComposableArchitecture
 
-struct MainFlowCoordinatorView: View {
-    @Perception.Bindable var store: StoreOf<MainFlowCoordinator>
+struct TodoFlowCoordinatorView: View {
+    @Perception.Bindable var store: StoreOf<TodoFlowCoordinator>
     
     var body: some View {
         WithPerceptionTracking {
             NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
-                MainView(store: store.scope(state: \.root, action: \.root))
+                TodoView(store: store.scope(state: \.root, action: \.root))
             } destination: { store in
                 switch store.case {
                 case let .todoDetail(store):
@@ -27,7 +27,7 @@ struct MainFlowCoordinatorView: View {
 }
 
 #Preview {
-    MainFlowCoordinatorView(store: .init(initialState: MainFlowCoordinator.State(), reducer: {
-        MainFlowCoordinator()
+    TodoFlowCoordinatorView(store: .init(initialState: TodoFlowCoordinator.State(), reducer: {
+        TodoFlowCoordinator()
     }))
 }

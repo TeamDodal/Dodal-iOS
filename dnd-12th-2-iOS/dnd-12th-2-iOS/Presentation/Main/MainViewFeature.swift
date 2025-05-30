@@ -14,6 +14,7 @@ struct MainViewFeature {
         var isShowAddTodoSheet = false
         var todo = TodoFeature.State(isEdit: false)
         var todoList = TodoListFeature.State()
+        var todoTap = TodoTabFeature.State()
     }
     
     enum Action: ViewAction, TCAAction {
@@ -28,6 +29,7 @@ struct MainViewFeature {
         
         case todo(TodoFeature.Action)
         case todoList(TodoListFeature.Action)
+        case todoTap(TodoTabFeature.Action)
         
         enum ViewAction: BindableAction {
             case binding(BindingAction<State>)
@@ -35,7 +37,7 @@ struct MainViewFeature {
         }
         
         enum DestinationAction {
-            case goToTodoDetail(TodoItem)
+            case goToTodoDetail(Todo)
         }
         
         enum ExternalAction {}
@@ -48,6 +50,9 @@ struct MainViewFeature {
         }
         Scope(state: \.todoList, action: \.todoList) {
             TodoListFeature()
+        }
+        Scope(state: \.todoTap, action: \.todoTap) {
+            TodoTabFeature()
         }
         Reduce { state, action in
             switch action {
@@ -75,6 +80,15 @@ struct MainViewFeature {
                 case let .view(.todoCellTapped(todo)):
                     return .none
 //                    return .send(.destination(.goToTodoDetail(todo)))
+                default:
+                    return .none
+                }
+                
+                // MARK: - TodoTap
+            case let .todoTap(todoTapAction):
+                switch todoTapAction {
+                case let .view(.todoRowTapped(todo)):
+                    return .send(.destination(.goToTodoDetail(todo)))
                 default:
                     return .none
                 }
