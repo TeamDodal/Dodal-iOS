@@ -19,9 +19,6 @@ struct TodoView: View {
     var body: some View {
         WithPerceptionTracking {
             VStack(alignment: .leading, spacing: 0) {
-                DDHeader(dateText: dateString) {
-                    
-                }
                 if store.todoItems.isEmpty {
                     VStack {
                         Image(.imgEmpty)
@@ -44,9 +41,13 @@ struct TodoView: View {
                     ScrollView {
                         LazyVStack(spacing: 8) {
                             ForEach(store.todoItems) { todo in
-                                DDTodoRow(todo: todo) {
-                                    // 마감일 설정 처리
-                                }
+                                DDTodoRow(todo: todo,
+                                          onSetDueDate: {
+//                                    store.send(.view(.dueDateButtonTapped(todo.id)))
+                                },
+                                          onTap: {
+                                    store.send(.view(.todoRowTapped(todo)))
+                                })
                             }
                         }
                         .padding(.top, 22)
@@ -60,16 +61,5 @@ struct TodoView: View {
                 store.send(.view(.viewonAppear))
             }
         }
-    }
-    
-    private var dateString: String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateFormat = "M월 d일"
-        let date = formatter.string(from: Date())
-        formatter.dateFormat = "E"
-        let day = formatter.string(from: Date())
-        
-        return "\(date) (\(day))"
     }
 }

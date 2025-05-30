@@ -11,7 +11,7 @@ import ComposableArchitecture
 struct MainFlowCoordinator {
     @Reducer
     enum Path {
-        case todoDetail(TodoDetailFeature)
+        case todoDetail(DetailFeature)
     }
     
     @ObservableState
@@ -36,7 +36,7 @@ struct MainFlowCoordinator {
                 case let .element(id: id, action: .todoDetail(.destination(.popNavigationStack))):
                     state.path.pop(from: id)
                     return .none
-                case let .element(id: _, action: .todoDetail(.view(.totoCellTapped(todo)))):
+                case let .element(id: _, action: .todoDetail(.view(.todoCellTapped(todo)))):
                     state.path.append(.todoDetail(.init(todoItem: todo)))
                     return .none
                 default:

@@ -10,6 +10,7 @@ import SwiftUI
 struct DDTodoRow: View {
     let todo: Todo
     let onSetDueDate: (() -> Void)?
+    let onTap: (() -> Void)?
 
     var body: some View {
         HStack {
@@ -55,6 +56,10 @@ struct DDTodoRow: View {
         .background {
             RoundedRectangle(cornerRadius: 8)
                 .fill(.gray0)
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            onTap?()
         }
     }
 
