@@ -120,6 +120,7 @@ struct TodoDetail: View {
             }
         }
         .background(.gray50)
+        .toolbar(.hidden, for: .navigationBar)
     }
 }
 
