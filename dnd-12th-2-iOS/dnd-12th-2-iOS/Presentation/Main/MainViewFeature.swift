@@ -17,15 +17,12 @@ struct MainViewFeature {
     }
     
     enum Action: ViewAction, TCAAction {
-        // view에서 일어나는 액션을 정의합니다.
+        // TCAAction
         case view(ViewAction)
-        
-        // 외부의존성과 일어나는 액션을 정의합니다.
         case external(ExternalAction)
-        
-        // 뷰이동 관련 액션
         case destination(DestinationAction)
         
+        // SubFeature
         case todo(TodoFeature.Action)
         case todoList(TodoListFeature.Action)
         
@@ -51,6 +48,9 @@ struct MainViewFeature {
         }        
         Reduce { state, action in
             switch action {
+            case .view(.binding(\.isShowAddTodoSheet)):
+                state.todo = .init(isEdit: false)
+                return .none
                 // MARK: - View
             case let .view(viewAction):
                 switch viewAction {
@@ -63,9 +63,10 @@ struct MainViewFeature {
                 // MARK: - TodoView
             case let .todo(todoAction):
                 switch todoAction {
+               
                 case .view(.addTodoComplete):
                     state.isShowAddTodoSheet = false
-                    return .send(.todoList(.view(.viewonAppear)))
+                    return .send(.todoList(.view(.viewonAppear)))                    
                 default:
                     return .none
                 }
