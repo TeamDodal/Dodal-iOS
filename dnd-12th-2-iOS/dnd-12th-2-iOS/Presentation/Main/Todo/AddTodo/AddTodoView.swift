@@ -134,7 +134,7 @@ struct AddTodoView: View {
             .padding(.top, 12)
             
             DDCalendar(month: Date(), selectedDate: $store.selectedDate)
-            DDButton(type: .primary, title: "마감일 설정", action: {
+            DDButton(type: .primary, title: store.setDueDateButtonText, action: {
                 store.send(.view(.backButtonTapped))
             })
                 .padding(.horizontal, 16)

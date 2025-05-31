@@ -25,6 +25,21 @@ struct TodoFeature {
         var selectedDate: Date?
         var viewFlow: TodoViewFlow = .addTodo
         
+        var setDueDateButtonText: String {
+            guard let selectedDate else { return "마감일 설정" }
+
+            let calendar = Calendar.current
+            let startOfToday = calendar.startOfDay(for: Date())
+            let startOfTarget = calendar.startOfDay(for: selectedDate)
+
+            guard let diffDay = calendar.dateComponents([.day], from: startOfToday, to: startOfTarget).day,
+            diffDay > 0 else {
+                return "마감일 설정"
+            }
+
+            return "\(selectedDate.toMonthDayString)일까지 D-\(diffDay)일"
+        }
+        
         init(parentId: UUID? = nil,
              title: String = "",
              isEdit: Bool) {
