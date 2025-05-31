@@ -25,7 +25,7 @@ struct TodoListView: View {
                             todos: store.dDayTodos,
                             title: "마감일까지 D-1",
                             todoCellTapped: { todo in
-                                
+                                store.send(.view(.todoCellTapped(todo)))
                             },
                             dueDateButtonTapped: { todo in
                               
@@ -41,7 +41,7 @@ struct TodoListView: View {
                         todos: store.thisWeekTodos,
                         title: "이번주",
                         todoCellTapped: { todo in
-                            
+                            store.send(.view(.todoCellTapped(todo)))
                         },
                         dueDateButtonTapped: { todo in
                             
@@ -52,7 +52,7 @@ struct TodoListView: View {
                         todos: store.recentTodos,
                         title: "최근",
                         todoCellTapped: { todo in
-                            
+                            store.send(.view(.todoCellTapped(todo)))
                         },
                         dueDateButtonTapped: { todo in
                             
