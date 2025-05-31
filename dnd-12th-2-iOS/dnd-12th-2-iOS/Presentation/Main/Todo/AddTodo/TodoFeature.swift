@@ -85,7 +85,12 @@ struct TodoFeature {
                 // MARK: - view
             case let .view(viewAction):
                 switch viewAction {
-                case .binding:
+                case .binding(\.selectedDate):
+                    if let selectedDate = state.selectedDate {
+                        if selectedDate < Date() {
+                            state.selectedDate = nil
+                        }
+                    }
                     return .none
                 case .addTodoButtonTapped:
                     if state.isEdit, let uuid = state.parentId {

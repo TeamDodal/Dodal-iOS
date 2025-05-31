@@ -65,9 +65,10 @@ struct AddTodoView: View {
                 .foregroundStyle(.gray0)
                 .padding(.horizontal, 8)
                 .frame(height: 34)
-                .background(.mainBlue)
+                .background(store.title.isEmpty ? .gray300 : .mainBlue)
                 .cornerRadius(8)
         })
+        .disabled(store.title.isEmpty)
     }
     
     private var addTodoView: some View {
@@ -134,9 +135,10 @@ struct AddTodoView: View {
             .padding(.top, 12)
             
             DDCalendar(month: Date(), selectedDate: $store.selectedDate)
-            DDButton(type: .primary, title: store.setDueDateButtonText, action: {
+            DDButton(type: store.selectedDate == nil ? .disabled : .primary, title: store.setDueDateButtonText, action: {
                 store.send(.view(.backButtonTapped))
             })
+            .disabled(store.selectedDate == nil)
                 .padding(.horizontal, 16)
         }
         .background(.white)
