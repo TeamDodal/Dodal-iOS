@@ -11,6 +11,9 @@ struct DDBottomSheet<ContentView: View>: ViewModifier {
             .fullScreenCover(isPresented: $isPresented) {
                 ZStack(alignment: .bottom) {
                     Color.black.opacity(0.75).ignoresSafeArea(.all)
+                        .onTapGesture {
+                            isPresented = false
+                        }
                         contentView()
                 }
                 .background(ClearBackground())
