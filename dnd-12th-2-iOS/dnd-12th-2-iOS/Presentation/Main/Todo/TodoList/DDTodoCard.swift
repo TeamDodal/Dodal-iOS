@@ -57,5 +57,5 @@ struct DDTodoCard: View {
 }
 
 #Preview {
-    DDTodoCard(todo: .init(id: UUID(), title: "", createDate: Date(), updateDate: Date(), depth: 0, path: ""))
+    DDTodoCard(todo: .init(id: UUID(), title: "", createDate: Date(), updateDate: Date(), depth: 0, path: []))
 }

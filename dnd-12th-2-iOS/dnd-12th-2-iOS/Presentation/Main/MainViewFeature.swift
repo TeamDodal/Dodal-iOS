@@ -77,10 +77,7 @@ struct MainViewFeature {
                 }
                 // MARK: - TodoListView
             case let .todoList(todoListAction):
-                switch todoListAction {
-                case let .view(.todoCellTapped(todo)):
-                    return .none
-//                    return .send(.destination(.goToTodoDetail(todo)))
+                switch todoListAction {                
                 default:
                     return .none
                 }

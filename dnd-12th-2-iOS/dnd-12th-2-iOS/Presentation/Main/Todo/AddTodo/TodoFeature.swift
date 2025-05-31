@@ -122,11 +122,11 @@ struct TodoFeature {
             case let .external(externalAction):
                 switch externalAction {
                 case .addTodoItem:
-                    return .run { [state] send in                        
+                    return .run { [state] send in
                         todoClient.createTodoItem(state.title, state.content, state.selectedDate)
                     }
                 case let .addSubTodoItem(id):
-                    return .run { [state] send in
+                    return .run { [state] send in                        
                         try todoClient.createSubTodoItem(id, state.title, nil, nil)
                     }
                 case let .editTodoItem(id, title):

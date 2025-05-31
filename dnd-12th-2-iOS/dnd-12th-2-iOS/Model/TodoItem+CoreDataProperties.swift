@@ -42,14 +42,16 @@ extension TodoItem {
         return count
     }
     
-    var path: String {
+    var path: [String] {
         var path = self.title
         var pointer = self.parent
+        var pathList: [String] = []
         while pointer != nil {
-            path = "\(pointer?.title ?? "")/" + path
+            path = "\(pointer?.title ?? "")"
+            pathList.append(path)
             pointer = pointer?.parent
         }
-        return path
+        return pathList
     }
 }
 
