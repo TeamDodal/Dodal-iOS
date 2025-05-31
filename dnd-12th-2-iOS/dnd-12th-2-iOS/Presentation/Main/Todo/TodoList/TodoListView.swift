@@ -18,39 +18,31 @@ struct TodoListView: View {
     
     var body: some View {
         WithPerceptionTracking {
-            VStack(alignment: .leading, spacing: 0) {
-                DDHeader(dateText: dateString) {
-                    
-                }
-                ScrollView {
-                    LazyVStack(spacing: 12) {
-                        ForEach(store.todoItems) { todo in
-                            DDTodoCard(todos: [todo])
-                                .background(.gray0)
-                                .cornerRadius(12)
-                                .padding(.horizontal, 16)
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 12) {
+                    if store.isShowDdayPopup {
+                        DDTodoCardList(todos: store.dDayTodos, title:"마감일까지 D-1") { todo in
+                            
+                        } cancelAction: {
+                            store.send(.view(.dismissDdayPopup), animation: .easeInOut)
                         }
+                        .shadow(color: .mainBlue.opacity(0.25), radius: 12, x: 0, y: 0)
                     }
-                    .padding(.top, 8)
+                    DDTodoCardList(todos: store.thisWeekTodos, title:"이번주") { todo in
+                        
+                    }
+                    DDTodoCardList(todos: store.recentTodos, title:"최근", itemsPerPage: 5) { todo in
+                        
+                    }
                 }
-                Spacer()
+                .padding(.top, 16)
+                .padding(.horizontal, 16)
+                
             }
-            .background(.gray50)
             .onAppear {
                 store.send(.view(.viewonAppear))
             }
         }
-    }
-    
-    private var dateString: String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateFormat = "M월 d일"
-        let date = formatter.string(from: Date())
-        formatter.dateFormat = "E"
-        let day = formatter.string(from: Date())
-        
-        return "\(date) (\(day))"
     }
 }
 

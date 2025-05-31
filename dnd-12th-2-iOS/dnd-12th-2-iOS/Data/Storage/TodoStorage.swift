@@ -47,6 +47,8 @@ final class TodoStorage: TodoStorageType {
         newTodo.title = title
         newTodo.content = content
         newTodo.dueDate = dueDate
+        newTodo.createDate = Date()
+        newTodo.updateDate = Date()
         try? context.save()
     }
     

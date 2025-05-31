@@ -11,9 +11,36 @@ import ComposableArchitecture
 
 @Reducer
 struct TodoListFeature {
+    
     @ObservableState
     struct State {
+        private let calendar = Calendar.current
         var todoItems: [Todo] = []
+        
+        var isShowDdayPopup = false
+        
+        // 마감일 하루전
+        var dDayTodos: [Todo] {
+            return todoItems.filter { todo in
+                guard let dueDate = todo.dueDate else { return false }
+                return calendar.isDateInTomorrow(dueDate)
+            }
+        }
+        
+        // 이번주
+        var thisWeekTodos: [Todo] {
+            guard let weekInterval = calendar.dateInterval(of: .weekOfYear, for: Date()) else {
+                return []
+            }
+            return todoItems.filter { todo in
+                guard let dueDate = todo.dueDate else { return false }
+                return weekInterval.contains(dueDate)
+            }.sorted { $0.dueDate ?? $0.createDate < $1.dueDate ?? $1.createDate }
+        }
+        
+        var recentTodos: [Todo] {
+            return todoItems.sorted { $0.updateDate > $1.updateDate }
+        }
     }
     
     enum Action: TCAAction {
@@ -25,6 +52,8 @@ struct TodoListFeature {
             case viewonAppear
             case responseTodoItem([Todo])
             case todoCellTapped(UUID)
+            case dismissDdayPopup
+            case showDdayPopup
         }
         
         enum ExternalAction {
@@ -48,6 +77,15 @@ struct TodoListFeature {
                     }
                 case let .responseTodoItem(todoItem):
                     state.todoItems = todoItem
+                    return .run { send in
+                        try await Task.sleep(for: .seconds(0.5))
+                        await send(.view(.showDdayPopup), animation: .easeInOut)
+                        }
+                case .showDdayPopup:
+                    state.isShowDdayPopup = true
+                    return .none
+                case .dismissDdayPopup:
+                    state.isShowDdayPopup = false
                     return .none
                 default:
                     return .none
@@ -67,3 +105,4 @@ struct TodoListFeature {
         }
     }
 }
+
