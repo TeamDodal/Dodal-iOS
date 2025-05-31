@@ -32,22 +32,28 @@ struct AddTodoView: View {
     }
     
     private var endDateButton: some View {
-        Button(action: {
-            store.send(.view(.setDueDateButtonTapped))
-        }, label: {
-            HStack(spacing: 4) {
-                Image(.iconCalendarGray)
-                Text("마감일")
-                    .font(.pretendard(size: 14, weight: .medium))
-                    .foregroundStyle(.gray500)
-            }
-            .padding(.horizontal, 8)
-            .frame(height: 34)
-            .background(
-                  RoundedRectangle(cornerRadius: 8)
-                      .stroke(Color.gray200, lineWidth: 1)
-              )
-        })
+        VStack {
+            let buttonColor: Color = store.selectedDate != nil ? .mainBlue : .gray500
+            Button(action: {
+                store.send(.view(.setDueDateButtonTapped))
+            }, label: {
+                HStack(spacing: 4) {
+                    Image(.iconCalendarGray)
+                        .renderingMode(.template)
+                        .foregroundStyle(buttonColor)
+                    Text(store.selectedDate?.toMonthDayString ?? "마감일")
+                        .font(.pretendard(size: 14, weight: .medium))
+                        .foregroundStyle(buttonColor)
+                }
+                .padding(.horizontal, 8)
+                .frame(height: 34)
+                .background(
+                      RoundedRectangle(cornerRadius: 8)
+                          .stroke(buttonColor, lineWidth: 1)
+                  )
+            })
+        }
+      
     }
     
     private var createTodoButton: some View {

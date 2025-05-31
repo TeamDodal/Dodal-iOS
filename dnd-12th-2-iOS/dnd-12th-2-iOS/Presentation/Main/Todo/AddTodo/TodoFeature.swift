@@ -22,7 +22,7 @@ struct TodoFeature {
         var isEdit: Bool
         var title = ""
         var content = ""
-        var selectedDate = Date()
+        var selectedDate: Date?
         var viewFlow: TodoViewFlow = .addTodo
         
         init(parentId: UUID? = nil,
