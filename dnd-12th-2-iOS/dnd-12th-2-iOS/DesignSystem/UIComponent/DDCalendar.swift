@@ -68,6 +68,8 @@ struct DDCalendar: View {
                     Image("iconRight")
                 }
             )
+        }.transaction {
+            $0.disablesAnimations = true
         }
     }
     

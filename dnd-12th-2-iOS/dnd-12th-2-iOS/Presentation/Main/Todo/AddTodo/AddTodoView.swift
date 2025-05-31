@@ -26,7 +26,7 @@ struct AddTodoView: View {
             case .addTodo:
                 addTodoView
             case .calendar:
-                calendarView
+                calendarView                    
             }
         }
     }
