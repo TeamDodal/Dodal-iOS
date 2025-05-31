@@ -15,7 +15,6 @@ struct MainTabView: View {
     
     var body: some View {
         WithPerceptionTracking {
-            NavigationStack {
                 TabView(selection: $store.currentTab) {
                     MainFlowCoordinatorView(store: store.scope(state: \.mainFlow, action: \.mainFlow))
                         .tag(TabInfo.main)
@@ -31,7 +30,6 @@ struct MainTabView: View {
                 }
                 .overlay(alignment: .bottom) {
                     TabBarView(currentTab: store.currentTab)
-                }
             }
         }
     }
