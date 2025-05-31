@@ -27,9 +27,10 @@ struct MainView: View {
                         store.send(.view(.showAddTodoButtonTapped))
                     }
                 })
-                .sheet(isPresented: $store.isShowAddTodoSheet ) {
-                    AddTodoView(store: store.scope(state: \.todo, action: \.todo))
-                }
+                .bottomSheet(isPresented: $store.isShowAddTodoSheet, content: {
+                        AddTodoView(store: store.scope(state: \.todo, action: \.todo))
+                        .fixedSize(horizontal: false, vertical: true)
+                })
         }
         .background(.gray50)
     }

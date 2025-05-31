@@ -30,9 +30,10 @@ struct AddTodoView: View {
                         Text("설명")
                             .font(.pretendard(size: 14, weight: .regular))
                             .foregroundStyle(.gray400)
-                            .offset(x: 16, y: 4)
+                            .offset(x: 2, y: 8)
                             .opacity(store.content.isEmpty ? 1 : 0)
                     }
+                    .padding(.leading, 16)
                 HStack {
                     endDateButton
                     Spacer()
@@ -40,8 +41,21 @@ struct AddTodoView: View {
                 }
                 .padding(.vertical, 12)
                 .padding(.horizontal, 16)
+                .overlay(alignment: .top, content: {
+                    Divider()
+                })
                 Spacer()
             }
+            
+            .background(.white)
+//            .clipShape(
+//                .rect(
+//                    topLeadingRadius: 12,
+//                    bottomLeadingRadius: 0,
+//                    bottomTrailingRadius: 0,
+//                    topTrailingRadius: 12
+//                )
+//            )
         }
     }
     
