@@ -16,6 +16,7 @@ struct TodoDetailFeature {
         var todoItem: Todo
         var isShowAddTodoSheet = false
         var todo: TodoFeature.State
+        var todoList: TodoListFeature.State
         
         var isOverDepthLimit: Bool {
             todoItem.depth > 3
@@ -24,11 +25,13 @@ struct TodoDetailFeature {
         init(todoItem: Todo) {
             self.todoItem = todoItem
             self.todo = TodoFeature.State(parentId: todoItem.id, isEdit: false)
+            self.todoList = .init(parentID: todoItem.id)
         }
     }
     
     enum Action: ViewAction, TCAAction {
         case todo(TodoFeature.Action)
+        case todoList(TodoListFeature.Action)
         
         // view에서 일어나는 액션을 정의합니다.
         case view(ViewAction)
@@ -45,6 +48,7 @@ struct TodoDetailFeature {
             case todoCellTapped(Todo)
             case editButtonTapped
             case deleteButtonTapped
+            case viewOnAppear
         }
         
         enum DestinationAction {
@@ -59,10 +63,13 @@ struct TodoDetailFeature {
     @Dependency(\.todoClient) var todoClient
     
     var body: some Reducer<State, Action> {
+        BindingReducer(action: \.view)
         Scope(state: \.todo, action: \.todo) {
             TodoFeature()
         }
-        BindingReducer(action: \.view)
+        Scope(state: \.todoList, action: \.todoList) {
+            TodoListFeature()
+        }
         Reduce { state, action in
             switch action {
                 // MARK: - View Action
@@ -78,12 +85,18 @@ struct TodoDetailFeature {
                     return .none
                 case .deleteButtonTapped:
                     return .send(.external(.deleteTodoItem(id: state.todoItem.id)))
+                case .viewOnAppear:
+                    return .send(.todoList(.view(.viewonAppear)))
                 default: return .none
                 }
-                // MARK: - Todo
-            case .todo(.view(.addTodoComplete)):
-                state.isShowAddTodoSheet = false
-                return .none
+            case let .todo(todoAction):
+                switch todoAction {
+                case .view(.addTodoComplete):
+                    state.isShowAddTodoSheet = false
+                    return .send(.todoList(.view(.viewonAppear)))
+                default:
+                    return .none
+                }
                 // MARK: - external
             case let .external(externalAction):
                 switch externalAction {
@@ -101,5 +114,6 @@ struct TodoDetailFeature {
             default: return .none
             }
         }
+        ._printChanges()
     }
 }
