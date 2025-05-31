@@ -16,6 +16,7 @@ struct TodoFeature {
         var parentId: UUID?
         var isEdit: Bool
         var title = ""
+        var content = ""
         var selectedDate = Date()
         
         init(parentId: UUID? = nil,

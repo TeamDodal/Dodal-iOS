@@ -19,19 +19,59 @@ struct AddTodoView: View {
     var body: some View {
         WithPerceptionTracking {
             VStack {
-                DatePicker("dueDate", selection: $store.selectedDate)
-                Text(store.isEdit ? "수정중" : "생성중")
-                TextField("title", text: $store.title)
-                    .textFieldStyle(.roundedBorder)
-                
-                Button(action: {
-                    store.send(.view(.addTodoButtonTapped))
-                }, label: {
-                    Text("Todo create")
-                })
-                .buttonStyle(.borderedProminent)
+                TextField("eg.운동하기", text: $store.title)
+                    .font(.pretendard(size: 22, weight: .semibold))
+                    .foregroundStyle(.black)
+                    .padding(.top, 12)
+                    .padding(.horizontal, 16)
+                TextEditor(text: $store.content)
+                    .frame(height:64)
+                    .overlay(alignment: .topLeading) {
+                        Text("설명")
+                            .font(.pretendard(size: 14, weight: .regular))
+                            .foregroundStyle(.gray400)
+                            .offset(x: 16, y: 4)
+                            .opacity(store.content.isEmpty ? 1 : 0)
+                    }
+                HStack {
+                    endDateButton
+                    Spacer()
+                    createTodoButton
+                }
+                .padding(.vertical, 12)
+                .padding(.horizontal, 16)
+                Spacer()
             }
         }
+    }
+    
+    private var endDateButton: some View {
+        Button(action: {}, label: {
+            HStack(spacing: 4) {
+                Image(.iconCalendarGray)
+                Text("마감일")
+                    .font(.pretendard(size: 14, weight: .medium))
+                    .foregroundStyle(.gray500)
+            }
+            .padding(.horizontal, 8)
+            .frame(height: 34)
+            .background(
+                  RoundedRectangle(cornerRadius: 8)
+                      .stroke(Color.gray200, lineWidth: 1)
+              )
+        })
+    }
+    
+    private var createTodoButton: some View {
+        Button(action: {}, label: {
+            Text("생성하기")
+                .font(.pretendard(size: 16, weight: .medium))
+                .foregroundStyle(.gray0)
+                .padding(.horizontal, 8)
+                .frame(height: 34)
+                .background(.mainBlue)
+                .cornerRadius(8)
+        })
     }
 }
 
