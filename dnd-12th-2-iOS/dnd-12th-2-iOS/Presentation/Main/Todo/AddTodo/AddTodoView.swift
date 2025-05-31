@@ -9,9 +9,13 @@ import SwiftUI
 
 import ComposableArchitecture
 
+enum Field {
+    case title
+}
+
 struct AddTodoView: View {
     @Perception.Bindable fileprivate var store: StoreOf<TodoFeature>
-    
+    @FocusState private var focusedField: Field?
     init(store: StoreOf<TodoFeature>) {
         self.store = store
     }
@@ -24,6 +28,7 @@ struct AddTodoView: View {
                     .foregroundStyle(.black)
                     .padding(.top, 12)
                     .padding(.horizontal, 16)
+                    .focused($focusedField, equals: .title)
                 TextEditor(text: $store.content)
                     .frame(height:64)
                     .overlay(alignment: .topLeading) {
@@ -45,17 +50,19 @@ struct AddTodoView: View {
                     Divider()
                 })
                 Spacer()
-            }
-            
+            }            
             .background(.white)
-//            .clipShape(
-//                .rect(
-//                    topLeadingRadius: 12,
-//                    bottomLeadingRadius: 0,
-//                    bottomTrailingRadius: 0,
-//                    topTrailingRadius: 12
-//                )
-//            )
+            .clipShape(
+                .rect(
+                    topLeadingRadius: 12,
+                    bottomLeadingRadius: 0,
+                    bottomTrailingRadius: 0,
+                    topTrailingRadius: 12
+                )
+            )
+            .onAppear {
+                focusedField = .title
+            }
         }
     }
     
@@ -77,7 +84,9 @@ struct AddTodoView: View {
     }
     
     private var createTodoButton: some View {
-        Button(action: {}, label: {
+        Button(action: {
+            store.send(.view(.addTodoButtonTapped))
+        }, label: {
             Text("생성하기")
                 .font(.pretendard(size: 16, weight: .medium))
                 .foregroundStyle(.gray0)
