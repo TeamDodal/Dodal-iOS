@@ -26,7 +26,7 @@ struct MainTabView: View {
                     SettingView(store: .init(initialState: SettingFeature.State(), reducer: {
                         SettingFeature()
                     }))
-                        .tag(TabInfo.setting)
+                    .tag(TabInfo.setting)
                     
                 }
                 .overlay(alignment: .bottom) {

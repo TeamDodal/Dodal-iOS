@@ -48,7 +48,7 @@ struct MainViewFeature {
         }
         Scope(state: \.todoList, action: \.todoList) {
             TodoListFeature()
-        }
+        }        
         Reduce { state, action in
             switch action {
                 // MARK: - View

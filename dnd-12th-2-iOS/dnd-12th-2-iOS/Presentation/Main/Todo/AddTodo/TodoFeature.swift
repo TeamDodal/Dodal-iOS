@@ -9,6 +9,11 @@ import Foundation
 
 import ComposableArchitecture
 
+enum TodoViewFlow {
+    case addTodo
+    case calendar
+}
+
 @Reducer
 struct TodoFeature {
     @ObservableState
@@ -18,6 +23,7 @@ struct TodoFeature {
         var title = ""
         var content = ""
         var selectedDate = Date()
+        var viewFlow: TodoViewFlow = .addTodo
         
         init(parentId: UUID? = nil,
              title: String = "",
@@ -42,6 +48,8 @@ struct TodoFeature {
             case binding(BindingAction<State>)
             case addTodoButtonTapped
             case addTodoComplete
+            case setDueDateButtonTapped
+            case backButtonTapped
         }
         
         enum DestinationAction {}
@@ -82,6 +90,12 @@ struct TodoFeature {
                             .send(.view(.addTodoComplete))
                         ])
                     }
+                case .setDueDateButtonTapped:
+                    state.viewFlow = .calendar
+                    return .none
+                case .backButtonTapped:
+                    state.viewFlow = .addTodo
+                    return .none
                 default: return .none
                 }
                 // MARK: - external
