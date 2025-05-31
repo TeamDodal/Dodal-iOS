@@ -7,11 +7,13 @@
 
 import Foundation
 
-struct Todo: Identifiable, Equatable {
+struct Todo: Identifiable, Equatable, Hashable {
     let id: UUID
     var title: String
     var content: String?
     var dueDate: Date?
+    let createDate: Date
+    let updateDate: Date
     var children: [Todo] = []
     var parentID: UUID?
     var depth: Int

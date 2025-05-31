@@ -16,6 +16,7 @@ struct TodoFeature {
         var parentId: UUID?
         var isEdit: Bool
         var title = ""
+        var selectedDate = Date()
         
         init(parentId: UUID? = nil,
              title: String = "",
@@ -86,8 +87,8 @@ struct TodoFeature {
             case let .external(externalAction):
                 switch externalAction {
                 case .addTodoItem:
-                    return .run { [state] send in
-                        todoClient.createTodoItem(state.title, nil, nil)
+                    return .run { [state] send in                        
+                        todoClient.createTodoItem(state.title, nil, state.selectedDate)
                     }
                 case let .addSubTodoItem(id):
                     return .run { [state] send in
