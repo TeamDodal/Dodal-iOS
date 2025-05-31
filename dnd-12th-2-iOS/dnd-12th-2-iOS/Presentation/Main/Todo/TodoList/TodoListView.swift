@@ -21,20 +21,45 @@ struct TodoListView: View {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 12) {
                     if store.isShowDdayPopup {
-                        DDTodoCardList(todos: store.dDayTodos, title:"마감일까지 D-1") { todo in
-                            
-                        } cancelAction: {
-                            store.send(.view(.dismissDdayPopup), animation: .easeInOut)
-                        }
+                        DDTodoCardList(
+                            todos: store.dDayTodos,
+                            title: "마감일까지 D-1",
+                            todoCellTapped: { todo in
+                                
+                            },
+                            dueDateButtonTapped: { todo in
+                              
+                            },
+                            deleteButtonTapped: {
+                                store.send(.view(.dismissDdayPopup), animation: .easeInOut)
+                            }
+                        )
                         .shadow(color: .mainBlue.opacity(0.25), radius: 12, x: 0, y: 0)
                     }
-                    DDTodoCardList(todos: store.thisWeekTodos, title:"이번주") { todo in
-                        
-                    }
-                    DDTodoCardList(todos: store.recentTodos, title:"최근", itemsPerPage: 5) { todo in
-                        
-                    }
+                    
+                    DDTodoCardList(
+                        todos: store.thisWeekTodos,
+                        title: "이번주",
+                        todoCellTapped: { todo in
+                            
+                        },
+                        dueDateButtonTapped: { todo in
+                            
+                        }
+                    )
+                    
+                    DDTodoCardList(
+                        todos: store.recentTodos,
+                        title: "최근",
+                        todoCellTapped: { todo in
+                            
+                        },
+                        dueDateButtonTapped: { todo in
+                            
+                        }
+                    )
                 }
+                
                 .padding(.top, 16)
                 .padding(.horizontal, 16)
                 

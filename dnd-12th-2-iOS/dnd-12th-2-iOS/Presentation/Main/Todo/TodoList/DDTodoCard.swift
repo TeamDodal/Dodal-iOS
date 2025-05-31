@@ -9,6 +9,7 @@ import SwiftUI
 
 struct DDTodoCard: View {
     let todo: Todo
+    var action: (()->())?
     
     var body: some View {
         HStack {
@@ -33,7 +34,7 @@ struct DDTodoCard: View {
                     .foregroundStyle(.gray500)
             } else {
                 Button("마감일 설정") {
-                    // 액션
+                    action?()
                 }
                 .font(.pretendard(size: 12, weight: .medium))
                 .foregroundStyle(.mainBlue)
