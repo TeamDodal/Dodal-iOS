@@ -10,7 +10,7 @@ import Foundation
 import ComposableArchitecture
 
 @Reducer
-struct DetailFeature {
+struct TodoDetailFeature {
     @ObservableState
     struct State {
         var todoItem: Todo
@@ -69,7 +69,7 @@ struct DetailFeature {
             case let .view(viewAction):
                 switch viewAction {
                 case .showAddTodoButtonTapped:
-                    state.todo = TodoFeature.State(parentId: state.todoItem.id, isEdit: false)
+                    state.todo = .init(parentId: state.todoItem.id, isEdit: false)
                     state.isShowAddTodoSheet = true
                     return .none
                 case .editButtonTapped:

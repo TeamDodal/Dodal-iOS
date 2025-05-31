@@ -65,6 +65,7 @@ final class TodoStorage: TodoStorageType {
     }
     
     func createSubTodoItem(id: UUID, title: String, content: String?, dueDate: Date?) throws {
+        
         let fetchRequest = NSFetchRequest<TodoItem>(entityName: modelName)
         fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
         do {
@@ -75,11 +76,12 @@ final class TodoStorage: TodoStorageType {
                 subTodo.title = title
                 subTodo.content = content
                 subTodo.dueDate = dueDate
-                
+                subTodo.createDate = Date()
+                subTodo.updateDate = Date()
                 todo.addToItems(subTodo)
                 
                 do {
-                    try mainContext.save()
+                    try? mainContext.save()
                 } catch {}
             }
             
