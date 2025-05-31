@@ -45,6 +45,9 @@ struct MainFlowCoordinator {
             case let .root(.destination(.goToTodoDetail(todo))):
                 state.path.append(.todoDetail(.init(todoItem: todo)))
                 return .none
+            case let .root(.todoList(.view(.todoCellTapped(todo)))):
+                state.path.append(.todoDetail(.init(todoItem: todo)))
+                return .none
             default:
                 return .none
             }

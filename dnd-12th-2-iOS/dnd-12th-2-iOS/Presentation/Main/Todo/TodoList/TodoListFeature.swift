@@ -51,7 +51,7 @@ struct TodoListFeature {
         enum ViewAction {
             case viewonAppear
             case responseTodoItem([Todo])
-            case todoCellTapped(UUID)
+            case todoCellTapped(Todo)
             case dismissDdayPopup
             case showDdayPopup
         }
