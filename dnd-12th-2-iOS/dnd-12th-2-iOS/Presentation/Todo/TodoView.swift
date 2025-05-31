@@ -47,7 +47,7 @@ struct TodoView: View {
                                 },
                                           onTap: {
                                     store.send(.view(.todoRowTapped(todo)))
-                                })
+                                })                                
                             }
                         }
                         .padding(.top, 22)
