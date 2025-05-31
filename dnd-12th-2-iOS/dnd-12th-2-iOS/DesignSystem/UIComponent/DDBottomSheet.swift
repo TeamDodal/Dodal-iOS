@@ -10,7 +10,7 @@ struct DDBottomSheet<ContentView: View>: ViewModifier {
         content
             .fullScreenCover(isPresented: $isPresented) {
                 ZStack(alignment: .bottom) {
-                    Color.black.opacity(0.75).ignoresSafeArea(.all)
+                    Color.black.opacity(0.75).ignoresSafeArea(edges: .top)
                         .onTapGesture {
                             isPresented = false
                         }
