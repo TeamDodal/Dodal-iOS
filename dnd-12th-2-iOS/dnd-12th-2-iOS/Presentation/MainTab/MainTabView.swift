@@ -20,7 +20,7 @@ struct MainTabView: View {
                     MainFlowCoordinatorView(store: store.scope(state: \.mainFlow, action: \.mainFlow))
                         .tag(TabInfo.main)
                     
-                    TodoView()
+                    TodoFlowCoordinatorView(store: store.scope(state: \.todoFlow, action: \.todoFlow))
                         .tag(TabInfo.todo)
                     
                     SettingView(store: .init(initialState: SettingFeature.State(), reducer: {
