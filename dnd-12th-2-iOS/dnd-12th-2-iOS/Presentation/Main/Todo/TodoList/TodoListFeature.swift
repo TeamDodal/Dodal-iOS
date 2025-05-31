@@ -47,6 +47,7 @@ struct TodoListFeature {
         enum ExternalAction {
             /// 할일 목록 가져오기
             case fetchTodoItem
+            case fetchSubTodoItem(UUID)
         }
         
         enum DestinationAction {
@@ -63,9 +64,16 @@ struct TodoListFeature {
             case let .view(viewAction):
                 switch viewAction {
                 case .viewonAppear:
-                    return .run { send in
-                        await send(.external(.fetchTodoItem))
+                    if let parentId = state.parentID {
+                        return .run { send in
+                            await send(.external(.fetchSubTodoItem(parentId)))
+                        }
+                    } else {
+                        return .run { send in
+                            await send(.external(.fetchTodoItem))
+                        }
                     }
+                
                 case let .responseTodoItem(todoItem):
                     state.todoItems = todoItem
                 default:
@@ -77,6 +85,11 @@ struct TodoListFeature {
                 case .fetchTodoItem:
                     return .run { send in
                         let todos = try todoClient.fetchTodoItems()
+                        await send(.view(.responseTodoItem(todos)))
+                    }
+                case let .fetchSubTodoItem(id):
+                    return .run { send in
+                        let todos = try todoClient.fetchSubTodoItems(id)
                         await send(.view(.responseTodoItem(todos)))
                     }
                 }

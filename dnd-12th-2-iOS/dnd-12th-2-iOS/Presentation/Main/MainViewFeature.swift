@@ -124,6 +124,6 @@ struct MainViewFeature {
             default:
                 return .none
             }
-        }
+        }        
     }
 }

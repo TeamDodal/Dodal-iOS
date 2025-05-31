@@ -92,16 +92,12 @@ struct TodoDetailView: View {
                     .padding(.leading, 16)
                     .padding(.bottom, 16)
                     .padding(.top, 12)
-                    
-                    VStack {
-                        
-                    }
                 }
                 .background(.gray0)
                 
                 ScrollView {
                    LazyVStack(spacing: 8) {
-                        ForEach(store.todoItem.children) { todo in
+                       ForEach(store.todoList.todoItems) { todo in
                             DDTodoRow(todo: todo) {
                                 
                             } onTap: {
@@ -124,6 +120,9 @@ struct TodoDetailView: View {
                 AddTodoView(store: store.scope(state: \.todo, action: \.todo))
                     .fixedSize(horizontal: false, vertical: true)
             })
+            .onAppear {
+                store.send(.view(.viewOnAppear))
+            }
         }
     }
 }

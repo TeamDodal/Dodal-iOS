@@ -11,6 +11,7 @@ import CoreData
 protocol TodoStorageType {
     func createTodoItem(title: String, content: String?, dueDate: Date?)
     func fetchTodoItems() throws -> [TodoItem]
+    func fetchTodoItems(id: UUID) throws -> [TodoItem]
     func createSubTodoItem(id: UUID, title: String, content: String?, dueDate: Date?) throws
     func editTodoItem(id: UUID, title: String, content: String?, dueDate: Date?) throws
     func deleteTodoItem(id: UUID) throws -> Void
@@ -50,6 +51,18 @@ final class TodoStorage: TodoStorageType {
         newTodo.createDate = Date()
         newTodo.updateDate = Date()
         try? context.save()
+    }
+    
+    func fetchTodoItems(id: UUID) throws -> [TodoItem] {
+        do {
+            let fetchRequest = NSFetchRequest<TodoItem>(entityName: modelName)
+            fetchRequest.predicate = NSPredicate(format: "parent.id == %@", id as CVarArg)
+            let data = try mainContext.fetch(fetchRequest)
+            
+            return data
+        } catch {
+            throw error
+        }
     }
     
     func fetchTodoItems() throws -> [TodoItem] {
