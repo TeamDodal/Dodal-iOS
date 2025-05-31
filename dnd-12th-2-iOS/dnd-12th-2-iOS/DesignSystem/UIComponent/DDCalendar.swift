@@ -9,11 +9,11 @@ import SwiftUI
 
 struct DDCalendar: View {
     @State private var month: Date = Date()
-    @Binding private var selectedDate: Date
+    @Binding private var selectedDate: Date?
     
     init(
         month: Date = Date(),
-        selectedDate: Binding<Date>
+        selectedDate: Binding<Date?>
     ) {
         _month = State(initialValue: month)
         _selectedDate = selectedDate
