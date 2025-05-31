@@ -19,7 +19,7 @@ struct TodoFlowCoordinatorView: View {
             } destination: { store in
                 switch store.case {
                 case let .todoDetail(store):
-                    TodoDetail(store: store)
+                    TodoDetailView(store: store)
                 }
             }
         }

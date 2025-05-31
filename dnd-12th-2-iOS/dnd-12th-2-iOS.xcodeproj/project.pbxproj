@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		FB8E733C2D40CCCB005F935D /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = FB8E733B2D40CCCB005F935D /* ComposableArchitecture */; };
-		FBD0489F2DE5E7C700FD9F58 /* Secrets-dev.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = FBD0489D2DE5E7C700FD9F58 /* Secrets-dev.xcconfig */; };
-		FBD048A02DE5E7C700FD9F58 /* Secrets-prod.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = FBD0489E2DE5E7C700FD9F58 /* Secrets-prod.xcconfig */; };
+		FBD0489F2DE5E7C700FD9F58 /* (null) in Resources */ = {isa = PBXBuildFile; };
+		FBD048A02DE5E7C700FD9F58 /* (null) in Resources */ = {isa = PBXBuildFile; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -57,8 +57,6 @@
 		FB8E731F2D40CB60005F935D = {
 			isa = PBXGroup;
 			children = (
-				FBD0489D2DE5E7C700FD9F58 /* Secrets-dev.xcconfig */,
-				FBD0489E2DE5E7C700FD9F58 /* Secrets-prod.xcconfig */,
 				FB8E732A2D40CB60005F935D /* dnd-12th-2-iOS */,
 				FB8E73292D40CB60005F935D /* Products */,
 			);
@@ -140,8 +138,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FBD0489F2DE5E7C700FD9F58 /* Secrets-dev.xcconfig in Resources */,
-				FBD048A02DE5E7C700FD9F58 /* Secrets-prod.xcconfig in Resources */,
+				FBD0489F2DE5E7C700FD9F58 /* (null) in Resources */,
+				FBD048A02DE5E7C700FD9F58 /* (null) in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

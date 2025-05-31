@@ -9,7 +9,7 @@ import SwiftUI
 
 import ComposableArchitecture
 
-struct TodoDetail: View {
+struct TodoDetailView: View {
     @Perception.Bindable private var store: StoreOf<DetailFeature>
     
     init(store: StoreOf<DetailFeature>) {
