@@ -7,14 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		47FBF6472D9A54CD008AD7F6 /* Secrets-dev.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 47FBF6462D9A54CD008AD7F6 /* Secrets-dev.xcconfig */; };
-		47FBF6492D9A54D3008AD7F6 /* Secrets-prod.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 47FBF6482D9A54D3008AD7F6 /* Secrets-prod.xcconfig */; };
 		FB8E733C2D40CCCB005F935D /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = FB8E733B2D40CCCB005F935D /* ComposableArchitecture */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		47FBF6462D9A54CD008AD7F6 /* Secrets-dev.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Secrets-dev.xcconfig"; sourceTree = "<group>"; };
-		47FBF6482D9A54D3008AD7F6 /* Secrets-prod.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Secrets-prod.xcconfig"; sourceTree = "<group>"; };
 		FB8E73282D40CB60005F935D /* dnd-12th-2-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "dnd-12th-2-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -59,8 +55,6 @@
 		FB8E731F2D40CB60005F935D = {
 			isa = PBXGroup;
 			children = (
-				47FBF6462D9A54CD008AD7F6 /* Secrets-dev.xcconfig */,
-				47FBF6482D9A54D3008AD7F6 /* Secrets-prod.xcconfig */,
 				FB8E732A2D40CB60005F935D /* dnd-12th-2-iOS */,
 				FB8E73292D40CB60005F935D /* Products */,
 			);
@@ -142,8 +136,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				47FBF6492D9A54D3008AD7F6 /* Secrets-prod.xcconfig in Resources */,
-				47FBF6472D9A54CD008AD7F6 /* Secrets-dev.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -162,7 +154,6 @@
 /* Begin XCBuildConfiguration section */
 		FB8E73342D40CB63005F935D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 47FBF6462D9A54CD008AD7F6 /* Secrets-dev.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -226,7 +217,6 @@
 		};
 		FB8E73352D40CB63005F935D /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 47FBF6482D9A54D3008AD7F6 /* Secrets-prod.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -283,23 +273,21 @@
 		};
 		FB8E73372D40CB63005F935D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 47FBF6462D9A54CD008AD7F6 /* Secrets-dev.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = "dnd-12th-2-iOS/dnd-12th-2-iOS.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 14;
 				DEVELOPMENT_ASSET_PATHS = "\"dnd-12th-2-iOS/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = GV9S799884;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "dnd-12th-2-iOS/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = DODAL;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -316,7 +304,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.wooyani.Dodal;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = Dodal;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -329,23 +316,21 @@
 		};
 		FB8E73382D40CB63005F935D /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 47FBF6482D9A54D3008AD7F6 /* Secrets-prod.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = "dnd-12th-2-iOS/dnd-12th-2-iOS.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 14;
 				DEVELOPMENT_ASSET_PATHS = "\"dnd-12th-2-iOS/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = GV9S799884;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "dnd-12th-2-iOS/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = DODAL;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -362,7 +347,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.wooyani.Dodal;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = Dodal;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
