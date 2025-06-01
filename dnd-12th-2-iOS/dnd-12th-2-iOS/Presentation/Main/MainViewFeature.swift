@@ -109,7 +109,7 @@ struct MainViewFeature {
                     return .none
                 case let .setDueDateButtonTapped(todo):
                     state.isShowAddTodoSheet = true
-                    state.todo = .editDueDateHomeView(parentId: todo.id,
+                    state.todo = .editDueDateHomeView(targetId: todo.id,
                                                       title: todo.title,
                                                       content: todo.content ?? "",
                                                       dueDate: todo.dueDate ?? Date()
