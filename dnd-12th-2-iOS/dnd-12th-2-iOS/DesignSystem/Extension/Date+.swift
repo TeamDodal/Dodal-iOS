@@ -17,4 +17,10 @@ extension Date {
     var formattedCalendarDayDate: String {
         Date.calendarDayDateFormatter.string(from: self)
     }
+    
+    var toMonthDayString: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "M월 d일"
+        return formatter.string(from: self)
+    }
 }

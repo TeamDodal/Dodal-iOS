@@ -9,14 +9,14 @@ import SwiftUI
 
 struct DDCalendar: View {
     @State private var month: Date = Date()
-    @State private var selectedDate: Date?
+    @Binding private var selectedDate: Date?
     
     init(
         month: Date = Date(),
-        selectedDate: Date? = nil
+        selectedDate: Binding<Date?>
     ) {
         _month = State(initialValue: month)
-        _selectedDate = State(initialValue: selectedDate)
+        _selectedDate = selectedDate
     }
     
     var body: some View {
@@ -68,6 +68,8 @@ struct DDCalendar: View {
                     Image("iconRight")
                 }
             )
+        }.transaction {
+            $0.disablesAnimations = true
         }
     }
     
@@ -195,5 +197,5 @@ private extension DDCalendar {
 
 
 #Preview {
-    DDCalendar()
+    DDCalendar(selectedDate: .constant(.now))
 }

@@ -23,19 +23,14 @@ struct MainView: View {
             }
             TodoListView(store: store.scope(state: \.todoList, action: \.todoList))
                 .overlay(alignment: .bottom, content: {
-                    VStack {
-                        Spacer()
-                        Button(action: {
-                            store.send(.view(.showAddTodoButtonTapped))
-                        }, label: {
-                            Text("Todo create")
-                        })
-                        .buttonStyle(.borderedProminent)
+                    DDAddTaskButton {
+                        store.send(.view(.showAddTodoButtonTapped))
                     }
                 })
-                .sheet(isPresented: $store.isShowAddTodoSheet ) {
+                .bottomSheet(isPresented: $store.isShowAddTodoSheet, content: {
                     AddTodoView(store: store.scope(state: \.todo, action: \.todo))
-                }
+                        .fixedSize(horizontal: false, vertical: true)
+                })
         }
         .background(.gray50)
     }

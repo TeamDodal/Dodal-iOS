@@ -12,13 +12,14 @@ struct DDTodoCardList: View {
     let title: String
     var itemsPerPage: Int = 3
     var pageLimit = 3
-    var action: ((Todo)->())? = nil
-    var cancelAction: (()->())? = nil
+    var todoCellTapped: ((Todo)->())? = nil
+    var dueDateButtonTapped: ((Todo)->())? = nil
+    var deleteButtonTapped: (()->())? = nil
     
     @State private var selectedIndex = 0
     
     var isRemovable: Bool {
-        cancelAction != nil
+        deleteButtonTapped != nil
     }
     
     var body: some View {
@@ -32,7 +33,7 @@ struct DDTodoCardList: View {
                 Spacer()
                 if isRemovable {
                     Button {
-                        cancelAction?()
+                        deleteButtonTapped?()
                     } label: {
                         Image(.iconX)
                     }
@@ -72,10 +73,12 @@ struct DDTodoCardList: View {
                                     let lastIdx = startIdx + min(itemsPerPage, todos.count - startIdx)
                                     
                                     ForEach(todos[startIdx..<lastIdx], id: \.self) { todo in
-                                        DDTodoCard(todo: todo)
-                                            .onTapGesture {
-                                                action?(todo)
-                                            }
+                                        DDTodoCard(todo: todo) {
+                                            dueDateButtonTapped?(todo)
+                                        }
+                                        .onTapGesture {
+                                            todoCellTapped?(todo)
+                                        }                                            
                                     }
                                     Spacer()
                                 }

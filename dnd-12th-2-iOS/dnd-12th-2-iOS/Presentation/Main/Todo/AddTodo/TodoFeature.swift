@@ -9,6 +9,11 @@ import Foundation
 
 import ComposableArchitecture
 
+enum TodoViewFlow {
+    case addTodo
+    case calendar
+}
+
 @Reducer
 struct TodoFeature {
     @ObservableState
@@ -16,7 +21,24 @@ struct TodoFeature {
         var parentId: UUID?
         var isEdit: Bool
         var title = ""
-        var selectedDate = Date()
+        var content = ""
+        var selectedDate: Date?
+        var viewFlow: TodoViewFlow = .addTodo
+        
+        var setDueDateButtonText: String {
+            guard let selectedDate else { return "마감일 설정" }
+
+            let calendar = Calendar.current
+            let startOfToday = calendar.startOfDay(for: Date())
+            let startOfTarget = calendar.startOfDay(for: selectedDate)
+
+            guard let diffDay = calendar.dateComponents([.day], from: startOfToday, to: startOfTarget).day,
+            diffDay > 0 else {
+                return "마감일 설정"
+            }
+
+            return "\(selectedDate.toMonthDayString)일까지 D-\(diffDay)일"
+        }
         
         init(parentId: UUID? = nil,
              title: String = "",
@@ -41,6 +63,8 @@ struct TodoFeature {
             case binding(BindingAction<State>)
             case addTodoButtonTapped
             case addTodoComplete
+            case setDueDateButtonTapped
+            case backButtonTapped
         }
         
         enum DestinationAction {}
@@ -61,7 +85,12 @@ struct TodoFeature {
                 // MARK: - view
             case let .view(viewAction):
                 switch viewAction {
-                case .binding:
+                case .binding(\.selectedDate):
+                    if let selectedDate = state.selectedDate {
+                        if selectedDate < Date() {
+                            state.selectedDate = nil
+                        }
+                    }
                     return .none
                 case .addTodoButtonTapped:
                     if state.isEdit, let uuid = state.parentId {
@@ -81,6 +110,12 @@ struct TodoFeature {
                             .send(.view(.addTodoComplete))
                         ])
                     }
+                case .setDueDateButtonTapped:
+                    state.viewFlow = .calendar
+                    return .none
+                case .backButtonTapped:
+                    state.viewFlow = .addTodo
+                    return .none
                 default: return .none
                 }
                 // MARK: - external
@@ -88,7 +123,7 @@ struct TodoFeature {
                 switch externalAction {
                 case .addTodoItem:
                     return .run { [state] send in                        
-                        todoClient.createTodoItem(state.title, nil, state.selectedDate)
+                        todoClient.createTodoItem(state.title, state.content, state.selectedDate)
                     }
                 case let .addSubTodoItem(id):
                     return .run { [state] send in
