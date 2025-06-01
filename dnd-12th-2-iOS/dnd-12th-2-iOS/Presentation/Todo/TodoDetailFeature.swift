@@ -15,7 +15,7 @@ struct TodoDetailFeature {
     struct State {
         var todoItem: Todo
         var isShowAddTodoSheet = false
-        var todo: TodoFeature.State
+        var todo: CreateTodoFeature.State
         var todoList: TodoListFeature.State
         
         var isOverDepthLimit: Bool {
@@ -30,7 +30,7 @@ struct TodoDetailFeature {
     }
     
     enum Action: ViewAction, TCAAction {
-        case todo(TodoFeature.Action)
+        case todo(CreateTodoFeature.Action)
         case todoList(TodoListFeature.Action)
         
         // view에서 일어나는 액션을 정의합니다.
@@ -65,7 +65,7 @@ struct TodoDetailFeature {
     var body: some Reducer<State, Action> {
         BindingReducer(action: \.view)
         Scope(state: \.todo, action: \.todo) {
-            TodoFeature()
+            CreateTodoFeature()
         }
         Scope(state: \.todoList, action: \.todoList) {
             TodoListFeature()
