@@ -87,7 +87,8 @@ struct TodoDetailFeature {
                     return .send(.external(.deleteTodoItem(id: state.todoItem.id)))
                 case .viewOnAppear:
                     return .send(.todoList(.view(.viewonAppear)))
-                default: return .none
+                default:
+                    return .none
                 }
             case let .todo(todoAction):
                 switch todoAction {

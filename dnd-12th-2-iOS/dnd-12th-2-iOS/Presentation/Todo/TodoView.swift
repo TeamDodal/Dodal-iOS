@@ -10,9 +10,9 @@ import SwiftUI
 import ComposableArchitecture
 
 struct TodoView: View {
-    let store: StoreOf<TodoTabFeature>
+    let store: StoreOf<TodoListFeature>
     
-    init(store: StoreOf<TodoTabFeature>) {
+    init(store: StoreOf<TodoListFeature>) {
         self.store = store
     }
     
@@ -46,7 +46,7 @@ struct TodoView: View {
 //                                    store.send(.view(.dueDateButtonTapped(todo.id)))
                                 },
                                           onTap: {
-                                    store.send(.view(.todoRowTapped(todo)))
+                                    store.send(.view(.todoCellTapped(todo)))
                                 })                                
                             }
                         }

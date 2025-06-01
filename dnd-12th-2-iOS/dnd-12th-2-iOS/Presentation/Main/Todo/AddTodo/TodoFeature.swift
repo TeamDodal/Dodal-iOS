@@ -9,8 +9,11 @@ import Foundation
 
 import ComposableArchitecture
 
+/// 현재 화면의 상태를 나타냅니다
 enum TodoViewFlow {
+    /// 할일 작성 화면
     case addTodo
+    /// 마감일 설정 화면
     case calendar
 }
 
@@ -18,13 +21,20 @@ enum TodoViewFlow {
 struct TodoFeature {
     @ObservableState
     struct State {
+        /// 상위 할일 ID를 지정
         var parentId: UUID?
+        /// 수정 여부
         var isEdit: Bool
+        /// 할일 제목
         var title = ""
+        /// 할일에 대한 설명
         var content = ""
+        /// 마감일 설정
         var selectedDate: Date?
+        /// 현재 화면의 상태를 나타내는 변수
         var viewFlow: TodoViewFlow = .addTodo
-        
+                
+        /// 마감일 설정 버튼텍스트
         var setDueDateButtonText: String {
             guard let selectedDate else { return "마감일 설정" }
 
@@ -127,11 +137,11 @@ struct TodoFeature {
                     }
                 case let .addSubTodoItem(id):
                     return .run { [state] send in                        
-                        try todoClient.createSubTodoItem(id, state.title, nil, nil)
+                        try todoClient.createSubTodoItem(id, state.title, state.content, state.selectedDate)
                     }
                 case let .editTodoItem(id, title):
-                    return .run { send in
-                        try todoClient.editTodoItem(id, title, nil, nil)
+                    return .run { [state] send in
+                        try todoClient.editTodoItem(id, title, state.content, state.selectedDate)
                     }
                 }
             }
