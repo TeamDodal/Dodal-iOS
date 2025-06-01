@@ -22,7 +22,7 @@ struct MainView: View {
                 DDHeader(dateText: "5월 12일 (월)") {
                     
                 }
-                ScrollView {
+                ScrollView(showsIndicators: false) {
                     VStack(spacing: 12) {
                         if store.isShowDdayPopup {
                             DDTodoCardList(
@@ -32,7 +32,7 @@ struct MainView: View {
                                     store.send(.view(.todoCellTapped(todo)))
                                 },
                                 dueDateButtonTapped: { todo in
-                                    
+                                    store.send(.view(.todoCellTapped(todo)))
                                 },
                                 deleteButtonTapped: {
                                     store.send(.view(.dismissDdayPopup), animation: .easeInOut)
@@ -48,7 +48,7 @@ struct MainView: View {
                                 store.send(.view(.todoCellTapped(todo)))
                             },
                             dueDateButtonTapped: { todo in
-                                
+                                store.send(.view(.setDueDateButtonTapped(todo)))
                             }
                         )
                         

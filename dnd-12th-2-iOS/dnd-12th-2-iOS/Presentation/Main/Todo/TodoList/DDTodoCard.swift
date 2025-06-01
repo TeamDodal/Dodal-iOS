@@ -46,6 +46,9 @@ struct DDTodoCard: View {
                 }
             }
         }
+        .padding(8)
+        .background(.white)
+        .cornerRadius(8)
     }
     
     private func formattedDate(_ date: Date) -> String {
