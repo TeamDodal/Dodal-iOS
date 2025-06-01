@@ -51,7 +51,7 @@ extension TodoItem {
             pathList.append(path)
             pointer = pointer?.parent
         }
-        return pathList
+        return pathList.reversed()
     }
 }
 
