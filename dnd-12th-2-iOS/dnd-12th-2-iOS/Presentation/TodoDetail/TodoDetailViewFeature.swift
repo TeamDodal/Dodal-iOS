@@ -10,7 +10,7 @@ import Foundation
 import ComposableArchitecture
 
 @Reducer
-struct TodoDetailFeature {
+struct TodoDetailViewFeature {
     @ObservableState
     struct State {
         var todoItem: Todo
