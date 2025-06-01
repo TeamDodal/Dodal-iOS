@@ -11,7 +11,7 @@ import ComposableArchitecture
 struct MainFlowCoordinator {
     @Reducer
     enum Path {
-        case todoDetail(TodoDetailFeature)
+        case todoDetail(TodoDetailViewFeature)
     }
     
     @ObservableState
