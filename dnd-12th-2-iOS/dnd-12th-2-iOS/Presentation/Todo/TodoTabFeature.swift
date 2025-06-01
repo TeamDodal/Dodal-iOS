@@ -54,8 +54,7 @@ struct TodoTabFeature {
                     }
                 case let .responseTodoItem(todoList):
                     state.todoItems = todoList
-                    return .none
-                    
+                    return .none                    
                 case let .dueDateButtonTapped(id):
                     // 마감일 설정
                     return .none
