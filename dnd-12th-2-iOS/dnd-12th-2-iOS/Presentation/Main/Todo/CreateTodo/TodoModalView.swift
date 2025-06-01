@@ -52,15 +52,14 @@ struct TodoModalView: View {
                           .stroke(buttonColor, lineWidth: 1)
                   )
             })
-        }
-      
+        }      
     }
     
     private var createTodoButton: some View {
         Button(action: {
             store.send(.view(.addTodoButtonTapped))
         }, label: {
-            Text("생성하기")
+            Text(store.isEdit ? "수정하기" : "생성하기")
                 .font(.pretendard(size: 16, weight: .medium))
                 .foregroundStyle(.gray0)
                 .padding(.horizontal, 8)
