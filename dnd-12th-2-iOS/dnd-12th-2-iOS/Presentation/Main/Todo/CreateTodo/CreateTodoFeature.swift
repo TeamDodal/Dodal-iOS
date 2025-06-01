@@ -125,7 +125,9 @@ struct CreateTodoFeature {
             /// 생성하기 버튼 터치
             case addTodoButtonTapped
             /// 생성하기 완료 액션
-            case addTodoComplete
+            case addTodoCompleted
+            /// 수정하기 완료 액션
+            case editTodoCompleted
             /// 마감일 설정 버튼 터치
             case setDueDateButtonTapped
             /// 뒤로가기 버튼 터치
@@ -161,21 +163,22 @@ struct CreateTodoFeature {
                     }
                     return .none
                 case .addTodoButtonTapped:
+                    // targetId에 해당하는 todo 수정
                     if state.isEdit, let uuid = state.targetId {
                         return .concatenate([
                             .send(.external(.editTodoItem(id: uuid, title: state.title, content: state.content, selectedDate: state.dueDate))),
-                            .send(.view(.addTodoComplete))
+                            .send(.view(.editTodoCompleted))
                         ])
                     }
                     else if let uuid = state.targetId {
                         return .concatenate([
                             .send(.external(.addSubTodoItem(id: uuid))),
-                            .send(.view(.addTodoComplete))
+                            .send(.view(.addTodoCompleted))
                         ])
                     } else {
                         return .concatenate([
                             .send(.external(.addTodoItem)),
-                            .send(.view(.addTodoComplete))
+                            .send(.view(.addTodoCompleted))
                         ])
                     }
                 case .setDueDateButtonTapped:

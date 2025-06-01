@@ -119,7 +119,7 @@ struct MainViewFeature {
                 // MARK: - TodoView
             case let .todo(todoAction):
                 switch todoAction {
-                case .view(.addTodoComplete):
+                case .view(.addTodoCompleted):
                     state.isShowAddTodoSheet = false
                     return .send(.todoList(.view(.viewonAppear)))
                 default:

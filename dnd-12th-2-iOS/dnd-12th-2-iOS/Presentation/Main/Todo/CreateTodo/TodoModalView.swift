@@ -14,7 +14,7 @@ enum Field {
 }
 
 struct TodoModalView: View {
-    @Perception.Bindable fileprivate var store: StoreOf<CreateTodoFeature>
+    @Perception.Bindable var store: StoreOf<CreateTodoFeature>
     @FocusState private var focusedField: Field?
     init(store: StoreOf<CreateTodoFeature>) {
         self.store = store
@@ -151,9 +151,3 @@ struct TodoModalView: View {
         )
     }
 }
-
-//#Preview {
-//    AddTodoView(store: .init(initialState: TodoFeature.State(), reducer: {
-//        TodoFeature()
-//    }))
-//}

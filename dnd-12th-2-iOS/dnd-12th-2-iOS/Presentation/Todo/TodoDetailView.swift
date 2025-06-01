@@ -72,7 +72,7 @@ struct TodoDetailView: View {
                                 .foregroundStyle(.gray900)
                             Spacer()
                             Button(action: {
-                                
+                                store.send(.view(.editButtonTapped))
                             }) {
                                 Image(.iconPencil)
                             }

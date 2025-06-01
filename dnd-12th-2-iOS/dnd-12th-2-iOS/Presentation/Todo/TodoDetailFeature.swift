@@ -94,11 +94,20 @@ struct TodoDetailFeature {
                 default:
                     return .none
                 }
+            // CreateTodo Action
             case let .todo(todoAction):
                 switch todoAction {
-                case .view(.addTodoComplete):
+                    // todo 생성시 리스트 불러오기
+                case .view(.addTodoCompleted):
                     state.isShowAddTodoSheet = false
                     return .send(.todoList(.view(.viewonAppear)))
+                    // todo 수정시 현재 todo 상태를 업데이트
+                case .view(.editTodoCompleted):
+                    state.todoItem.title = state.todo.title
+                    state.todoItem.content = state.todo.content
+                    state.todoItem.dueDate = state.todo.dueDate
+                    state.isShowAddTodoSheet = false
+                    return .none
                 default:
                     return .none
                 }
