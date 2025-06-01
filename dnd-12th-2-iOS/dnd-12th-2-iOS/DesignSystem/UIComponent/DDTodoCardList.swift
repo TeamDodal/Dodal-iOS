@@ -55,12 +55,12 @@ struct DDTodoCardList: View {
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 37)
                 .padding(.bottom, 12)
-            } else {                
+            } else {
                 let tabBarCount = min(pageLimit, todos.count / itemsPerPage + (todos.count % itemsPerPage > 0 ? 1 : 0))
                 VStack {
                     // TabView
                     VStack(spacing: 8) {
-                        ForEach(0...min(todos.count, itemsPerPage), id: \.self) { _ in
+                        ForEach(0..<min(todos.count, itemsPerPage), id: \.self) { _ in
                             DDTodoCard(todo: Todo(id: UUID(), title: "", createDate: Date(), updateDate: Date(), depth: 0, path: []))
                         }
                     }
@@ -78,7 +78,7 @@ struct DDTodoCardList: View {
                                         }
                                         .onTapGesture {
                                             todoCellTapped?(todo)
-                                        }                                            
+                                        }
                                     }
                                     Spacer()
                                 }
@@ -95,18 +95,17 @@ struct DDTodoCardList: View {
                     )
                     
                     if todos.count > itemsPerPage {
-                    HStack(spacing: 8) {
+                        HStack(spacing: 8) {
                             ForEach(0..<tabBarCount, id: \.self) { index in
                                 Circle()
                                     .frame(width: 8, height: 8)
                                     .foregroundStyle(selectedIndex == index ? .gray900 : .gray100)
-                                   
                             }
                         }
-                    .frame(height: 16)
-                    .padding(.bottom, 12)
+                        .frame(height: 16)
+                        .padding(.bottom, 12)
                     }
-              
+                    
                 }
                 .padding(.top, 8)
             }

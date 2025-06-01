@@ -24,7 +24,7 @@ struct MainView: View {
                 }
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 12) {
-                        if store.isShowDdayPopup {
+                        if store.isShowDdayPopup, !store.dDayTodos.isEmpty {
                             DDTodoCardList(
                                 todos: store.dDayTodos,
                                 title: "마감일까지 D-1",
@@ -55,6 +55,7 @@ struct MainView: View {
                         DDTodoCardList(
                             todos: store.recentTodos,
                             title: "최근",
+                            itemsPerPage: 5,
                             todoCellTapped: { todo in
                                 store.send(.view(.todoCellTapped(todo)))
                             },
