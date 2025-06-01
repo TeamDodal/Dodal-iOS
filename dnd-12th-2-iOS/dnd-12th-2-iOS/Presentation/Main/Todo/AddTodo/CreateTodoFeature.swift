@@ -21,7 +21,7 @@ struct CreateTodoFeature {
     @ObservableState
     struct State {
         /// todo 수정시 설정
-        var parentId: UUID?
+        var targetId: UUID?
         /// 편집 모드 여부
         var isEdit: Bool
         /// 할일 제목
@@ -29,51 +29,52 @@ struct CreateTodoFeature {
         /// 할일 상세 설명
         var content = ""
         /// 마감일
-        var selectedDate: Date?
+        var dueDate: Date?
         /// 현재 나타나는 화면 상태
         var viewFlow: TodoViewFlow = .addTodo
         /// 마감일 설정 버튼텍스트
         var setDueDateButtonText: String {
-            guard let selectedDate else { return "마감일 설정" }
+            guard let dueDate else { return "마감일 설정" }
             
             let calendar = Calendar.current
             let startOfToday = calendar.startOfDay(for: Date())
-            let startOfTarget = calendar.startOfDay(for: selectedDate)
+            let startOfTarget = calendar.startOfDay(for: dueDate)
             
             guard let diffDay = calendar.dateComponents([.day], from: startOfToday, to: startOfTarget).day,
                   diffDay > 0 else {
                 return "마감일 설정"
             }
             
-            return "\(selectedDate.toMonthDayString)일까지 D-\(diffDay)일"
+            return "\(dueDate.toMonthDayString)일까지 D-\(diffDay)일"
         }
         
         /// 홈에서 할일을 생성하는 경우에 사용합니다.
         /// - Returns: TodoState
         static func addTodoHomeView() -> State {
-            .init(parentId: nil, isEdit: false, viewFlow: .addTodo)
+            .init(targetId: nil, isEdit: false, viewFlow: .addTodo)
         }
         
         /// 홈에서 마감일을 수정하는 경우에 사용합니다.
         /// - Parameters:
+        ///   - targetId: 수정하려는 대상 투두의 id
         ///   - title: 할일 제목
         ///   - content: 할일 상세설명
         ///   - dueDate: 마감일
         /// - Returns: TodoState
-        static func editDueDateHomeView(parentId: UUID?, title: String, content: String = "", dueDate: Date) -> State {
-            .init(parentId: parentId, isEdit: true, title: title, content: content, selectedDate: dueDate, viewFlow: .calendar)
+        static func editDueDateHomeView(targetId: UUID?, title: String, content: String = "", dueDate: Date) -> State {
+            .init(targetId: targetId, isEdit: true, title: title, content: content, selectedDate: dueDate, viewFlow: .calendar)
         }
         
         
         /// 상세화면에서 제목을 수정하는 경우에 사용합니다.
         /// - Parameters:
-        ///   - parentId: 수정하고자하는 todoId
+        ///   - targetId: 수정하고자하는 todoId
         ///   - title: 할일 제목
         ///   - content: 할일 상세설명
         ///   - dueDate: 마감일
         /// - Returns: TodoState
-        static func editTitleDetailView(parentId: UUID?, title: String, content: String = "", dueDate: Date) -> State {
-            .init(parentId: parentId, isEdit: true, title: title, content: content, selectedDate: dueDate, viewFlow: .addTodo)
+        static func editTitleDetailView(targetId: UUID?, title: String, content: String = "", dueDate: Date) -> State {
+            .init(targetId: targetId, isEdit: true, title: title, content: content, selectedDate: dueDate, viewFlow: .addTodo)
         }
         
         /// 상세화면에서 마감일을 수정하는 경우에 사용합니다.
@@ -83,30 +84,30 @@ struct CreateTodoFeature {
         ///   - content: 할일 상세설명
         ///   - dueDate: 마감일
         /// - Returns: TodoState
-        static func editDueDateDetailView(parentId: UUID?, title: String, content: String = "", dueDate: Date) -> State {
-            .init(parentId: parentId, isEdit: true, title: title, content: content, selectedDate: dueDate, viewFlow: .calendar)
+        static func editDueDateDetailView(targetId: UUID?, title: String, content: String = "", dueDate: Date) -> State {
+            .init(targetId: targetId, isEdit: true, title: title, content: content, selectedDate: dueDate, viewFlow: .calendar)
         }
         
         /// 상세화면에서 하위 할일을 생성하는 경우에 사용합니다
-        /// - Parameter parentId: 상위 투두  Id
+        /// - Parameter targetId: 해당 id의 하위 할일을 추가합니다
         /// - Returns: TodoState
-        static func addTodoDetailView(parentId: UUID?) -> State {
-            .init(parentId: parentId, isEdit: false, viewFlow: .addTodo)
+        static func addTodoDetailView(targetId: UUID?) -> State {
+            .init(targetId: targetId, isEdit: false, viewFlow: .addTodo)
         }
         
         private init(
-            parentId: UUID?,
+            targetId: UUID?,
             isEdit: Bool,
             title: String = "",
             content: String = "",
             selectedDate: Date? = nil,
             viewFlow: TodoViewFlow
         ) {
-            self.parentId = parentId
+            self.targetId = targetId
             self.isEdit = isEdit
             self.title = title
             self.content = content
-            self.selectedDate = selectedDate
+            self.dueDate = selectedDate
             self.viewFlow = viewFlow
         }
     }
@@ -152,21 +153,21 @@ struct CreateTodoFeature {
                 // MARK: - view
             case let .view(viewAction):
                 switch viewAction {
-                case .binding(\.selectedDate):
-                    if let selectedDate = state.selectedDate {
+                case .binding(\.dueDate):
+                    if let selectedDate = state.dueDate {
                         if selectedDate < Date() {
-                            state.selectedDate = nil
+                            state.dueDate = nil
                         }
                     }
                     return .none
                 case .addTodoButtonTapped:
-                    if state.isEdit, let uuid = state.parentId {
+                    if state.isEdit, let uuid = state.targetId {
                         return .concatenate([
-                            .send(.external(.editTodoItem(id: uuid, title: state.title, content: state.content, selectedDate: state.selectedDate))),
+                            .send(.external(.editTodoItem(id: uuid, title: state.title, content: state.content, selectedDate: state.dueDate))),
                             .send(.view(.addTodoComplete))
                         ])
                     }
-                    else if let uuid = state.parentId {
+                    else if let uuid = state.targetId {
                         return .concatenate([
                             .send(.external(.addSubTodoItem(id: uuid))),
                             .send(.view(.addTodoComplete))
@@ -190,7 +191,7 @@ struct CreateTodoFeature {
                 switch externalAction {
                 case .addTodoItem:
                     return .run { [state] send in
-                        todoClient.createTodoItem(state.title, state.content, state.selectedDate)
+                        todoClient.createTodoItem(state.title, state.content, state.dueDate)
                     }
                 case let .addSubTodoItem(id):
                     return .run { [state] send in

@@ -24,7 +24,7 @@ struct TodoDetailFeature {
         
         init(todoItem: Todo) {
             self.todoItem = todoItem
-            self.todo = .addTodoDetailView(parentId: todoItem.id)
+            self.todo = .addTodoDetailView(targetId: todoItem.id)
             self.todoList = .init(parentID: todoItem.id)
         }
     }
@@ -76,11 +76,11 @@ struct TodoDetailFeature {
             case let .view(viewAction):
                 switch viewAction {
                 case .showAddTodoButtonTapped:
-                    state.todo = .addTodoDetailView(parentId: state.todoItem.id)
+                    state.todo = .addTodoDetailView(targetId: state.todoItem.id)
                     state.isShowAddTodoSheet = true
                     return .none
                 case .editButtonTapped:
-                    state.todo = .editTitleDetailView(parentId: state.todoItem.id,
+                    state.todo = .editTitleDetailView(targetId: state.todoItem.id,
                                                       title: state.todoItem.title,
                                                       content: state.todoItem.content ?? "",
                                                       dueDate: state.todoItem.dueDate ?? Date()

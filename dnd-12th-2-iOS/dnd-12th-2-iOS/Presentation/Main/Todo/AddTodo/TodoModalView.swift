@@ -33,7 +33,7 @@ struct TodoModalView: View {
     
     private var endDateButton: some View {
         VStack {
-            let buttonColor: Color = store.selectedDate != nil ? .mainBlue : .gray500
+            let buttonColor: Color = store.dueDate != nil ? .mainBlue : .gray500
             Button(action: {
                 store.send(.view(.setDueDateButtonTapped))
             }, label: {
@@ -41,7 +41,7 @@ struct TodoModalView: View {
                     Image(.iconCalendarGray)
                         .renderingMode(.template)
                         .foregroundStyle(buttonColor)
-                    Text(store.selectedDate?.toMonthDayString ?? "마감일")
+                    Text(store.dueDate?.toMonthDayString ?? "마감일")
                         .font(.pretendard(size: 14, weight: .medium))
                         .foregroundStyle(buttonColor)
                 }
@@ -134,11 +134,11 @@ struct TodoModalView: View {
             .padding(.horizontal, 12)
             .padding(.top, 12)
             
-            DDCalendar(month: Date(), selectedDate: $store.selectedDate)
-            DDButton(type: store.selectedDate == nil ? .disabled : .primary, title: store.setDueDateButtonText, action: {
+            DDCalendar(month: Date(), selectedDate: $store.dueDate)
+            DDButton(type: store.dueDate == nil ? .disabled : .primary, title: store.setDueDateButtonText, action: {
                 store.send(.view(.backButtonTapped))
             })
-            .disabled(store.selectedDate == nil)
+            .disabled(store.dueDate == nil)
                 .padding(.horizontal, 16)
         }
         .background(.white)
