@@ -16,26 +16,25 @@ struct TodoFlowCoordinator {
 
     @ObservableState
     struct State {
-        var root = TodoTabFeature.State()
+        var root = TodoListFeature.State()
         var path = StackState<Path.State>()
     }
 
     enum Action {
-        case root(TodoTabFeature.Action)
+        case root(TodoListFeature.Action)
         case path(StackActionOf<Path>)
     }
 
     var body: some Reducer<State, Action> {
         Scope(state: \.root, action: \.root) {
-            TodoTabFeature()
+            TodoListFeature()
         }
 
         Reduce { state, action in
             switch action {
-            case let .root(.view(.todoRowTapped(todo))):
+            case let .root(.view(.todoCellTapped(todo))):
                 state.path.append(.todoDetail(.init(todoItem: todo)))
                 return .none
-
             case let .path(.element(id: id, action: .todoDetail(.destination(.popNavigationStack)))):
                 state.path.pop(from: id)
                 return .none

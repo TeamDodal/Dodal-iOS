@@ -18,12 +18,12 @@ struct TodoTabFeature {
         var selectedTodo: Todo? = nil
         var isPresentingDetailView: Bool = false
     }
-
+    
     enum Action: TCAAction {
         case view(ViewAction)
         case external(ExternalAction)
         case destination(DestinationAction)
-
+        
         enum ViewAction: Equatable {
             case viewonAppear
             case responseTodoItem([Todo])
@@ -31,18 +31,18 @@ struct TodoTabFeature {
             case todoRowTapped(Todo)
             case dismissDetail
         }
-
+        
         enum ExternalAction: Equatable {
             case fetchTodoItems
         }
-
+        
         enum DestinationAction: Equatable {
             case setNavigation(isPresented: Bool)
         }
     }
-
+    
     @Dependency(\.todoClient) var todoClient
-
+    
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
@@ -55,16 +55,16 @@ struct TodoTabFeature {
                 case let .responseTodoItem(todoList):
                     state.todoItems = todoList
                     return .none
-
+                    
                 case let .dueDateButtonTapped(id):
                     // 마감일 설정
                     return .none
                 case .dismissDetail:
                     state.selectedTodo = nil
                     return .none
-                default: return .none
+                default:
+                    return .none
                 }
-
             case let .external(externalAction):
                 switch externalAction {
                 case .fetchTodoItems:
@@ -73,7 +73,6 @@ struct TodoTabFeature {
                         await send(.view(.responseTodoItem(todos)))
                     }
                 }
-
             case let .destination(.setNavigation(isPresented)):
                 return .none
             }
