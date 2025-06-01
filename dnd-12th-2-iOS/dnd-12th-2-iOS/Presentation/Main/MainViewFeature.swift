@@ -12,7 +12,7 @@ struct MainViewFeature {
     @ObservableState
     struct State {
         /// 할일 추가
-        var todo = TodoFeature.State(isEdit: false)
+        var todo: TodoFeature.State = .addTodoHomeView()
         /// 할일 목록
         var todoList = TodoListFeature.State()
         
@@ -68,6 +68,8 @@ struct MainViewFeature {
             case todoCellTapped(Todo)
             /// 마감 하루전 팝업 닫기
             case dismissDdayPopup
+            /// 마감일 설정 버튼 터치
+            case setDueDateButtonTapped(Todo)
         }
         
         enum DestinationAction {
@@ -88,7 +90,7 @@ struct MainViewFeature {
         Reduce { state, action in
             switch action {
             case .view(.binding(\.isShowAddTodoSheet)):
-                state.todo = .init(isEdit: false)
+                state.todo = .addTodoHomeView()
                 return .none
                 // MARK: - View
             case let .view(viewAction):
@@ -104,6 +106,10 @@ struct MainViewFeature {
                     return .send(.destination(.goToTodoDetail(todo)))
                 case .dismissDdayPopup:
                     state.isShowDdayPopup = false
+                    return .none
+                case let .setDueDateButtonTapped(todo):
+                    state.isShowAddTodoSheet = true
+                    state.todo = .editDueDateHomeView(title: todo.title, content: todo.content ?? "", dueDate: todo.dueDate ?? Date())
                     return .none
                 }
                 // MARK: - TodoView
@@ -124,6 +130,6 @@ struct MainViewFeature {
             default:
                 return .none
             }
-        }        
+        }
     }
 }

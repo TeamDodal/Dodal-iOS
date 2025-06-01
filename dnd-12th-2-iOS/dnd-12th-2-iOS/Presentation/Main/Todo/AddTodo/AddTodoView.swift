@@ -26,7 +26,7 @@ struct AddTodoView: View {
             case .addTodo:
                 addTodoView
             case .calendar:
-                calendarView                    
+                calendarView
             }
         }
     }
@@ -72,7 +72,7 @@ struct AddTodoView: View {
     }
     
     private var addTodoView: some View {
-        VStack {            
+        VStack {
             TextField("eg.운동하기", text: $store.title)
                 .font(.pretendard(size: 22, weight: .semibold))
                 .foregroundStyle(.black)
