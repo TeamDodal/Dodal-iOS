@@ -17,7 +17,7 @@ enum TodoViewFlow {
 }
 
 @Reducer
-struct TodoFeature {
+struct CreateTodoFeature {
     @ObservableState
     struct State {
         /// todo 수정시 설정
@@ -60,8 +60,8 @@ struct TodoFeature {
         ///   - content: 할일 상세설명
         ///   - dueDate: 마감일
         /// - Returns: TodoState
-        static func editDueDateHomeView(title: String, content: String = "", dueDate: Date) -> State {
-            .init(parentId: nil, isEdit: true, title: title, content: content, selectedDate: dueDate, viewFlow: .calendar)
+        static func editDueDateHomeView(parentId: UUID?, title: String, content: String = "", dueDate: Date) -> State {
+            .init(parentId: parentId, isEdit: true, title: title, content: content, selectedDate: dueDate, viewFlow: .calendar)
         }
         
         
@@ -86,7 +86,6 @@ struct TodoFeature {
         static func editDueDateDetailView(parentId: UUID?, title: String, content: String = "", dueDate: Date) -> State {
             .init(parentId: parentId, isEdit: true, title: title, content: content, selectedDate: dueDate, viewFlow: .calendar)
         }
-        
         
         /// 상세화면에서 하위 할일을 생성하는 경우에 사용합니다
         /// - Parameter parentId: 상위 투두  Id
@@ -140,7 +139,7 @@ struct TodoFeature {
             /// 특정 할일 하위목록으로 할일 생성
             case addSubTodoItem(id: UUID)
             /// id에 해당하는 할일 수정
-            case editTodoItem(id: UUID, title: String, selectedDate: Date?)
+            case editTodoItem(id: UUID, title: String, content: String, selectedDate: Date?)
         }
     }
     
@@ -163,7 +162,7 @@ struct TodoFeature {
                 case .addTodoButtonTapped:
                     if state.isEdit, let uuid = state.parentId {
                         return .concatenate([
-                            .send(.external(.editTodoItem(id: uuid, title: state.title, selectedDate: state.selectedDate))),
+                            .send(.external(.editTodoItem(id: uuid, title: state.title, content: state.content, selectedDate: state.selectedDate))),
                             .send(.view(.addTodoComplete))
                         ])
                     }
@@ -197,9 +196,9 @@ struct TodoFeature {
                     return .run { [state] send in
                         try todoClient.createSubTodoItem(id, state.title, nil, nil)
                     }
-                case let .editTodoItem(id, title, dueDate):
+                case let .editTodoItem(id, title, content, dueDate):
                     return .run { send in
-                        try todoClient.editTodoItem(id, title, nil, dueDate)
+                        try todoClient.editTodoItem(id, title, content, dueDate)
                     }
                 }
             }

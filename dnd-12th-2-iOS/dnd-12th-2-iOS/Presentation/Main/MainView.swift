@@ -72,7 +72,7 @@ struct MainView: View {
                     }
                 })
                 .bottomSheet(isPresented: $store.isShowAddTodoSheet, content: {
-                    AddTodoView(store: store.scope(state: \.todo, action: \.todo))
+                    TodoModalView(store: store.scope(state: \.todo, action: \.todo))
                         .fixedSize(horizontal: false, vertical: true)
                 })
                 .onAppear {

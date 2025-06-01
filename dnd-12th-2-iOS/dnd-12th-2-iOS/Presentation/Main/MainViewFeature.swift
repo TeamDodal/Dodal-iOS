@@ -12,7 +12,7 @@ struct MainViewFeature {
     @ObservableState
     struct State {
         /// 할일 추가
-        var todo: TodoFeature.State = .addTodoHomeView()
+        var todo: CreateTodoFeature.State = .addTodoHomeView()
         /// 할일 목록
         var todoList = TodoListFeature.State()
         
@@ -55,7 +55,7 @@ struct MainViewFeature {
         case destination(DestinationAction)
         
         // SubFeature
-        case todo(TodoFeature.Action)
+        case todo(CreateTodoFeature.Action)
         case todoList(TodoListFeature.Action)
         
         enum ViewAction: BindableAction {
@@ -82,7 +82,7 @@ struct MainViewFeature {
     var body: some Reducer<State, Action> {
         BindingReducer(action: \.view)
         Scope(state: \.todo, action: \.todo) {
-            TodoFeature()
+            CreateTodoFeature()
         }
         Scope(state: \.todoList, action: \.todoList) {
             TodoListFeature()
@@ -109,7 +109,11 @@ struct MainViewFeature {
                     return .none
                 case let .setDueDateButtonTapped(todo):
                     state.isShowAddTodoSheet = true
-                    state.todo = .editDueDateHomeView(title: todo.title, content: todo.content ?? "", dueDate: todo.dueDate ?? Date())
+                    state.todo = .editDueDateHomeView(parentId: todo.id,
+                                                      title: todo.title,
+                                                      content: todo.content ?? "",
+                                                      dueDate: todo.dueDate ?? Date()
+                    )
                     return .none
                 }
                 // MARK: - TodoView

@@ -109,10 +109,11 @@ final class TodoStorage: TodoStorageType {
         do {
             let data = try mainContext.fetch(fetchRequest)
             if let todo = data.first {
+                todo.id = id
                 todo.title = title
                 todo.content = content
                 todo.dueDate = dueDate
-                
+                todo.updateDate = Date()
                 do {
                     try mainContext.save()
                 } catch {}
