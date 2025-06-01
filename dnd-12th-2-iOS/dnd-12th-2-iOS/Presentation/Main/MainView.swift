@@ -59,7 +59,7 @@ struct MainView: View {
                                 store.send(.view(.todoCellTapped(todo)))
                             },
                             dueDateButtonTapped: { todo in
-                                
+                                store.send(.view(.setDueDateButtonTapped(todo)))
                             }
                         )
                     }

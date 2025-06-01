@@ -9,11 +9,10 @@ import Foundation
 
 import ComposableArchitecture
 
-/// 현재 화면의 상태를 나타냅니다
 enum TodoViewFlow {
-    /// 할일 작성 화면
+    /// 할일 추가 또는 수정
     case addTodo
-    /// 마감일 설정 화면
+    /// 마감일 설정 캘린더
     case calendar
 }
 
@@ -21,68 +20,127 @@ enum TodoViewFlow {
 struct TodoFeature {
     @ObservableState
     struct State {
-        /// 상위 할일 ID를 지정
+        /// todo 수정시 설정
         var parentId: UUID?
-        /// 수정 여부
+        /// 편집 모드 여부
         var isEdit: Bool
         /// 할일 제목
         var title = ""
-        /// 할일에 대한 설명
+        /// 할일 상세 설명
         var content = ""
-        /// 마감일 설정
+        /// 마감일
         var selectedDate: Date?
-        /// 현재 화면의 상태를 나타내는 변수
+        /// 현재 나타나는 화면 상태
         var viewFlow: TodoViewFlow = .addTodo
-                
         /// 마감일 설정 버튼텍스트
         var setDueDateButtonText: String {
             guard let selectedDate else { return "마감일 설정" }
-
+            
             let calendar = Calendar.current
             let startOfToday = calendar.startOfDay(for: Date())
             let startOfTarget = calendar.startOfDay(for: selectedDate)
-
+            
             guard let diffDay = calendar.dateComponents([.day], from: startOfToday, to: startOfTarget).day,
-            diffDay > 0 else {
+                  diffDay > 0 else {
                 return "마감일 설정"
             }
-
+            
             return "\(selectedDate.toMonthDayString)일까지 D-\(diffDay)일"
         }
         
-        init(parentId: UUID? = nil,
-             title: String = "",
-             isEdit: Bool) {
+        /// 홈에서 할일을 생성하는 경우에 사용합니다.
+        /// - Returns: TodoState
+        static func addTodoHomeView() -> State {
+            .init(parentId: nil, isEdit: false, viewFlow: .addTodo)
+        }
+        
+        /// 홈에서 마감일을 수정하는 경우에 사용합니다.
+        /// - Parameters:
+        ///   - title: 할일 제목
+        ///   - content: 할일 상세설명
+        ///   - dueDate: 마감일
+        /// - Returns: TodoState
+        static func editDueDateHomeView(title: String, content: String = "", dueDate: Date) -> State {
+            .init(parentId: nil, isEdit: true, title: title, content: content, selectedDate: dueDate, viewFlow: .calendar)
+        }
+        
+        
+        /// 상세화면에서 제목을 수정하는 경우에 사용합니다.
+        /// - Parameters:
+        ///   - parentId: 수정하고자하는 todoId
+        ///   - title: 할일 제목
+        ///   - content: 할일 상세설명
+        ///   - dueDate: 마감일
+        /// - Returns: TodoState
+        static func editTitleDetailView(parentId: UUID?, title: String, content: String = "", dueDate: Date) -> State {
+            .init(parentId: parentId, isEdit: true, title: title, content: content, selectedDate: dueDate, viewFlow: .addTodo)
+        }
+        
+        /// 상세화면에서 마감일을 수정하는 경우에 사용합니다.
+        /// - Parameters:
+        ///   - parentId: 수정하고자하는 todoId
+        ///   - title: 할일 제목
+        ///   - content: 할일 상세설명
+        ///   - dueDate: 마감일
+        /// - Returns: TodoState
+        static func editDueDateDetailView(parentId: UUID?, title: String, content: String = "", dueDate: Date) -> State {
+            .init(parentId: parentId, isEdit: true, title: title, content: content, selectedDate: dueDate, viewFlow: .calendar)
+        }
+        
+        
+        /// 상세화면에서 하위 할일을 생성하는 경우에 사용합니다
+        /// - Parameter parentId: 상위 투두  Id
+        /// - Returns: TodoState
+        static func addTodoDetailView(parentId: UUID?) -> State {
+            .init(parentId: parentId, isEdit: false, viewFlow: .addTodo)
+        }
+        
+        private init(
+            parentId: UUID?,
+            isEdit: Bool,
+            title: String = "",
+            content: String = "",
+            selectedDate: Date? = nil,
+            viewFlow: TodoViewFlow
+        ) {
             self.parentId = parentId
             self.isEdit = isEdit
             self.title = title
+            self.content = content
+            self.selectedDate = selectedDate
+            self.viewFlow = viewFlow
         }
     }
     
     enum Action: ViewAction, TCAAction {
-        // view에서 일어나는 액션을 정의합니다.
+        /// view에서 일어나는 액션을 정의합니다.
         case view(ViewAction)
-        
-        // 외부의존성과 일어나는 액션을 정의합니다.
+        /// 외부의존성과 일어나는 액션을 정의합니다.
         case external(ExternalAction)
-        
-        // 뷰이동 관련 액션
+        /// 뷰이동 관련 액션
         case destination(DestinationAction)
         
         enum ViewAction: BindableAction {
             case binding(BindingAction<State>)
+            /// 생성하기 버튼 터치
             case addTodoButtonTapped
+            /// 생성하기 완료 액션
             case addTodoComplete
+            /// 마감일 설정 버튼 터치
             case setDueDateButtonTapped
+            /// 뒤로가기 버튼 터치
             case backButtonTapped
         }
         
         enum DestinationAction {}
         
         enum ExternalAction {
+            /// 새로운 할일을 생성
             case addTodoItem
+            /// 특정 할일 하위목록으로 할일 생성
             case addSubTodoItem(id: UUID)
-            case editTodoItem(id: UUID, title: String)
+            /// id에 해당하는 할일 수정
+            case editTodoItem(id: UUID, title: String, selectedDate: Date?)
         }
     }
     
@@ -105,7 +163,7 @@ struct TodoFeature {
                 case .addTodoButtonTapped:
                     if state.isEdit, let uuid = state.parentId {
                         return .concatenate([
-                            .send(.external(.editTodoItem(id: uuid, title: state.title))),
+                            .send(.external(.editTodoItem(id: uuid, title: state.title, selectedDate: state.selectedDate))),
                             .send(.view(.addTodoComplete))
                         ])
                     }
@@ -136,12 +194,12 @@ struct TodoFeature {
                         todoClient.createTodoItem(state.title, state.content, state.selectedDate)
                     }
                 case let .addSubTodoItem(id):
-                    return .run { [state] send in                        
-                        try todoClient.createSubTodoItem(id, state.title, state.content, state.selectedDate)
-                    }
-                case let .editTodoItem(id, title):
                     return .run { [state] send in
-                        try todoClient.editTodoItem(id, title, state.content, state.selectedDate)
+                        try todoClient.createSubTodoItem(id, state.title, nil, nil)
+                    }
+                case let .editTodoItem(id, title, dueDate):
+                    return .run { send in
+                        try todoClient.editTodoItem(id, title, nil, dueDate)
                     }
                 }
             }
@@ -149,4 +207,3 @@ struct TodoFeature {
         }
     }
 }
-
