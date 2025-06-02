@@ -17,5 +17,5 @@ struct Todo: Identifiable, Equatable, Hashable {
     var children: [Todo] = []
     var parentID: UUID?
     var depth: Int
-    var path: String
+    var path: [String]
 }

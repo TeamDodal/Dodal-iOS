@@ -46,6 +46,9 @@ struct DDTodoCard: View {
                 }
             }
         }
+        .padding(8)
+        .background(.white)
+        .cornerRadius(8)
     }
     
     private func formattedDate(_ date: Date) -> String {
@@ -57,5 +60,5 @@ struct DDTodoCard: View {
 }
 
 #Preview {
-    DDTodoCard(todo: .init(id: UUID(), title: "", createDate: Date(), updateDate: Date(), depth: 0, path: ""))
+    DDTodoCard(todo: .init(id: UUID(), title: "", createDate: Date(), updateDate: Date(), depth: 0, path: []))
 }

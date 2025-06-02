@@ -16,6 +16,7 @@ struct MainTabFeature {
     struct State {
         var currentTab: TabInfo = .main
         var mainFlow = MainFlowCoordinator.State()
+        var todoFlow = TodoFlowCoordinator.State()
     }
     
     enum Action: BindableAction {
@@ -23,12 +24,16 @@ struct MainTabFeature {
         case selectedTab(TabInfo)
         case binding(BindingAction<State>)
         case mainFlow(MainFlowCoordinator.Action)
+        case todoFlow(TodoFlowCoordinator.Action)
     }
     
     var body: some Reducer<State, Action> {
         BindingReducer()
         Scope(state: \.mainFlow, action: \.mainFlow) {
             MainFlowCoordinator()
+        }
+        Scope(state: \.todoFlow, action: \.todoFlow) {
+            TodoFlowCoordinator()
         }
         Reduce { state, action in
             switch action {
