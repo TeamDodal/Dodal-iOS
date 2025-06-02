@@ -15,12 +15,11 @@ struct MainTabView: View {
     
     var body: some View {
         WithPerceptionTracking {
-            NavigationStack {
                 TabView(selection: $store.currentTab) {
                     MainFlowCoordinatorView(store: store.scope(state: \.mainFlow, action: \.mainFlow))
                         .tag(TabInfo.main)
                     
-                    TodoView()
+                    TodoFlowCoordinatorView(store: store.scope(state: \.todoFlow, action: \.todoFlow))
                         .tag(TabInfo.todo)
                     
                     SettingView(store: .init(initialState: SettingFeature.State(), reducer: {
@@ -31,7 +30,6 @@ struct MainTabView: View {
                 }
                 .overlay(alignment: .bottom) {
                     TabBarView(currentTab: store.currentTab)
-                }
             }
         }
     }

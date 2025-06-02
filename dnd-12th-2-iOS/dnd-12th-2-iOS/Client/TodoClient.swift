@@ -11,6 +11,7 @@ import ComposableArchitecture
 
 struct TodoClient {
     var fetchTodoItems: () throws -> [Todo]
+    var fetchSubTodoItems: (_ id: UUID) throws -> [Todo]
     var createTodoItem: (_ title: String, _ content: String?, _ dueDate: Date?) -> Void
     var createSubTodoItem: (_ id: UUID, _ title: String, _ content: String?, _ dueDate: Date?) throws -> Void
     var editTodoItem: (_ id: UUID, _ title: String, _ content: String?, _ dueDate: Date?) throws -> Void
@@ -24,6 +25,13 @@ extension TodoClient: DependencyKey {
         fetchTodoItems: {
             do {
                 return try storage.fetchTodoItems().map { $0.toDto() }
+            } catch {
+                throw error
+            }
+        },
+        fetchSubTodoItems: { id in
+            do {
+                return try storage.fetchTodoItems(id: id).map { $0.toDto() }
             } catch {
                 throw error
             }

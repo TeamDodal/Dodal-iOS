@@ -11,6 +11,7 @@ import CoreData
 protocol TodoStorageType {
     func createTodoItem(title: String, content: String?, dueDate: Date?)
     func fetchTodoItems() throws -> [TodoItem]
+    func fetchTodoItems(id: UUID) throws -> [TodoItem]
     func createSubTodoItem(id: UUID, title: String, content: String?, dueDate: Date?) throws
     func editTodoItem(id: UUID, title: String, content: String?, dueDate: Date?) throws
     func deleteTodoItem(id: UUID) throws -> Void
@@ -52,6 +53,18 @@ final class TodoStorage: TodoStorageType {
         try? context.save()
     }
     
+    func fetchTodoItems(id: UUID) throws -> [TodoItem] {
+        do {
+            let fetchRequest = NSFetchRequest<TodoItem>(entityName: modelName)
+            fetchRequest.predicate = NSPredicate(format: "parent.id == %@", id as CVarArg)
+            let data = try mainContext.fetch(fetchRequest)
+            
+            return data
+        } catch {
+            throw error
+        }
+    }
+    
     func fetchTodoItems() throws -> [TodoItem] {
         do {
             let fetchRequest = NSFetchRequest<TodoItem>(entityName: modelName)
@@ -65,6 +78,7 @@ final class TodoStorage: TodoStorageType {
     }
     
     func createSubTodoItem(id: UUID, title: String, content: String?, dueDate: Date?) throws {
+        
         let fetchRequest = NSFetchRequest<TodoItem>(entityName: modelName)
         fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
         do {
@@ -75,11 +89,12 @@ final class TodoStorage: TodoStorageType {
                 subTodo.title = title
                 subTodo.content = content
                 subTodo.dueDate = dueDate
-                
+                subTodo.createDate = Date()
+                subTodo.updateDate = Date()
                 todo.addToItems(subTodo)
                 
                 do {
-                    try mainContext.save()
+                    try? mainContext.save()
                 } catch {}
             }
             
@@ -94,10 +109,11 @@ final class TodoStorage: TodoStorageType {
         do {
             let data = try mainContext.fetch(fetchRequest)
             if let todo = data.first {
+                todo.id = id
                 todo.title = title
                 todo.content = content
                 todo.dueDate = dueDate
-                
+                todo.updateDate = Date()
                 do {
                     try mainContext.save()
                 } catch {}

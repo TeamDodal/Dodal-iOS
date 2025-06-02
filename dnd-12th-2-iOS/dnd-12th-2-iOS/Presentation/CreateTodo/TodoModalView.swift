@@ -13,10 +13,10 @@ enum Field {
     case title
 }
 
-struct AddTodoView: View {
-    @Perception.Bindable fileprivate var store: StoreOf<TodoFeature>
+struct TodoModalView: View {
+    @Perception.Bindable var store: StoreOf<CreateTodoFeature>
     @FocusState private var focusedField: Field?
-    init(store: StoreOf<TodoFeature>) {
+    init(store: StoreOf<CreateTodoFeature>) {
         self.store = store
     }
     
@@ -26,14 +26,14 @@ struct AddTodoView: View {
             case .addTodo:
                 addTodoView
             case .calendar:
-                calendarView                    
+                calendarView
             }
         }
     }
     
     private var endDateButton: some View {
         VStack {
-            let buttonColor: Color = store.selectedDate != nil ? .mainBlue : .gray500
+            let buttonColor: Color = store.dueDate != nil ? .mainBlue : .gray500
             Button(action: {
                 store.send(.view(.setDueDateButtonTapped))
             }, label: {
@@ -41,7 +41,7 @@ struct AddTodoView: View {
                     Image(.iconCalendarGray)
                         .renderingMode(.template)
                         .foregroundStyle(buttonColor)
-                    Text(store.selectedDate?.toMonthDayString ?? "마감일")
+                    Text(store.dueDate?.toMonthDayString ?? "마감일")
                         .font(.pretendard(size: 14, weight: .medium))
                         .foregroundStyle(buttonColor)
                 }
@@ -52,15 +52,14 @@ struct AddTodoView: View {
                           .stroke(buttonColor, lineWidth: 1)
                   )
             })
-        }
-      
+        }      
     }
     
     private var createTodoButton: some View {
         Button(action: {
             store.send(.view(.addTodoButtonTapped))
         }, label: {
-            Text("생성하기")
+            Text(store.isEdit ? "수정하기" : "생성하기")
                 .font(.pretendard(size: 16, weight: .medium))
                 .foregroundStyle(.gray0)
                 .padding(.horizontal, 8)
@@ -72,7 +71,7 @@ struct AddTodoView: View {
     }
     
     private var addTodoView: some View {
-        VStack {            
+        VStack {
             TextField("eg.운동하기", text: $store.title)
                 .font(.pretendard(size: 22, weight: .semibold))
                 .foregroundStyle(.black)
@@ -134,11 +133,11 @@ struct AddTodoView: View {
             .padding(.horizontal, 12)
             .padding(.top, 12)
             
-            DDCalendar(month: Date(), selectedDate: $store.selectedDate)
-            DDButton(type: store.selectedDate == nil ? .disabled : .primary, title: store.setDueDateButtonText, action: {
+            DDCalendar(month: Date(), selectedDate: $store.dueDate)
+            DDButton(type: store.dueDate == nil ? .disabled : .primary, title: store.setDueDateButtonText, action: {
                 store.send(.view(.backButtonTapped))
             })
-            .disabled(store.selectedDate == nil)
+            .disabled(store.dueDate == nil)
                 .padding(.horizontal, 16)
         }
         .background(.white)
@@ -152,9 +151,3 @@ struct AddTodoView: View {
         )
     }
 }
-
-//#Preview {
-//    AddTodoView(store: .init(initialState: TodoFeature.State(), reducer: {
-//        TodoFeature()
-//    }))
-//}
