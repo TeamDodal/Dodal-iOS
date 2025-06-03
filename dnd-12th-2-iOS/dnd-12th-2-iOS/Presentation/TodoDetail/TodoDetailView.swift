@@ -85,7 +85,7 @@ struct TodoDetailView: View {
                     
                     HStack {
                         DDImageButton(type: .dueDate, text: nil) {
-                            
+                            store.send(.view(.setDueDateButtonTapped(store.todoItem)))
                         }
                         Spacer()
                     }
