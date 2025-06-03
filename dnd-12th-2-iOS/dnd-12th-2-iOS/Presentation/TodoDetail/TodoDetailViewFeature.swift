@@ -15,6 +15,7 @@ struct TodoDetailViewFeature {
     struct State {
         var todoItem: Todo
         var isShowAddTodoSheet = false
+        var isShowDeleteAlert = false
         var todo: CreateTodoFeature.State
         var todoList: TodoListFeature.State
         
@@ -50,6 +51,8 @@ struct TodoDetailViewFeature {
             case editButtonTapped
             case deleteButtonTapped
             case viewOnAppear
+            case showDeleteAlert
+            case showDeleteAlertDismissed
         }
         
         enum DestinationAction {
@@ -102,6 +105,12 @@ struct TodoDetailViewFeature {
                     return .send(.external(.deleteTodoItem(id: state.todoItem.id)))
                 case .viewOnAppear:
                     return .send(.todoList(.view(.viewonAppear)))
+                case .showDeleteAlert:
+                    state.isShowDeleteAlert = true
+                    return .none
+                case .showDeleteAlertDismissed:
+                    state.isShowDeleteAlert = false
+                    return .none
                 default:
                     return .none
                 }

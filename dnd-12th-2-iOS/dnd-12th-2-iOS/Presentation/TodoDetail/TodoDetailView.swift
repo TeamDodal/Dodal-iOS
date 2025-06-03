@@ -33,7 +33,7 @@ struct TodoDetailView: View {
                         }
                         .padding(.trailing, 12)
                         Button(action: {
-                            
+                            store.send(.view(.showDeleteAlert))
                         }) {
                             Image(.iconEdit)
                                 .foregroundStyle(.gray900)
@@ -123,49 +123,21 @@ struct TodoDetailView: View {
             .onAppear {
                 store.send(.view(.viewOnAppear))
             }
+            .overlay(alignment: .center, content: {
+                if store.state.isShowDeleteAlert {
+                    DDAlert(
+                        title: "할 일을 정말 삭제할까요?",
+                        cancelButtonTitle: "취소",
+                        confirmButtonTitle: "삭제",
+                        onCancel: {
+                            store.send(.view(.showDeleteAlertDismissed))
+                        },
+                        onConfirm: {
+                            store.send(.external(.deleteTodoItem(id: store.todoItem.id)))
+                        }
+                    )
+                }
+            })
         }
     }
 }
-
-//#Preview {
-//    TodoDetail(todos: [Todo(
-//        id: UUID(),
-//        title: "운동하기",
-//        content: "헬스장 가기",
-//        dueDate: Calendar.current.date(byAdding: .day, value: 1, to: Date()),
-//        children: [
-//            Todo(
-//                id: UUID(),
-//                title: "스트레칭",
-//                content: nil,
-//                dueDate: Date(),
-//                parentID: nil,
-//                depth: 1,
-//                path: "운동하기 > 스트레칭"
-//            ),
-//            Todo(
-//                id: UUID(),
-//                title: "웨이트 트레이닝",
-//                content: nil,
-//                dueDate: nil,
-//                parentID: nil,
-//                depth: 1,
-//                path: "운동하기 > 웨이트 트레이닝"
-//            )
-//        ],
-//        parentID: nil,
-//        depth: 0,
-//        path: "운동하기"
-//    ),
-//                       Todo(
-//                        id: UUID(),
-//                        title: "책 읽기",
-//                        content: "자기계발서 30분",
-//                        dueDate: nil,
-//                        children: [],
-//                        parentID: nil,
-//                        depth: 0,
-//                        path: "책 읽기"
-//                       )
-//    ])
-//}
