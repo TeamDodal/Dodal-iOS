@@ -21,6 +21,7 @@ extension TodoItem {
     @NSManaged public var createDate: Date
     @NSManaged public var updateDate: Date
     @NSManaged public var id: UUID
+    @NSManaged public var isCompleted: Bool
     @NSManaged public var title: String
     @NSManaged public var items: Set<TodoItem>?
     @NSManaged public var parent: TodoItem?
@@ -69,6 +70,7 @@ extension TodoItem {
                 .map { $0.toDto() },
             parentID: self.parent?.id,
             depth: self.depth,
+            isCompleted: self.isCompleted,
             path: self.path
         )
     }
