@@ -13,7 +13,7 @@ protocol TodoStorageType {
     func fetchTodoItems() throws -> [TodoItem]
     func fetchTodoItems(id: UUID) throws -> [TodoItem]
     func createSubTodoItem(id: UUID, title: String, content: String?, dueDate: Date?) throws
-    func editTodoItem(id: UUID, title: String, content: String?, dueDate: Date?) throws
+    func editTodoItem(id: UUID, title: String, content: String?, dueDate: Date?, isCompleted: Bool) throws
     func deleteTodoItem(id: UUID) throws -> Void
 }
 
@@ -103,7 +103,7 @@ final class TodoStorage: TodoStorageType {
         }
     }
     
-    func editTodoItem(id: UUID, title: String, content: String?, dueDate: Date?) throws {
+    func editTodoItem(id: UUID, title: String, content: String?, dueDate: Date?, isCompleted: Bool) throws {
         let fetchRequest = NSFetchRequest<TodoItem>(entityName: modelName)
         fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
         do {
@@ -114,6 +114,7 @@ final class TodoStorage: TodoStorageType {
                 todo.content = content
                 todo.dueDate = dueDate
                 todo.updateDate = Date()
+                todo.isCompleted = isCompleted
                 do {
                     try mainContext.save()
                 } catch {}

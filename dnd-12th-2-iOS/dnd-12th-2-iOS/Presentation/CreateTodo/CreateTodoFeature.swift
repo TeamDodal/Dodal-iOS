@@ -202,7 +202,7 @@ struct CreateTodoFeature {
                     }
                 case let .editTodoItem(id, title, content, dueDate):
                     return .run { send in
-                        try todoClient.editTodoItem(id, title, content, dueDate)
+                        try todoClient.editTodoItem(id, title, content, dueDate, false)
                     }
                 }
             }
