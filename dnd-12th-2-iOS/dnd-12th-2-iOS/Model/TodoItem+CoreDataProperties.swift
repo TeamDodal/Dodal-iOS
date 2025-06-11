@@ -70,6 +70,7 @@ extension TodoItem {
                 .map { $0.toDto() },
             parentID: self.parent?.id,
             depth: self.depth,
+            isCompleted: self.isCompleted,
             path: self.path
         )
     }

@@ -29,8 +29,8 @@ struct TodoDetailView: View {
                         }
                         Spacer()
                         DDImageButton(type: .complete, text: nil) {
-                            
-                        }
+                            store.send(.view(.setCompleteButtonTapped))
+                        }                        
                         .padding(.trailing, 12)
                         Button(action: {
                             store.send(.view(.showDeleteAlert))

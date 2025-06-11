@@ -53,6 +53,7 @@ struct TodoDetailViewFeature {
             case viewOnAppear
             case showDeleteAlert
             case showDeleteAlertDismissed
+            case setCompleteButtonTapped
         }
         
         enum DestinationAction {
@@ -61,6 +62,7 @@ struct TodoDetailViewFeature {
         
         enum ExternalAction {
             case deleteTodoItem(id: UUID)
+            case completeTodoItem(id: UUID)
         }
     }
     
@@ -101,6 +103,9 @@ struct TodoDetailViewFeature {
                                                         dueDate: todo.dueDate ?? Date())
                     state.isShowAddTodoSheet = true
                     return .send(.todoList(.view(.viewonAppear)))
+                case .setCompleteButtonTapped:
+                    state.todoItem.isCompleted.toggle()
+                    return .send(.external(.completeTodoItem(id: state.todoItem.id)))
                 case .deleteButtonTapped:
                     return .send(.external(.deleteTodoItem(id: state.todoItem.id)))
                 case .viewOnAppear:
@@ -146,7 +151,12 @@ struct TodoDetailViewFeature {
                         try todoClient.deleteTodoItem(id)
                         await send(.destination(.popNavigationStack))
                     }
+                case .completeTodoItem:
+                    return .run { [state] send in                        
+                        try todoClient.editTodoItem(state.todoItem.id, state.todoItem.title, state.todoItem.content, state.todoItem.dueDate, state.todoItem.isCompleted)
+                    }
                 }
+
             case let .destination(destination):
                 switch destination {
                 case .popNavigationStack:

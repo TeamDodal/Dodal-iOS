@@ -13,7 +13,7 @@ struct DDTodoCard: View {
     
     var body: some View {
         HStack {
-            Image(.iconCheckGray)
+            Image(todo.isCompleted ? .iconCheck : .iconCheckGray)
                 .resizable()
                 .frame(width: 32, height: 32)
             
