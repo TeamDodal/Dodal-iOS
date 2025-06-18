@@ -71,6 +71,7 @@ struct MainView: View {
                     DDAddTaskButton {
                         store.send(.view(.showAddTodoButtonTapped))
                     }
+                    .padding(.bottom, 20)
                 })
                 .bottomSheet(isPresented: $store.isShowAddTodoSheet, content: {
                     TodoModalView(store: store.scope(state: \.todo, action: \.todo))
