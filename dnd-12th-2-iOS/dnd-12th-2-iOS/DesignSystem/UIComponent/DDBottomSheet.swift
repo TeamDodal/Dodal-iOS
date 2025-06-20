@@ -14,7 +14,9 @@ struct DDBottomSheet<ContentView: View>: ViewModifier {
                         .onTapGesture {
                             isPresented = false
                         }
-                        contentView()
+                    contentView()
+                        .frame(maxWidth: .infinity)
+                        .background(.white)
                 }
                 .background(ClearBackground())
             }
