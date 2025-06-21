@@ -39,6 +39,7 @@ struct OnboardingFeature {
 
         enum ExternalAction {
             case saveTodo
+            case onboardingCompleted
         }
 
         enum DestinationAction {}
@@ -69,8 +70,12 @@ struct OnboardingFeature {
                 switch externalAction {
                 case .saveTodo:
                     return .run { [state] send in
-                        // 저장 로직
+                        try? todoClient.createTodoItem(state.title, nil, nil)
+                        
+                        await send(.external(.onboardingCompleted))
                     }
+                default:
+                    return .none
                 }
             // MARK: - Destination Actions
             case .destination:
