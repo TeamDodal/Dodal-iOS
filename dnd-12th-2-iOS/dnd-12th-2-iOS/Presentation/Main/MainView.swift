@@ -68,7 +68,7 @@ struct MainView: View {
                     .padding(.horizontal, 16)
                 }
                 .overlay(alignment: .bottom, content: {
-                    DDAddTaskButton {
+                    DDAddTaskButton(type: .parent) {
                         store.send(.view(.showAddTodoButtonTapped))
                     }
                     .padding(.bottom, 20)
