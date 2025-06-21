@@ -19,8 +19,8 @@ struct MainView: View {
     var body: some View {
         WithPerceptionTracking {
             VStack {
-                DDHeader(dateText: "5월 12일 (월)") {
-                    
+                DDHeader(dateText: Date().toMonthDayWeekdayString) {
+                    store.send(.view(.calendarButtonTapped))
                 }
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 12) {
@@ -77,6 +77,13 @@ struct MainView: View {
                     TodoModalView(store: store.scope(state: \.todo, action: \.todo))
                         .fixedSize(horizontal: false, vertical: true)
                 })
+                .bottomSheet(isPresented: $store.isShowCalendarSheet) {
+                    DDCalendarSheet(
+                        isPresented: $store.isShowCalendarSheet,
+                        selectedDate: $store.calendarSelectedDate,
+                        todos: store.todosForSelectedDate
+                    )
+                }
                 .onAppear {
                     store.send(.view(.viewOnAppear))
                 }

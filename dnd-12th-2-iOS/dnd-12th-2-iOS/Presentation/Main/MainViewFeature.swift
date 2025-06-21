@@ -21,6 +21,17 @@ struct MainViewFeature {
         
         /// 할일 추가 보임 여부
         var isShowAddTodoSheet = false
+        /// 최상단 날짜 버튼 눌렀을 때
+        var isShowCalendarSheet = false
+        var calendarSelectedDate: Date? = Date()
+        
+        var todosForSelectedDate: [Todo] {
+            guard let selectedDate = calendarSelectedDate else { return [] }
+            return todoList.todoItems.filter { todo in
+                guard let due = todo.dueDate else { return false }
+                return Calendar.current.isDate(due, inSameDayAs: selectedDate)
+            }
+        }
         /// 마감일 하루전 팝업 여부
         var isShowDdayPopup = true
         /// 마감일 하루전 할일 목록
@@ -70,6 +81,8 @@ struct MainViewFeature {
             case dismissDdayPopup
             /// 마감일 설정 버튼 터치
             case setDueDateButtonTapped(Todo)
+            /// 최상단 날짜 버튼 탭
+            case calendarButtonTapped
         }
         
         enum DestinationAction {
@@ -114,6 +127,9 @@ struct MainViewFeature {
                                                       content: todo.content ?? "",
                                                       dueDate: todo.dueDate ?? Date()
                     )
+                    return .none
+                case .calendarButtonTapped:
+                    state.isShowCalendarSheet = true
                     return .none
                 }
                 // MARK: - TodoView
