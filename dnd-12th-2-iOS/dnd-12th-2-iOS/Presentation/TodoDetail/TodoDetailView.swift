@@ -112,9 +112,10 @@ struct TodoDetailView: View {
             .background(.gray50)
             .toolbar(.hidden, for: .navigationBar)
             .overlay(alignment: .bottom) {
-                DDAddTaskButton(action: {
+                DDAddTaskButton(type: .child) {
                     store.send(.view(.showAddTodoButtonTapped))
-                })
+                }
+                .padding(.bottom, 20)
             }
             .bottomSheet(isPresented: $store.isShowAddTodoSheet, content: {
                 TodoModalView(store: store.scope(state: \.todo, action: \.todo))
