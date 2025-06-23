@@ -48,8 +48,8 @@ struct DDButton: View {
             Text(title)
                 .font(.pretendard(size: 16, weight: .medium))
                 .foregroundStyle(type.textColor)
+                .frame(maxWidth: .infinity)
         }
-        .frame(maxWidth: .infinity)
         .padding(.vertical, 15)
         .background {
             RoundedRectangle(cornerRadius: 12)
