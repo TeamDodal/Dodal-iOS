@@ -30,7 +30,7 @@ struct DDTodoCard: View {
             Spacer()
             if let dueDate = todo.dueDate {
                 Text(formattedDate(dueDate))
-                    .font(.pretendard(size: 14, weight: .medium))
+                    .font(.pretendard(size: 12, weight: .medium))
                     .foregroundStyle(.gray500)
             } else {
                 Button("마감일 설정") {
