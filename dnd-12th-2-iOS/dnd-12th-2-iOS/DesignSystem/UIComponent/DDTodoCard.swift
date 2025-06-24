@@ -19,7 +19,7 @@ struct DDTodoCard: View {
             
             Text(todo.title)
                 .font(.pretendard(size: 14, weight: .medium))
-                .foregroundStyle(.gray900)
+                .foregroundStyle(todo.isCompleted ? .gray500 : .gray900)
             
             HStack(spacing: 0) {
                 Image(.iconLink)
