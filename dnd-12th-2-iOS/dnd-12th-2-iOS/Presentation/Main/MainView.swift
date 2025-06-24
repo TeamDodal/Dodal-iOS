@@ -83,6 +83,7 @@ struct MainView: View {
                         selectedDate: $store.calendarSelectedDate,
                         todos: store.todosForSelectedDate
                     )
+                    .padding(.top, 81)
                 }
                 .onAppear {
                     store.send(.view(.viewOnAppear))

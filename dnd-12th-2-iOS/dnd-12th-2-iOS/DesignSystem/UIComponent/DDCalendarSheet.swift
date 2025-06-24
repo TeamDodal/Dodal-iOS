@@ -21,9 +21,9 @@ struct DDCalendarSheet: View {
                     Image(.iconBack)
                         .foregroundStyle(.gray900)
                 }
-                Spacer()
                 Text("마감일")
                     .font(.pretendard(size: 16, weight: .semibold))
+                    .padding(.leading, 131)
                 Spacer()
             }
             .padding(.horizontal, 12)
