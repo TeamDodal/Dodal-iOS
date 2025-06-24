@@ -15,6 +15,8 @@ protocol TodoStorageType {
     func createSubTodoItem(id: UUID, title: String, content: String?, dueDate: Date?) throws
     func editTodoItem(id: UUID, title: String, content: String?, dueDate: Date?, isCompleted: Bool) throws
     func deleteTodoItem(id: UUID) throws -> Void
+    
+    func createOnboardingTodoItems(title: String, content: String?, dueDate: Date?) -> UUID
 }
 
 final class TodoStorage: TodoStorageType {
@@ -138,6 +140,19 @@ final class TodoStorage: TodoStorageType {
             throw error
         }
     }
+    
+    func createOnboardingTodoItems(title: String, content: String?, dueDate: Date?) -> UUID {
+        let context = persistentContainer.viewContext
+        let newTodo = TodoItem(context: context)
+        newTodo.id = UUID()
+        newTodo.title = title
+        newTodo.content = content
+        newTodo.dueDate = dueDate
+        newTodo.createDate = Date()
+        newTodo.updateDate = Date()
+        
+        try? context.save()
+        
+        return newTodo.id
+    }
 }
-
-

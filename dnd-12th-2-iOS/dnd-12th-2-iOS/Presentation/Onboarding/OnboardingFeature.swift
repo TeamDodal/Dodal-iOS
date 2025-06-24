@@ -70,8 +70,7 @@ struct OnboardingFeature {
                 switch externalAction {
                 case .saveTodo:
                     return .run { [state] send in
-                        try? todoClient.createTodoItem(state.title, nil, nil)
-                        
+                        try todoClient.createTodoWithSubTodos(state.title, state.tasks)
                         await send(.external(.onboardingCompleted))
                     }
                 default:
