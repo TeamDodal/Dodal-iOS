@@ -18,14 +18,32 @@ struct TodoSheetFeature {
     struct State {
         /// 현재 보여질 화면
         var viewState: ViewState = .editTodo
-
-        /// 마감일
-        var dueDate: Date?
         
-        var todoState = TodoEditorFeature.State()
+        var todoState: TodoEditorFeature.State
         
-        var calendarState = DueDateCalendarFeature.State()
+        var calendarState: DueDateCalendarFeature.State
         
+        /// todo 수정
+        init(viewState: ViewState, todo: Todo) {
+            self.viewState = viewState
+            self.todoState = .init(id: todo.id, title: todo.title, content: todo.content ?? "", dueDate: todo.dueDate)
+            self.calendarState = .init(todoItem: todo)
+        }
+                
+        ///  todo 생성
+        init() {
+            self.viewState = .editTodo
+            self.todoState = .init()
+            self.calendarState = .init()
+        }
+        
+        static func setDueDate(todo: Todo) -> State {
+            .init(viewState: .setDueDate, todo: todo)
+        }
+        
+        static func addTodo() -> State {
+            .init()
+        }
     }
     
     enum Action: BindableAction {
@@ -60,6 +78,11 @@ struct TodoSheetFeature {
                 }
             case let .calendarAction(action):
                 switch action {
+                case let .editTodo(todo):                    
+                    return .concatenate([
+                        .send(.todoAction(.editTodo(todo))),
+                        .send(.editingCanelled)
+                    ])
                 case let .dueDateChanged(dueDate):
                     state.todoState.dueDate = dueDate
                     return .none

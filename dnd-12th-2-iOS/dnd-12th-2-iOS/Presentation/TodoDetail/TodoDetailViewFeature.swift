@@ -153,7 +153,7 @@ struct TodoDetailViewFeature {
                     }
                 case .completeTodoItem:
                     return .run { [state] send in                        
-                        try todoClient.editTodoItem(state.todoItem.id, state.todoItem.title, state.todoItem.content, state.todoItem.dueDate, state.todoItem.isCompleted)
+//                        try todoClient.editTodoItem(state.todoItem.id, state.todoItem.title, state.todoItem.content, state.todoItem.dueDate, state.todoItem.isCompleted)
                     }
                 }
 

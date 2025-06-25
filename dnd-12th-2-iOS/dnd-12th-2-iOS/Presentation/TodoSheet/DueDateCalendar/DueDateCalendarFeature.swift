@@ -12,7 +12,12 @@ import ComposableArchitecture
 struct DueDateCalendarFeature {
     @ObservableState
     struct State {
+        var todoItem: Todo? = nil
         var dueDate: Date?
+        
+        var isNewTodo: Bool {
+            todoItem == nil
+        }
                                            
         var buttonTitle: String {
             guard let dueDate else { return "마감일 설정" }
@@ -28,12 +33,24 @@ struct DueDateCalendarFeature {
             
             return "\(dueDate.toMonthDayString)일까지 D-\(diffDay)일"
         }
+        //        초기 생성시
+        init(dueDate: Date?) {
+            self.dueDate = dueDate
+        }
+        
+        // 마감일 설정
+        init(todoItem: Todo? = nil) {
+            self.todoItem = todoItem
+            self.dueDate = todoItem?.dueDate
+        }
     }
     
     enum Action: BindableAction {
         case binding(BindingAction<State>)
         case backButtonTapped
+        case setDueDateButtonTapped
         case dueDateChanged(Date?)
+        case editTodo(Todo)
     }
     
     var body: some Reducer<State, Action> {
@@ -46,6 +63,13 @@ struct DueDateCalendarFeature {
                     return .none
                 }
                 return .send(.dueDateChanged(state.dueDate))
+            case .setDueDateButtonTapped:
+                if var newTodo = state.todoItem {
+                    newTodo.dueDate = state.dueDate
+                    return .send(.editTodo(newTodo))
+                } else {
+                    return .send(.backButtonTapped)
+                }
             default:
                 return .none
             }

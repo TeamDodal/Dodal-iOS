@@ -12,6 +12,9 @@ import ComposableArchitecture
 struct TodoEditorFeature {
     @ObservableState
     struct State {
+        /// todoId
+        var id: UUID?                
+        
         /// 할일 제목
         var title: String = ""
         
@@ -41,6 +44,7 @@ struct TodoEditorFeature {
         case dueDateButtonTapped
         case createButtonTapped
         case crateTodo(Todo)
+        case editTodo(Todo)
     }
     
     @Dependency(\.todoClient) var todoClient
@@ -59,8 +63,12 @@ struct TodoEditorFeature {
                     .send(.dismissSheet)
                 ])
             case let .crateTodo(todo):
-                return .run { send in
+                return .run { send in                    
                     todoClient.createTodoItem(todo)
+                }
+            case let .editTodo(todo):
+                return .run { send in
+                    try todoClient.editTodoItem(todo)
                 }
             default:
                 return .none

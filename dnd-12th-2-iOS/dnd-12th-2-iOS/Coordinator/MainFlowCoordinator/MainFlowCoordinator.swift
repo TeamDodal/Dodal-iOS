@@ -31,6 +31,19 @@ struct MainFlowCoordinator {
         }
         Reduce { state, action in
             switch action {
+            case let .homeViewAction(action):
+                switch action {
+                case let .view(action):
+                    switch action {
+                    case let .todoCellTapped(todo):
+                        state.path.append(.todoDetail(.init(todoItem: todo)))
+                        return .none
+                    default:
+                        return .none
+                    }
+                default:
+                    return .none
+                }
             case let .path(action):
                 switch action {
                 case let .element(id: id, action: .todoDetail(.destination(.popNavigationStack))):
