@@ -32,6 +32,8 @@ struct TodoSheetFeature {
         case binding(BindingAction<State>)
         case todoAction(TodoEditorFeature.Action)
         case calendarAction(DueDateCalendarFeature.Action)
+        case editingCanelled
+        case crateTodoCompleted
     }
     
     var body: some Reducer<State, Action> {
@@ -46,6 +48,10 @@ struct TodoSheetFeature {
             switch action {
             case let .todoAction(action):
                 switch action {
+                case .deleteButtonTapped:
+                    return .send(.editingCanelled)
+                case .dismissSheet:
+                    return .send(.crateTodoCompleted)
                 case .dueDateButtonTapped:
                     state.viewState = .setDueDate
                     return .none

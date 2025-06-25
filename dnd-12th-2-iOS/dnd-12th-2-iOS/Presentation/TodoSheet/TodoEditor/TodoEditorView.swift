@@ -41,7 +41,7 @@ struct TodoEditorView: View {
                         }
                         Spacer()
                         Button(action: {
-                            
+                            store.send(.createButtonTapped)
                         }, label: {
                             Text("생성하기")
                                 .font(.pretendard(size: 16, weight: .medium))
@@ -61,7 +61,7 @@ struct TodoEditorView: View {
                 } else {
                     VStack(spacing: 8) {
                         DDButton(type: .secondary, title: "삭제", action: {
-                            store.send(.editingCanelled)
+                            store.send(.deleteButtonTapped)
                         })
                         
                         DDButton(type: .primary, title: "계속편집", action: {
