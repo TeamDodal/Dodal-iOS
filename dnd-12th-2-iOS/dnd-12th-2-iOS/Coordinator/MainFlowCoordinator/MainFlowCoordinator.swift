@@ -49,14 +49,9 @@ struct MainFlowCoordinator {
                 case let .element(id: id, action: .todoDetail(.destination(.popNavigationStack))):
                     state.path.pop(from: id)
                     return .none
-                case let .element(id: _, action: .todoDetail(.view(.todoCellTapped(todo)))):
-                    state.path.append(.todoDetail(.init(todoItem: todo)))
-                    return .none
                 default:
                     return .none
                 }
-            default:
-                return .none
             }
         }.forEach(\.path, action: \.path)
     }

@@ -44,6 +44,10 @@ struct TodoSheetFeature {
         static func addTodo() -> State {
             .init()
         }
+        
+        static func addSubTodo(parentId: UUID) -> State {
+            .init()
+        }
     }
     
     enum Action: BindableAction {

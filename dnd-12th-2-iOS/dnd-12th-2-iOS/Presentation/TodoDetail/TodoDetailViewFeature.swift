@@ -16,22 +16,26 @@ struct TodoDetailViewFeature {
         var todoItem: Todo
         var isShowAddTodoSheet = false
         var isShowDeleteAlert = false
-        var todo: CreateTodoFeature.State
+        var todoSheetState: TodoSheetFeature.State
         var todoList: TodoListFeature.State
         
         var isOverDepthLimit: Bool {
             todoItem.depth > 3
         }
         
+        var dueDateButtonTitle: String {
+            todoItem.dueDate?.toMonthDayString ?? "마감일"
+        }
+        
         init(todoItem: Todo) {
             self.todoItem = todoItem
-            self.todo = .addTodoDetailView(targetId: todoItem.id)
+            self.todoSheetState = .addSubTodo(parentId: todoItem.id)
             self.todoList = .init(parentID: todoItem.id)
         }
     }
     
     enum Action: ViewAction, TCAAction {
-        case todo(CreateTodoFeature.Action)
+        case todoSheetAction(TodoSheetFeature.Action)
         case todoList(TodoListFeature.Action)
         
         // view에서 일어나는 액션을 정의합니다.
@@ -45,15 +49,9 @@ struct TodoDetailViewFeature {
         
         enum ViewAction: BindableAction {
             case binding(BindingAction<State>)
-            case showAddTodoButtonTapped
-            case todoCellTapped(Todo)
-            case setDueDateButtonTapped(Todo)
-            case editButtonTapped
-            case deleteButtonTapped
             case viewOnAppear
-            case showDeleteAlert
-            case showDeleteAlertDismissed
-            case setCompleteButtonTapped
+            case backButtonTapped
+            case completeButtonTapped
         }
         
         enum DestinationAction {
@@ -61,8 +59,8 @@ struct TodoDetailViewFeature {
         }
         
         enum ExternalAction {
-            case deleteTodoItem(id: UUID)
-            case completeTodoItem(id: UUID)
+            case deleteTodoItem(id: UUID)            
+            case completeTodoItem(Todo)
         }
     }
     
@@ -70,8 +68,8 @@ struct TodoDetailViewFeature {
     
     var body: some Reducer<State, Action> {
         BindingReducer(action: \.view)
-        Scope(state: \.todo, action: \.todo) {
-            CreateTodoFeature()
+        Scope(state: \.todoSheetState, action: \.todoSheetAction) {
+            TodoSheetFeature()
         }
         Scope(state: \.todoList, action: \.todoList) {
             TodoListFeature()
@@ -82,64 +80,19 @@ struct TodoDetailViewFeature {
             case let .view(viewAction):
                 // MARK: - TodoDetailView action
                 switch viewAction {
-                case .showAddTodoButtonTapped:
-                    state.todo = .addTodoDetailView(targetId: state.todoItem.id)
-                    state.isShowAddTodoSheet = true
-                    return .none
-                    // 현재 Todo 수정
-                case .editButtonTapped:
-                    state.todo = .editTitleDetailView(targetId: state.todoItem.id,
-                                                      title: state.todoItem.title,
-                                                      content: state.todoItem.content ?? "",
-                                                      dueDate: state.todoItem.dueDate ?? Date()
-                    )
-                    state.isShowAddTodoSheet = true
-                    return .none
-                    // 하위 Todo 마감일 수정
-                case let .setDueDateButtonTapped(todo):
-                    state.todo = .editDueDateDetailView(targetId: todo.id,
-                                                        title: todo.title,
-                                                        content: todo.content ?? "",
-                                                        dueDate: todo.dueDate ?? Date())
-                    state.isShowAddTodoSheet = true
-                    return .send(.todoList(.view(.viewonAppear)))
-                case .setCompleteButtonTapped:
-                    state.todoItem.isCompleted.toggle()
-                    return .send(.external(.completeTodoItem(id: state.todoItem.id)))
-                case .deleteButtonTapped:
-                    return .send(.external(.deleteTodoItem(id: state.todoItem.id)))
                 case .viewOnAppear:
                     return .send(.todoList(.view(.viewonAppear)))
-                case .showDeleteAlert:
-                    state.isShowDeleteAlert = true
-                    return .none
-                case .showDeleteAlertDismissed:
-                    state.isShowDeleteAlert = false
-                    return .none
+                case .backButtonTapped:
+                    return .send(.destination(.popNavigationStack))
+                case .completeButtonTapped:
+                    state.todoItem.isCompleted = true
+                    return .send(.external(.completeTodoItem(state.todoItem)))
                 default:
                     return .none
                 }
                 // MARK: - CreateTodo action
-            case let .todo(todoAction):
-                switch todoAction {
-                    // todo 생성시 리스트 불러오기
-                case .view(.addTodoCompleted):
-                    state.isShowAddTodoSheet = false
-                    return .send(.todoList(.view(.viewonAppear)))
-                    // todo 수정시 현재 todo 상태를 업데이트
-                case .view(.editTodoCompleted):
-                    // 현재 Todo의 id와 targetId가 같다면 현재의 Todo를 업데이트
-                    if state.todo.targetId == state.todoItem.id {
-                        state.todoItem.title = state.todo.title
-                        state.todoItem.content = state.todo.content
-                        state.todoItem.dueDate = state.todo.dueDate
-                        state.isShowAddTodoSheet = false
-                        return .none
-                    } else {
-                        // 그게 아니라면 하위 투두의 리스트를 다시불러옴
-                        state.isShowAddTodoSheet = false
-                        return .send(.todoList(.view(.viewonAppear)))
-                    }
+            case let .todoSheetAction(action):
+                switch action {
                 default:
                     return .none
                 }
@@ -151,12 +104,11 @@ struct TodoDetailViewFeature {
                         try todoClient.deleteTodoItem(id)
                         await send(.destination(.popNavigationStack))
                     }
-                case .completeTodoItem:
-                    return .run { [state] send in                        
-//                        try todoClient.editTodoItem(state.todoItem.id, state.todoItem.title, state.todoItem.content, state.todoItem.dueDate, state.todoItem.isCompleted)
+                case let .completeTodoItem(todoItem):
+                    return .run { send in
+                        try todoClient.editTodoItem(todoItem)
                     }
                 }
-
             case let .destination(destination):
                 switch destination {
                 case .popNavigationStack:
