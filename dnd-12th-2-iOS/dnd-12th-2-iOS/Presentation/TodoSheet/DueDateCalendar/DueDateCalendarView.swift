@@ -18,6 +18,7 @@ struct DueDateCalendarView: View {
                         store.send(.backButtonTapped)
                     }) {
                         Image(.iconBack)
+                            .opacity(store.isNewTodo ? 1 : 0)
                     }
                     Spacer()
                     Text("마감일")
@@ -35,7 +36,7 @@ struct DueDateCalendarView: View {
                     store.send(.setDueDateButtonTapped)
                 }
             }
-            .padding(.horizontal, 16)
+            .padding(.horizontal, 16)            
         }
     }
 }

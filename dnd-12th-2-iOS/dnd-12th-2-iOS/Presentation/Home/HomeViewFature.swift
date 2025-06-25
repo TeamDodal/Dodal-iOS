@@ -85,7 +85,11 @@ struct HomeViewFeature {
             case .view(let viewAction):
                 switch viewAction {
                 case .sheetDismiss:
-                    state.todoSheetState.todoState.isEditing = false
+                    if state.todoSheetState.viewState == .editTodo {
+                        state.todoSheetState.todoState.isEditing = false
+                    } else {
+                        state.isShowTodoSheet = false
+                    }
                     return .none
                 case .sheetPresent:
                     state.isShowTodoSheet = true
