@@ -11,11 +11,11 @@ import ComposableArchitecture
 struct HomeViewFeature {
     @ObservableState
     struct State {
-       var todoSheetState = TodoSheetFeature.State()
-       var todoListState = TodoListFeature.State()
+        var todoSheetState = TodoSheetFeature.State()
+        var todoListState = TodoListFeature.State()
         /// 날짜 설정 관련 객체
         private let calendar = Calendar.current
-       var isShowTodoSheet = false
+        var isShowTodoSheet = false
         /// 할일 추가 보임 여부
         var isShowAddTodoSheet = false
         /// 마감일 하루전 팝업 여부
@@ -95,16 +95,16 @@ struct HomeViewFeature {
                 case .dismissDdayPopup:
                     state.isShowDdayPopup = false
                     return .none
+                case let .setDueDateButtonTapped(todoItem):
+                    state.todoSheetState = .setDueDate(todo: todoItem)
+                    state.isShowTodoSheet = true
+                    return .none
                 default:
                     return .none
                 }
             case let .todoSheetAction(action):
                 switch action {
-                case .editingCanelled:
-                    state.isShowTodoSheet = false
-                    state.todoSheetState = .init()
-                    return .none
-                case .crateTodoCompleted:
+                case .editingCanelled, .crateTodoCompleted:
                     state.isShowTodoSheet = false
                     state.todoSheetState = .init()
                     return .send(.todoListAction(.view(.viewonAppear)))

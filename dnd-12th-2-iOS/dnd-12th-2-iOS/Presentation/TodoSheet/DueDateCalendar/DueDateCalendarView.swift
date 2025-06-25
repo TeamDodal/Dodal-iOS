@@ -32,7 +32,7 @@ struct DueDateCalendarView: View {
                 DDCalendar(selectedDate: $store.dueDate)
                 
                 DDButton(type: store.dueDate == nil ? .disabled : .primary, title: store.buttonTitle) {
-                    store.send(.backButtonTapped)
+                    store.send(.setDueDateButtonTapped)
                 }
             }
             .padding(.horizontal, 16)
