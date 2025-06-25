@@ -68,7 +68,7 @@ final class TodoStorage: TodoStorageType {
     func fetchTodoItems() throws -> [TodoItem] {
         do {
             let fetchRequest = NSFetchRequest<TodoItem>(entityName: modelName)
-            fetchRequest.predicate = NSPredicate(format: "parent == nil")
+//            fetchRequest.predicate = NSPredicate(format: "parent == nil")
             let data = try mainContext.fetch(fetchRequest)
             
             return data

@@ -36,10 +36,14 @@ struct TodoEditorFeature {
     enum Action: BindableAction {
         case binding(BindingAction<State>)
         case editingChanged(Bool)
-        case editingCanelled
+        case deleteButtonTapped
+        case dismissSheet
         case dueDateButtonTapped
-        
+        case createButtonTapped
+        case crateTodo(Todo)
     }
+    
+    @Dependency(\.todoClient) var todoClient
     
     var body: some Reducer<State, Action> {
         BindingReducer()
@@ -47,7 +51,17 @@ struct TodoEditorFeature {
             switch action {
             case let .editingChanged(isEditing):
                 state.isEditing = isEditing
-                return .none            
+                return .none
+            case .createButtonTapped:
+                let todo = Todo(title: state.title, content: state.content, dueDate: state.dueDate)                
+                return .concatenate([
+                    .send(.crateTodo(todo)),
+                    .send(.dismissSheet)
+                ])
+            case let .crateTodo(todo):
+                return .run { send in
+                    todoClient.createTodoItem(todo)
+                }
             default:
                 return .none
             }
