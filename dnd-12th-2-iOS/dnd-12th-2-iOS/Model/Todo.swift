@@ -20,3 +20,4 @@ struct Todo: Identifiable, Equatable, Hashable {
     var isCompleted: Bool = false
     var path: [String]
 }
+

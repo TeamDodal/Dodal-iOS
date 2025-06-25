@@ -45,7 +45,7 @@ struct HomeViewFeature {
             case .view(let viewAction):
                 switch viewAction {
                 case .sheetDismiss:
-                    state.todoSheetState.isEditing = false
+                    state.todoSheetState.todoState.isEditing = false
                     return .none
                 case .sheetPresent:
                     state.isShowTodoSheet = true
@@ -55,10 +55,10 @@ struct HomeViewFeature {
                 }
             case let .todoSheetAction(action):
                 switch action {
-                case .editingCanelled:
-                    state.isShowTodoSheet = false
-                    state.todoSheetState = .init()
-                    return .none
+//                case .editingCanelled:
+//                    state.isShowTodoSheet = false
+//                    state.todoSheetState = .init()
+//                    return .none
                 default:
                     return .none
                 }

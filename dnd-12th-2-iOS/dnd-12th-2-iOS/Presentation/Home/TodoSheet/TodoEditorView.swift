@@ -1,16 +1,15 @@
 //
-//  TodoSheetView.swift
+//  TodoView.swift
 //  dnd-12th-2-iOS
 //
-//  Created by 권석기 on 6/20/25.
+//  Created by 권석기 on 6/25/25.
 //
 
 import SwiftUI
 import ComposableArchitecture
 
-struct TodoSheetView: View {
-    
-    @Perception.Bindable var store: StoreOf<TodoSheetFeature>
+struct TodoEditorView: View {
+    @Perception.Bindable var store: StoreOf<TodoEditorFeature>
     @FocusState private var focusedField: Field?
     
     var body: some View {
@@ -23,6 +22,7 @@ struct TodoSheetView: View {
                     .padding(.horizontal, 16)
                     .focused($focusedField, equals: .title)
                     .disabled(!store.isEditing)
+                
                 TextEditor(text: $store.content)
                     .frame(height:64)
                     .overlay(alignment: .topLeading) {
@@ -36,8 +36,8 @@ struct TodoSheetView: View {
                     .disabled(!store.isEditing)
                 if store.isEditing {
                     HStack {
-                        DDImageButton(type: .dueDate, text: "마감일") {
-                            
+                        DDImageButton(type: store.dueDate != nil ? .dueDateActive : .dueDate, text: store.dueDateButtonTitle) {
+                            store.send(.dueDateButtonTapped)
                         }
                         Spacer()
                         Button(action: {
@@ -48,8 +48,9 @@ struct TodoSheetView: View {
                                 .foregroundStyle(.gray0)
                                 .padding(.horizontal, 8)
                                 .frame(height: 34)
-                                .background(.mainBlue)
+                                .background(store.isSubmitButtonEnabled ? .mainBlue : .gray300)
                                 .cornerRadius(8)
+                                .disabled(!store.isSubmitButtonEnabled)
                         })
                     }
                     .padding(.vertical, 12)
@@ -87,5 +88,5 @@ struct TodoSheetView: View {
 }
 
 //#Preview {
-//    TodoSheetView()
+//    TodoView()
 //}
