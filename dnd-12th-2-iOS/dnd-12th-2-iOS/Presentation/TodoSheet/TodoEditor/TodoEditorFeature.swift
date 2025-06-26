@@ -98,6 +98,16 @@ struct TodoEditorFeature {
                     .send(.dismissSheet),
                     .send(.editTodoCompleted(updatedTodo))
                 ])
+                // 마감일만 설정하는 경우
+            case let .setDueDate(dueDate):
+                state.dueDate = dueDate
+                guard let id = state.id else { return .none }
+                let updatedTodo = makeTodo(from: state, id: id)
+                return .concatenate([
+                    .send(.editTodo(updatedTodo)),
+                    .send(.dismissSheet),
+                    .send(.editTodoCompleted(updatedTodo))
+                ])
             case let .createTodo(todo):
                 return .run { send in
                     todoClient.createTodoItem(todo)
@@ -113,15 +123,6 @@ struct TodoEditorFeature {
                 return .run { send in
                     try todoClient.createSubTodoItem(parentId, todoItem)
                 }
-            case let .setDueDate(dueDate):
-                state.dueDate = dueDate
-                guard let id = state.id else { return .none }
-                let updatedTodo = makeTodo(from: state, id: id)
-                return .concatenate([
-                    .send(.editTodo(updatedTodo)),
-                    .send(.dismissSheet),
-                    .send(.editTodoCompleted(updatedTodo))
-                ])
             default:
                 return .none
             }
