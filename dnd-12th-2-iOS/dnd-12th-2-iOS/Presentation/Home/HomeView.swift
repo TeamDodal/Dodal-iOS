@@ -66,18 +66,18 @@ struct HomeView: View {
                         store.send(.view(.sheetPresent))
                     }
                 })
-                .onAppear {
-                    store.send(.view(.viewOnAppear))
-                }
             }
             .background(.gray50)
         }
         .bottomSheet(isPresented: $store.isShowTodoSheet, content: {
-            TodoSheetView(store: store.scope(state: \.todoSheetState, action: \.todoSheetAction))
+            TodoSheetView(store: store.scope(state: \.todoSheetStore, action: \.todoSheetStore))
                 .fixedSize(horizontal: false, vertical: true)
         }, onDismiss: {
             store.send(.view(.sheetDismiss))
         })
+        .onAppear {
+            store.send(.view(.viewOnAppear))
+        }
     }
 }
 
