@@ -12,8 +12,6 @@ import ComposableArchitecture
 struct DueDateCalendarFeature {
     @ObservableState
     struct State {
-        /// 기존의 todo를 수정하는 경우 참조용
-        var todoItem: Todo? = nil
         /// 마감일
         var dueDate: Date?
         /// 마감일 설정 완료 여부
@@ -33,19 +31,6 @@ struct DueDateCalendarFeature {
             
             return "\(dueDate.toMonthDayString)일까지 D-\(diffDay)일"
         }
-        
-        /// 초기 생성시 dueDate만 남겨줌
-        /// - Parameter dueDate: 마감일
-        init(dueDate: Date?) {
-            self.dueDate = dueDate
-        }
-        
-        /// 기존 todo의 마감일 수정시
-        /// - Parameter todoItem: 참조용 todo
-        init(todoItem: Todo? = nil) {
-            self.todoItem = todoItem
-            self.dueDate = todoItem?.dueDate
-        }
     }
     
     enum Action: BindableAction {
@@ -56,7 +41,7 @@ struct DueDateCalendarFeature {
         /// 마감일 변경시 => 날짜 Cell 탭할때마다
         case dueDateChanged(Date?)
         /// 마감일 설정 완료 시
-        case setDueDateCompleted(Todo)
+        case setDueDateCompleted(Date?)
     }
     
     var body: some Reducer<State, Action> {
@@ -71,14 +56,10 @@ struct DueDateCalendarFeature {
                 }
                 return .send(.dueDateChanged(state.dueDate))
             case .setDueDateButtonTapped:
-                if var updatedTodo = state.todoItem {
-                    updatedTodo.dueDate = state.dueDate
-                    return .send(.setDueDateCompleted(updatedTodo))
-                }
+                return .send(.setDueDateCompleted(state.dueDate))
             default:
                 return .none
-            }
-            return .none
+            }            
         }
     }
 }
