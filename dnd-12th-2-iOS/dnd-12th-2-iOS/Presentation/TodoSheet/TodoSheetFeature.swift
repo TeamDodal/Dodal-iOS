@@ -29,11 +29,17 @@ struct TodoSheetFeature {
             self.todoState = .init(id: todo.id, title: todo.title, content: todo.content ?? "", dueDate: todo.dueDate)
             self.calendarState = .init(todoItem: todo)
         }
-                
+        
         ///  todo 생성
         init() {
             self.viewState = .editTodo
             self.todoState = .init()
+            self.calendarState = .init()
+        }
+        
+        init(parentId: UUID) {
+            self.viewState = .editTodo
+            self.todoState = .init(parentId: parentId)
             self.calendarState = .init()
         }
         
@@ -46,7 +52,7 @@ struct TodoSheetFeature {
         }
         
         static func addSubTodo(parentId: UUID) -> State {
-            .init()
+            .init(parentId: parentId)
         }
     }
     

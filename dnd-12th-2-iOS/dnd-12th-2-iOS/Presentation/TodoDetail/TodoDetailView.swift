@@ -114,12 +114,14 @@ struct TodoDetailView: View {
             .toolbar(.hidden, for: .navigationBar)
             .overlay(alignment: .bottom) {
                 DDAddTaskButton(action: {
-                    
+                    store.send(.view(.createTodoButtonTapped))
                 })
             }
             .bottomSheet(isPresented: $store.isShowAddTodoSheet, content: {
                 TodoSheetView(store: store.scope(state: \.todoSheetState, action: \.todoSheetAction))
                     .fixedSize(horizontal: false, vertical: true)
+            }, onDismiss: {
+                store.send(.view(.backgroundTapped))
             })
             .onAppear {
                 store.send(.view(.viewOnAppear))
