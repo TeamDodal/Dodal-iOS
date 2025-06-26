@@ -55,6 +55,12 @@ struct TodoView: View {
                 Spacer()
             }
             .background(.gray50)
+            .overlay(alignment: .bottom, content: {
+                DDAddTaskButton(type: .parent) {
+                    store.send(.view(.showAddTodoButtonTapped))
+                }
+                .padding(.bottom, 20)
+            })
             .onAppear {
                 store.send(.view(.viewonAppear))
             }
