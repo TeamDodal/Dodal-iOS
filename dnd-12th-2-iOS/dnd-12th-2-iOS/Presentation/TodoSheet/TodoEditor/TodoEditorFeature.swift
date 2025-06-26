@@ -53,13 +53,15 @@ struct TodoEditorFeature {
         /// 수정하기 버튼 탭
         case editButtonTapped
         /// todo 추가
-        case crateTodo(Todo)
+        case createTodo(Todo)
         /// parentId의 하위 todo 추가
         case createSubTodo(parentId: UUID, todoItem: Todo)
         /// todo 수정
         case editTodo(Todo)
         /// todo 수정 완료 시
         case editTodoCompleted(Todo)
+        ///
+        case setDueDate(Date?)
     }
     
     @Dependency(\.todoClient) var todoClient
@@ -73,31 +75,30 @@ struct TodoEditorFeature {
                 return .none
                 // todo 추가시 parentId의 여부에 따라서 다르게 동작
             case .createButtonTapped:
-                let todo = Todo(title: state.title, content: state.content, dueDate: state.dueDate)
+                let newTodo = makeTodo(from: state)
                 if let parentId = state.parentId {
                     return .concatenate([
-                        .send(.createSubTodo(parentId: parentId, todoItem: todo)),
+                        .send(.createSubTodo(parentId: parentId, todoItem: newTodo)),
                         .send(.dismissSheet)
                     ])
                 } else {
                     return .concatenate([
-                        .send(.crateTodo(todo)),
+                        .send(.createTodo(newTodo)),
                         .send(.dismissSheet)
                     ])
                 }
                 // todo 수정시 editTodoCompleted를 통해서 변경된 todo로 즉시반영
             case .editButtonTapped:
-                if let id = state.id {
-                    let updatedTodo = Todo(id: id, title: state.title, content: state.content, dueDate: state.dueDate)
-                    return .concatenate([
-                        .send(.editTodo(updatedTodo)),
-                        .send(.dismissSheet),
-                        .send(.editTodoCompleted(updatedTodo))
-                    ])
-                } else {
+                guard let id = state.id else {
                     return .send(.dismissSheet)
                 }
-            case let .crateTodo(todo):
+                let updatedTodo = makeTodo(from: state, id: id)
+                return .concatenate([
+                    .send(.editTodo(updatedTodo)),
+                    .send(.dismissSheet),
+                    .send(.editTodoCompleted(updatedTodo))
+                ])
+            case let .createTodo(todo):
                 return .run { send in
                     todoClient.createTodoItem(todo)
                 }
@@ -112,10 +113,28 @@ struct TodoEditorFeature {
                 return .run { send in
                     try todoClient.createSubTodoItem(parentId, todoItem)
                 }
+            case let .setDueDate(dueDate):
+                state.dueDate = dueDate
+                guard let id = state.id else { return .none }
+                let updatedTodo = makeTodo(from: state, id: id)
+                return .concatenate([
+                    .send(.editTodo(updatedTodo)),
+                    .send(.dismissSheet),
+                    .send(.editTodoCompleted(updatedTodo))
+                ])
             default:
                 return .none
             }
         }
+    }
+    
+    private func makeTodo(from state: State, id: UUID? = nil) -> Todo {
+        Todo(
+            id: id ?? UUID(),
+            title: state.title,
+            content: state.content,
+            dueDate: state.dueDate
+        )
     }
 }
 

@@ -44,9 +44,9 @@ struct TodoSheetFeature {
         
         /// todo 수정
         init(viewStack: [ViewState] = [.editTodo], todo: Todo, isEdit: Bool = false) {
-            self.viewStack = viewStack
+            self.viewStack = viewStack            
             self.todoStore = .init(isEdit: isEdit, id: todo.id, title: todo.title, content: todo.content ?? "", dueDate: todo.dueDate)
-            self.calendarStore = .init(todoItem: todo)
+            self.calendarStore = .init(dueDate: todo.dueDate)
         }
         
         ///  todo 생성
@@ -135,10 +135,10 @@ struct TodoSheetFeature {
                     state.todoStore.dueDate = dueDate
                     return .none
                     /// rootView인 경우 즉시 todo 수정
-                case let .setDueDateCompleted(updatedTodo):
-                    if state.isRootView {
+                case let .setDueDateCompleted(dueDate):
+                    if state.isRootView {                        
                         return .concatenate([
-                            .send(.todoStore(.editTodo(updatedTodo))),
+                            .send(.todoStore(.setDueDate(dueDate))),
                             .send(.editingCanelled)
                         ])
                     } else {
