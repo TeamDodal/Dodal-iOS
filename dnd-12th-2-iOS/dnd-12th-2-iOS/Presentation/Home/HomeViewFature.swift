@@ -114,7 +114,7 @@ struct HomeViewFeature {
                         return .none
                     }
                     if currentView == .editTodo {
-                        state.todoSheetStore.todoState.isEditing = false
+                        state.todoSheetStore.todoStore.isEditing = false
                     } else {
                         state.isShowTodoSheet = false
                     }

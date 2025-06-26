@@ -36,9 +36,9 @@ struct TodoSheetView: View {
                     }
                     switch currentView {
                     case .editTodo:
-                        TodoEditorView(store: store.scope(state: \.todoState, action: \.todoAction))
+                        TodoEditorView(store: store.scope(state: \.todoStore, action: \.todoStore))
                     case .setDueDate:
-                        DueDateCalendarView(store: store.scope(state: \.calendarState, action: \.calendarAction))
+                        DueDateCalendarView(store: store.scope(state: \.calendarStore, action: \.calendarStore))
                     }
                 }
                 .animation(.default, value: store.currentView)
