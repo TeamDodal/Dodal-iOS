@@ -52,5 +52,14 @@ struct Todo: Identifiable, Equatable, Hashable {
         self.createDate = Date()
         self.updateDate = Date()        
     }
+    
+    init(id: UUID, title: String, content: String? = nil, dueDate: Date? = nil) {
+        self.id = id
+        self.title = title
+        self.content = content
+        self.dueDate = dueDate
+        self.createDate = Date()
+        self.updateDate = Date()
+    }
 }
 

@@ -14,10 +14,6 @@ struct DueDateCalendarFeature {
     struct State {
         var todoItem: Todo? = nil
         var dueDate: Date?
-        
-        var isNewTodo: Bool {
-            todoItem == nil
-        }
                                            
         var buttonTitle: String {
             guard let dueDate else { return "마감일 설정" }
@@ -47,10 +43,10 @@ struct DueDateCalendarFeature {
     
     enum Action: BindableAction {
         case binding(BindingAction<State>)
-        case backButtonTapped
         case setDueDateButtonTapped
         case dueDateChanged(Date?)
-        case editTodo(Todo)
+        case setDueDateCompleted(Todo)
+//        case editTodo(Todo)
     }
     
     var body: some Reducer<State, Action> {
@@ -64,15 +60,14 @@ struct DueDateCalendarFeature {
                 }
                 return .send(.dueDateChanged(state.dueDate))
             case .setDueDateButtonTapped:
-                if var newTodo = state.todoItem {
-                    newTodo.dueDate = state.dueDate
-                    return .send(.editTodo(newTodo))
-                } else {
-                    return .send(.backButtonTapped)
+                if var updatedTodo = state.todoItem {
+                    updatedTodo.dueDate = state.dueDate
+                    return .send(.setDueDateCompleted(updatedTodo))
                 }
             default:
                 return .none
             }
+            return .none
         }
     }
 }

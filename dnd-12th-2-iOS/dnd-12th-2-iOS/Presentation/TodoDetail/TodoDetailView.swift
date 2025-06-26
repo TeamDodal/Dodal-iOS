@@ -34,7 +34,7 @@ struct TodoDetailView: View {
                         .padding(.trailing, 12)
                         
                         Button(action: {
-                            
+                            store.send(.view(.showDeleteAlert))
                         }) {
                             Image(.iconEdit)
                                 .foregroundStyle(.gray900)
@@ -73,7 +73,7 @@ struct TodoDetailView: View {
                                 .foregroundStyle(.gray900)
                             Spacer()
                             Button(action: {
-                                
+                                store.send(.view(.editButtonTapped))
                             }) {
                                 Image(.iconPencil)
                             }
@@ -127,16 +127,16 @@ struct TodoDetailView: View {
                 store.send(.view(.viewOnAppear))
             }
             .overlay(alignment: .center, content: {
-                if store.state.isShowDeleteAlert {
+                if store.isShowDeleteAlert {
                     DDAlert(
                         title: "할 일을 정말 삭제할까요?",
                         cancelButtonTitle: "취소",
                         confirmButtonTitle: "삭제",
                         onCancel: {
-                            
+                            store.send(.view(.showDeleteAlertDismissed))
                         },
                         onConfirm: {
-                            
+                            store.send(.view(.deleteButtonTapped))
                         }
                     )
                 }

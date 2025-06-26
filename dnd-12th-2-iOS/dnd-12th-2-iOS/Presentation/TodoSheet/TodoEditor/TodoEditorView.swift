@@ -14,7 +14,7 @@ struct TodoEditorView: View {
     
     var body: some View {
         WithPerceptionTracking {
-            VStack {
+            VStack {                
                 TextField("eg.운동하기", text: $store.title)
                     .font(.pretendard(size: 22, weight: .semibold))
                     .foregroundStyle(.black)
@@ -40,18 +40,33 @@ struct TodoEditorView: View {
                             store.send(.dueDateButtonTapped)
                         }
                         Spacer()
-                        Button(action: {
-                            store.send(.createButtonTapped)
-                        }, label: {
-                            Text("생성하기")
-                                .font(.pretendard(size: 16, weight: .medium))
-                                .foregroundStyle(.gray0)
-                                .padding(.horizontal, 8)
-                                .frame(height: 34)
-                                .background(store.isSubmitButtonEnabled ? .mainBlue : .gray300)
-                                .cornerRadius(8)
-                                .disabled(!store.isSubmitButtonEnabled)
-                        })
+                        if store.isEdit {
+                            Button(action: {
+                                store.send(.editButtonTapped)
+                            }, label: {
+                                Text("수정하기")
+                                    .font(.pretendard(size: 16, weight: .medium))
+                                    .foregroundStyle(.gray0)
+                                    .padding(.horizontal, 8)
+                                    .frame(height: 34)
+                                    .background(store.isSubmitButtonEnabled ? .mainBlue : .gray300)
+                                    .cornerRadius(8)
+                                    .disabled(!store.isSubmitButtonEnabled)
+                            })
+                        } else {
+                            Button(action: {
+                                store.send(.createButtonTapped)
+                            }, label: {
+                                Text("생성하기")
+                                    .font(.pretendard(size: 16, weight: .medium))
+                                    .foregroundStyle(.gray0)
+                                    .padding(.horizontal, 8)
+                                    .frame(height: 34)
+                                    .background(store.isSubmitButtonEnabled ? .mainBlue : .gray300)
+                                    .cornerRadius(8)
+                                    .disabled(!store.isSubmitButtonEnabled)
+                            })
+                        }
                     }
                     .padding(.vertical, 12)
                     .padding(.horizontal, 16)

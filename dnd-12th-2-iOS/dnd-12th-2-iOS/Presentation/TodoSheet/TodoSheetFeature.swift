@@ -13,38 +13,56 @@ struct TodoSheetFeature {
     enum ViewState {
         case editTodo
         case setDueDate
+        
+        var title: String {
+            switch self {
+            case .editTodo:
+                ""
+            case .setDueDate:
+                "마감일"
+            }
+        }
     }
     @ObservableState
     struct State {
+        /// 화면 스택
+        var viewStack: [ViewState] = []
+        
         /// 현재 보여질 화면
-        var viewState: ViewState = .editTodo
+        var currentView: ViewState? {
+            viewStack.last
+        }
         
         var todoState: TodoEditorFeature.State
         
         var calendarState: DueDateCalendarFeature.State
         
+        var isRootView: Bool {
+            viewStack.count <= 1
+        }
+        
         /// todo 수정
-        init(viewState: ViewState, todo: Todo) {
-            self.viewState = viewState
-            self.todoState = .init(id: todo.id, title: todo.title, content: todo.content ?? "", dueDate: todo.dueDate)
+        init(viewStack: [ViewState] = [.editTodo], todo: Todo, isEdit: Bool = false) {
+            self.viewStack = viewStack
+            self.todoState = .init(isEdit: isEdit, id: todo.id, title: todo.title, content: todo.content ?? "", dueDate: todo.dueDate)
             self.calendarState = .init(todoItem: todo)
         }
         
         ///  todo 생성
         init() {
-            self.viewState = .editTodo
+            self.viewStack = [.editTodo]
             self.todoState = .init()
             self.calendarState = .init()
         }
         
         init(parentId: UUID) {
-            self.viewState = .editTodo
+            self.viewStack = [.editTodo]
             self.todoState = .init(parentId: parentId)
             self.calendarState = .init()
         }
         
         static func setDueDate(todo: Todo) -> State {
-            .init(viewState: .setDueDate, todo: todo)
+            .init(viewStack: [.setDueDate], todo: todo)
         }
         
         static func addTodo() -> State {
@@ -54,6 +72,10 @@ struct TodoSheetFeature {
         static func addSubTodo(parentId: UUID) -> State {
             .init(parentId: parentId)
         }
+        
+        static func editTodo(todo: Todo) -> State {
+            .init(viewStack: [.editTodo], todo: todo, isEdit: true)
+        }
     }
     
     enum Action: BindableAction {
@@ -62,6 +84,7 @@ struct TodoSheetFeature {
         case calendarAction(DueDateCalendarFeature.Action)
         case editingCanelled
         case crateTodoCompleted
+        case backButtonTapped
     }
     
     var body: some Reducer<State, Action> {
@@ -74,6 +97,11 @@ struct TodoSheetFeature {
         }
         Reduce { state, action in
             switch action {
+            case .backButtonTapped:
+                if !state.isRootView {
+                    state.viewStack.removeLast()
+                }
+                return .none
             case let .todoAction(action):
                 switch action {
                 case .deleteButtonTapped:
@@ -81,24 +109,26 @@ struct TodoSheetFeature {
                 case .dismissSheet:
                     return .send(.crateTodoCompleted)
                 case .dueDateButtonTapped:
-                    state.viewState = .setDueDate
+                    state.viewStack.append(.setDueDate)
                     return .none
                 default:
                     return .none
                 }
             case let .calendarAction(action):
                 switch action {
-                case let .editTodo(todo):                    
-                    return .concatenate([
-                        .send(.todoAction(.editTodo(todo))),
-                        .send(.editingCanelled)
-                    ])
                 case let .dueDateChanged(dueDate):
                     state.todoState.dueDate = dueDate
                     return .none
-                case .backButtonTapped:
-                    state.viewState = .editTodo
-                    return .none
+                case let .setDueDateCompleted(updatedTodo):
+                    if state.isRootView {
+                        return .concatenate([
+                            .send(.todoAction(.editTodo(updatedTodo))),
+                            .send(.editingCanelled)
+                        ])
+                    } else {
+                        state.viewStack.removeLast()
+                        return .none
+                    }
                 default:
                     return .none
                 }
@@ -106,6 +136,5 @@ struct TodoSheetFeature {
                 return .none
             }
         }
-        ._printChanges()
     }
 }

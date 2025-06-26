@@ -49,7 +49,7 @@ extension TodoClient: DependencyKey {
         }, editTodoItem: { todo in
             do {
                 try  storage.editTodoItem(id: todo.id, title: todo.title, content: todo.content, dueDate: todo.dueDate, isCompleted: todo.isCompleted)
-            } catch {
+            } catch {                
                 throw error
             }
         },
