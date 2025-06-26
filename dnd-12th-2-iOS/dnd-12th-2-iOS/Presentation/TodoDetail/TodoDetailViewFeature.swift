@@ -20,7 +20,7 @@ struct TodoDetailViewFeature {
         var todoList: TodoListFeature.State
         
         var isOverDepthLimit: Bool {
-            todoItem.depth > 3
+            todoItem.depth >= 3
         }
         
         init(todoItem: Todo) {

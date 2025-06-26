@@ -12,17 +12,17 @@ struct DDHeader: View {
     var action: () -> Void
     
     var body: some View {
-        HStack(spacing: 2) {
-            Image(.iconCalendarBlue)
-            Text(dateText)
-                .font(.pretendard(size: 16, weight: .medium))
-                .foregroundStyle(.mainBlue)
-            Button(action: action) {
+        Button(action: action) {
+            HStack(spacing: 2) {
+                Image(.iconCalendarBlue)
+                Text(dateText)
+                    .font(.pretendard(size: 16, weight: .medium))
+                    .foregroundStyle(.mainBlue)
                 Image(.iconForwardBlue)
+                Spacer()
             }
-            Spacer()
+            .padding(.leading, 16)
+            .padding(.vertical, 10)
         }
-        .padding(.leading, 16)
-        .padding(.vertical, 10)
     }
 }

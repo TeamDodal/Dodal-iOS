@@ -22,7 +22,9 @@ struct AppFlowCoordinatorView: View {
                         MainTabView(store: $0)                         
                     }
                 case .onboarding:
-                    Text("Onboarding")
+                    CaseLet(/AppFlowCoordinator.State.onboarding, action: AppFlowCoordinator.Action.onboarding) {
+                        OnboardingView(store: $0)
+                    }
                 }
             }
         }

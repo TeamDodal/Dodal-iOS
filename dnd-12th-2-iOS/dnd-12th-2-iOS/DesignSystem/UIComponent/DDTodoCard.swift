@@ -19,7 +19,7 @@ struct DDTodoCard: View {
             
             Text(todo.title)
                 .font(.pretendard(size: 14, weight: .medium))
-                .foregroundStyle(.gray900)
+                .foregroundStyle(todo.isCompleted ? .gray500 : .gray900)
             
             HStack(spacing: 0) {
                 Image(.iconLink)
@@ -30,7 +30,7 @@ struct DDTodoCard: View {
             Spacer()
             if let dueDate = todo.dueDate {
                 Text(formattedDate(dueDate))
-                    .font(.pretendard(size: 14, weight: .medium))
+                    .font(.pretendard(size: 12, weight: .medium))
                     .foregroundStyle(.gray500)
             } else {
                 Button("마감일 설정") {
