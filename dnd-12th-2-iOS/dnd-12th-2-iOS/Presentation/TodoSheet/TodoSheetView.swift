@@ -10,19 +10,49 @@ import ComposableArchitecture
 
 struct TodoSheetView: View {
     
-    @Perception.Bindable var store: StoreOf<TodoSheetFeature>    
+    @Perception.Bindable var store: StoreOf<TodoSheetFeature>
     
     var body: some View {
         WithPerceptionTracking {
-            switch store.viewState {
-            case .editTodo:
-                TodoEditorView(store: store.scope(state: \.todoState, action: \.todoAction))
-            case .setDueDate:
-                DueDateCalendarView(store: store.scope(state: \.calendarState, action: \.calendarAction))
+            if let currentView = store.currentView {
+                VStack {
+                    if !store.isRootView {
+                        HStack {
+                            Button(action: {
+                                store.send(.backButtonTapped)
+                            }) {
+                                Image(.iconBack)
+                            }
+                            Spacer()
+                            Text(currentView.title)
+                                .font(.pretendard(size: 18, weight: .semibold))
+                            Spacer()
+                            Image(.iconBack)
+                                .opacity(0)
+                        }
+                        .frame(height: 32)
+                        .padding(.top, 12)
+                        .padding(.horizontal, 16)
+                    }
+                    switch currentView {
+                    case .editTodo:
+                        TodoEditorView(store: store.scope(state: \.todoState, action: \.todoAction))
+                    case .setDueDate:
+                        DueDateCalendarView(store: store.scope(state: \.calendarState, action: \.calendarAction))
+                    }
+                }
+                .animation(.default, value: store.currentView)
+                .transition(store.isRootView ?   AnyTransition.asymmetric(
+                    insertion: .move(edge: .trailing),
+                    removal: .move(edge: .leading)) :   AnyTransition.asymmetric(
+                        insertion: .move(edge: .leading),
+                        removal: .move(edge: .trailing)))
+            } else {
+                EmptyView()
             }
         }
     }
-
+    
 }
 
 //#Preview {

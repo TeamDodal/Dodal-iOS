@@ -13,22 +13,12 @@ struct DueDateCalendarView: View {
     var body: some View {
         WithPerceptionTracking {
             VStack {
-                HStack {
-                    Button(action: {
-                        store.send(.backButtonTapped)
-                    }) {
-                        Image(.iconBack)
-                            .opacity(store.isNewTodo ? 1 : 0)
-                    }
-                    Spacer()
-                    Text("마감일")
-                        .font(.pretendard(size: 18, weight: .semibold))
-                    Spacer()
-                    Image(.iconBack)
-                        .opacity(0)
-                }
-                .frame(height: 32)
-                .padding(.top, 12)
+//                HStack {
+//                    Text("마감일")
+//                        .font(.pretendard(size: 18, weight: .semibold))
+//                }
+//                .frame(height: 32)
+//                .padding(.top, 12)
                 
                 DDCalendar(selectedDate: $store.dueDate)
                 

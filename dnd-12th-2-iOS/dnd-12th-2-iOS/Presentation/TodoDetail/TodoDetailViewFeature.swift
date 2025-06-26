@@ -54,6 +54,10 @@ struct TodoDetailViewFeature {
             case completeButtonTapped
             case createTodoButtonTapped
             case backgroundTapped
+            case deleteButtonTapped
+            case showDeleteAlert
+            case showDeleteAlertDismissed
+            case editButtonTapped
         }
         
         enum DestinationAction {
@@ -94,11 +98,27 @@ struct TodoDetailViewFeature {
                     state.isShowAddTodoSheet = true
                     return .none
                 case .backgroundTapped:
-                    if state.todoSheetState.viewState == .editTodo {
+                    guard let currentView = state.todoSheetState.currentView else {
+                        return .none
+                    }
+                    if currentView == .editTodo {
                         state.todoSheetState.todoState.isEditing = false
                     } else {
+                        state.todoSheetState = .init()
                         state.isShowAddTodoSheet = false
                     }
+                    return .none
+                case .showDeleteAlert:
+                    state.isShowDeleteAlert = true
+                    return .none
+                case .deleteButtonTapped:
+                    return .send(.external(.deleteTodoItem(id: state.todoItem.id)))
+                case .showDeleteAlertDismissed:
+                    state.isShowDeleteAlert = false
+                    return .none
+                case .editButtonTapped:
+                    state.todoSheetState = .editTodo(todo: state.todoItem)
+                    state.isShowAddTodoSheet = true
                     return .none
                 default:
                     return .none
@@ -110,6 +130,9 @@ struct TodoDetailViewFeature {
                     state.isShowAddTodoSheet = false
                     state.todoSheetState = .init(parentId: state.todoItem.id)
                     return .send(.todoList(.view(.viewonAppear)))
+                case let .todoAction(.editTodoCompleted(updatedTodo)):
+                    state.todoItem = updatedTodo
+                    return .none
                 default:
                     return .none
                 }
@@ -134,6 +157,6 @@ struct TodoDetailViewFeature {
             default: return .none
             }
         }
-        ._printChanges()
+        
     }
 }

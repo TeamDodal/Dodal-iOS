@@ -10,8 +10,11 @@ import ComposableArchitecture
 
 @Reducer
 struct TodoEditorFeature {
+
     @ObservableState
     struct State {
+        var isEdit: Bool = false
+        
         var parentId: UUID?
         /// todoId
         var id: UUID?
@@ -44,9 +47,11 @@ struct TodoEditorFeature {
         case dismissSheet
         case dueDateButtonTapped
         case createButtonTapped
+        case editButtonTapped
         case crateTodo(Todo)
         case createSubTodo(parentId: UUID, todoItem: Todo)
         case editTodo(Todo)
+        case editTodoCompleted(Todo)
     }
     
     @Dependency(\.todoClient) var todoClient
@@ -71,13 +76,27 @@ struct TodoEditorFeature {
                         .send(.dismissSheet)
                     ])
                 }
+            case .editButtonTapped:
+                if let id = state.id {
+                    let updatedTodo = Todo(id: id, title: state.title, content: state.content, dueDate: state.dueDate)
+                    return .concatenate([
+                        .send(.editTodo(updatedTodo)),
+                        .send(.dismissSheet),
+                        .send(.editTodoCompleted(updatedTodo))
+                    ])
+                } else {
+                    return .send(.dismissSheet)
+                }
             case let .crateTodo(todo):
                 return .run { send in                    
                     todoClient.createTodoItem(todo)
                 }
             case let .editTodo(todo):
                 return .run { send in
-                    try todoClient.editTodoItem(todo)
+                    do {
+                        try todoClient.editTodoItem(todo)
+                    } catch {                        
+                    }
                 }
             case let .createSubTodo(parentId, todoItem):
                 return .run { send in
