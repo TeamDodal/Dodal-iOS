@@ -8,6 +8,9 @@
 import SwiftUI
 import ComposableArchitecture
 
+enum Field {
+    case title
+}
 struct TodoEditorView: View {
     @Perception.Bindable var store: StoreOf<TodoEditorFeature>
     @FocusState private var focusedField: Field?
