@@ -13,7 +13,7 @@ struct TodoClient {
     var fetchTodoItems: () throws -> [Todo]
     var fetchSubTodoItems: (_ id: UUID) throws -> [Todo]
     var createTodoItem: (Todo) -> Void
-    var createSubTodoItem: (_ id: UUID, _ title: String, _ content: String?, _ dueDate: Date?) throws -> Void
+    var createSubTodoItem: (_ id: UUID, _ todoItem: Todo) throws -> Void
     var editTodoItem: (Todo) throws -> Void
     var deleteTodoItem: (_ id: UUID) throws -> Void
     
@@ -39,9 +39,9 @@ extension TodoClient: DependencyKey {
         createTodoItem: { todo in
             storage.createTodoItem(title: todo.title, content: todo.content, dueDate: todo.dueDate)
         },
-        createSubTodoItem: { id, title, content, dueDate in
+        createSubTodoItem: { id, todo in
             do {
-                try  storage.createSubTodoItem(id: id, title: title, content: content, dueDate: dueDate)
+                try  storage.createSubTodoItem(id: id, title: todo.title, content: todo.content, dueDate: todo.dueDate)
             } catch {
                 throw error
             }

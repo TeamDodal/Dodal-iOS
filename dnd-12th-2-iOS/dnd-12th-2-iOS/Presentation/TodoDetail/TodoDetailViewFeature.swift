@@ -52,6 +52,8 @@ struct TodoDetailViewFeature {
             case viewOnAppear
             case backButtonTapped
             case completeButtonTapped
+            case createTodoButtonTapped
+            case backgroundTapped
         }
         
         enum DestinationAction {
@@ -87,12 +89,27 @@ struct TodoDetailViewFeature {
                 case .completeButtonTapped:
                     state.todoItem.isCompleted = true
                     return .send(.external(.completeTodoItem(state.todoItem)))
+                case .createTodoButtonTapped:
+                    state.todoSheetState = .init(parentId: state.todoItem.id)
+                    state.isShowAddTodoSheet = true
+                    return .none
+                case .backgroundTapped:
+                    if state.todoSheetState.viewState == .editTodo {
+                        state.todoSheetState.todoState.isEditing = false
+                    } else {
+                        state.isShowAddTodoSheet = false
+                    }
+                    return .none
                 default:
                     return .none
                 }
                 // MARK: - CreateTodo action
             case let .todoSheetAction(action):
                 switch action {
+                case .editingCanelled, .crateTodoCompleted:
+                    state.isShowAddTodoSheet = false
+                    state.todoSheetState = .init(parentId: state.todoItem.id)
+                    return .send(.todoList(.view(.viewonAppear)))
                 default:
                     return .none
                 }
