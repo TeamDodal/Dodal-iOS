@@ -49,6 +49,8 @@ struct TodoDetailViewFeature {
         
         enum ViewAction: BindableAction {
             case binding(BindingAction<State>)
+            case todoCellTapped(Todo)
+            case dueDateButtonTapped(Todo)
             case viewOnAppear
             case backButtonTapped
             case completeButtonTapped
@@ -118,6 +120,10 @@ struct TodoDetailViewFeature {
                     return .none
                 case .editButtonTapped:
                     state.todoSheetState = .editTodo(todo: state.todoItem)
+                    state.isShowAddTodoSheet = true
+                    return .none
+                case let .dueDateButtonTapped(todo):
+                    state.todoSheetState = .setDueDate(todo: todo)
                     state.isShowAddTodoSheet = true
                     return .none
                 default:
