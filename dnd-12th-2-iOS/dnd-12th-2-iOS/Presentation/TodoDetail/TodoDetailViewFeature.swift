@@ -127,7 +127,7 @@ struct TodoDetailViewFeature {
                         return .none
                     }
                     if currentView == .editTodo {
-                        state.todoSheetStore.todoState.isEditing = false
+                        state.todoSheetStore.todoStore.isEditing = false
                     } else {
                         state.todoSheetStore = .init()
                         state.isShowAddTodoSheet = false
@@ -161,7 +161,7 @@ struct TodoDetailViewFeature {
                     state.todoSheetStore = .init(parentId: state.todoItem.id)
                     return .send(.todoList(.view(.viewonAppear)))
                     // todo 수정 완료시 즉시반영
-                case let .todoAction(.editTodoCompleted(updatedTodo)):
+                case let .todoStore(.editTodoCompleted(updatedTodo)):
                     state.todoItem = updatedTodo
                     return .none
                 default:

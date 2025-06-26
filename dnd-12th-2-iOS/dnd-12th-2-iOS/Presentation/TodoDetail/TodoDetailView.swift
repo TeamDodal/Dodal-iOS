@@ -118,7 +118,7 @@ struct TodoDetailView: View {
                 })
             }
             .bottomSheet(isPresented: $store.isShowAddTodoSheet, content: {
-                TodoSheetView(store: store.scope(state: \.todoSheetState, action: \.todoSheetAction))
+                TodoSheetView(store: store.scope(state: \.todoSheetStore, action: \.todoSheetStore))
                     .fixedSize(horizontal: false, vertical: true)
             }, onDismiss: {
                 store.send(.view(.backgroundTapped))
