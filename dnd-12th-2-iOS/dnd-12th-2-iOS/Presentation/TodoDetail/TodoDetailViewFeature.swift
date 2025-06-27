@@ -178,6 +178,7 @@ struct TodoDetailViewFeature {
                 case let .completeTodoItem(todoItem):
                     return .run { send in
                         try todoClient.editTodoItem(todoItem)
+                        await send(.destination(.popNavigationStack))
                     }
                 }
             case let .destination(destination):
