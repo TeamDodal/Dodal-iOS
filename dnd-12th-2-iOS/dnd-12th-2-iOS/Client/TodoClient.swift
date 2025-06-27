@@ -15,6 +15,8 @@ struct TodoClient {
     var createTodoItem: (Todo) -> Void
     var createSubTodoItem: (_ id: UUID, _ todoItem: Todo) throws -> Void
     var editTodoItem: (Todo) throws -> Void
+    var createOnboardingTodoItems: (_ title: String, _ content: String?, _ dueDate: Date?) -> UUID
+    var createTodoWithSubTodos: (_ title: String, _ subTasks: [String]) throws -> Void
     var deleteTodoItem: (_ id: UUID) throws -> Void
     
     static let storage = TodoStorage.shared

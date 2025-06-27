@@ -19,6 +19,8 @@ struct TodoListFeature {
         /// 특정 id 하위의 할일 목록만 가져오기 위함
         var parentID: UUID?
         
+        var isShowAddTodoSheet = false
+        
         init() {
             self.parentID = nil
         }
@@ -42,6 +44,7 @@ struct TodoListFeature {
             case responseTodoItem([Todo])
             /// 할일 목록 탭했을때
             case todoCellTapped(Todo)
+            case showAddTodoButtonTapped
         }
         
         enum ExternalAction {
@@ -63,6 +66,9 @@ struct TodoListFeature {
                 // MARK: - view
             case let .view(viewAction):
                 switch viewAction {
+                case .showAddTodoButtonTapped:
+                    state.isShowAddTodoSheet = true
+                    return .none
                 case .viewonAppear:
                     if let parentId = state.parentID {
                         return .run { send in

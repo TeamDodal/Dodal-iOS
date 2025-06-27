@@ -25,7 +25,7 @@ struct TodoDetailViewFeature {
         var todoList: TodoListFeature.State
         /// todo 추가 가능 여부
         var isOverDepthLimit: Bool {
-            todoItem.depth > 3
+            todoItem.depth >= 3
         }
         /// 마감일 설정 텍스트
         var dueDateButtonTitle: String {
