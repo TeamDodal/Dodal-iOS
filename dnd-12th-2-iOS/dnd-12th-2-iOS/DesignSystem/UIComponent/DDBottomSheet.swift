@@ -5,16 +5,26 @@ import SwiftUI
 struct DDBottomSheet<ContentView: View>: ViewModifier {
     @Binding var isPresented: Bool
     let contentView: () -> ContentView
-    
+    var onDismiss: (()->Void)?
     func body(content: Content) -> some View {
         content
             .fullScreenCover(isPresented: $isPresented) {
                 ZStack(alignment: .bottom) {
                     Color.black.opacity(0.75).ignoresSafeArea(edges: .top)
                         .onTapGesture {
-                            isPresented = false
+                            onDismiss?()
                         }
-                        contentView()
+                    contentView()
+                        .frame(maxWidth: .infinity)
+                        .background(.white)
+                        .clipShape(
+                            .rect(
+                                topLeadingRadius: 12,
+                                bottomLeadingRadius: 0,
+                                bottomTrailingRadius: 0,
+                                topTrailingRadius: 12
+                            )
+                        )
                 }
                 .background(ClearBackground())
             }
@@ -25,8 +35,8 @@ struct DDBottomSheet<ContentView: View>: ViewModifier {
 }
 
 extension View {
-    func bottomSheet<Content: View>(isPresented: Binding<Bool>, content: @escaping () -> Content) -> some View {
-        modifier(DDBottomSheet(isPresented: isPresented, contentView: content))
+    func bottomSheet<Content: View>(isPresented: Binding<Bool>, content: @escaping () -> Content, onDismiss: (()->Void)? = nil) -> some View {
+        modifier(DDBottomSheet(isPresented: isPresented, contentView: content, onDismiss: onDismiss))
     }
 }
 

@@ -15,22 +15,22 @@ struct MainTabView: View {
     
     var body: some View {
         WithPerceptionTracking {
-                TabView(selection: $store.currentTab) {
-                    MainFlowCoordinatorView(store: store.scope(state: \.mainFlow, action: \.mainFlow))
-                        .tag(TabInfo.main)
-                    
-                    TodoFlowCoordinatorView(store: store.scope(state: \.todoFlow, action: \.todoFlow))
-                        .tag(TabInfo.todo)
-                    
-                    SettingView(store: .init(initialState: SettingFeature.State(), reducer: {
-                        SettingFeature()
-                    }))
-                    .tag(TabInfo.setting)
-                    
-                }
-                .overlay(alignment: .bottom) {
-                    TabBarView(currentTab: store.currentTab)
+            TabView(selection: $store.currentTab) {
+                MainFlowCoordinatorView(store: store.scope(state: \.mainFlow, action: \.mainFlow))
+                    .tag(TabInfo.main)
+                
+                TodoFlowCoordinatorView(store: store.scope(state: \.todoFlow, action: \.todoFlow))
+                    .tag(TabInfo.todo)
+                
+                SettingView(store: .init(initialState: SettingFeature.State(), reducer: {
+                    SettingFeature()
+                }))
+                .tag(TabInfo.setting)
             }
+            .overlay(alignment: .bottom) {
+                TabBarView(currentTab: store.currentTab)
+            }
+            .ignoresSafeArea(.keyboard)
         }
     }
 }

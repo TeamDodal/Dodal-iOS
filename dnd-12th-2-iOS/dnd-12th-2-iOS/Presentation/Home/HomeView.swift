@@ -1,20 +1,14 @@
 //
-//  MainView.swift
+//  HomeView.swift
 //  dnd-12th-2-iOS
 //
-//  Created by 권석기 on 5/6/25.
+//  Created by 권석기 on 6/18/25.
 //
 
 import SwiftUI
-
 import ComposableArchitecture
-
-struct MainView: View {
-    @Perception.Bindable fileprivate var store: StoreOf<MainViewFeature>
-    
-    init(store: StoreOf<MainViewFeature>) {
-        self.store = store
-    }
+struct HomeView: View {
+    @Perception.Bindable var store: StoreOf<HomeViewFeature>
     
     var body: some View {
         WithPerceptionTracking {
@@ -68,8 +62,8 @@ struct MainView: View {
                     .padding(.horizontal, 16)
                 }
                 .overlay(alignment: .bottom, content: {
-                    DDAddTaskButton(type: .parent) {
-                        store.send(.view(.showAddTodoButtonTapped))
+                    DDAddTaskButton {
+                        store.send(.view(.sheetPresent))
                     }
                     .padding(.bottom, 20)
                 })
@@ -91,12 +85,18 @@ struct MainView: View {
             }
             .background(.gray50)
         }
-        
+        .bottomSheet(isPresented: $store.isShowTodoSheet, content: {
+            TodoSheetView(store: store.scope(state: \.todoSheetStore, action: \.todoSheetStore))
+                .fixedSize(horizontal: false, vertical: true)
+        }, onDismiss: {
+            store.send(.view(.sheetDismiss))
+        })
+        .onAppear {
+            store.send(.view(.viewOnAppear))
+        }
     }
 }
 
-#Preview {
-    MainView(store: .init(initialState: MainViewFeature.State(), reducer: {
-        MainViewFeature()
-    }))
-}
+//#Preview {
+//    HomeView()
+//}

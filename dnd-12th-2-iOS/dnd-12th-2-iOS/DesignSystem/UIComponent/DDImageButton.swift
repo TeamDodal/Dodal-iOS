@@ -11,7 +11,7 @@ struct DDImageButton: View {
     enum ButtonType {
         case dueDate
         case dueDateActive
-        case complete
+        case complete        
         
         var image: Image {
             switch self {
