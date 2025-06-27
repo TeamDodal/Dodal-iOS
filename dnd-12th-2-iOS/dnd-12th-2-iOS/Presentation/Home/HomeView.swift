@@ -13,8 +13,8 @@ struct HomeView: View {
     var body: some View {
         WithPerceptionTracking {
             VStack {
-                DDHeader(dateText: "5월 12일 (월)") {
-                    
+                DDHeader(dateText: Date().toMonthDayWeekdayString) {
+                    store.send(.view(.calendarButtonTapped))
                 }
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 12) {
@@ -65,7 +65,23 @@ struct HomeView: View {
                     DDAddTaskButton {
                         store.send(.view(.sheetPresent))
                     }
+                    .padding(.bottom, 20)
                 })
+                .bottomSheet(isPresented: $store.isShowAddTodoSheet, content: {
+                    TodoModalView(store: store.scope(state: \.todo, action: \.todo))
+                        .fixedSize(horizontal: false, vertical: true)
+                })
+                .bottomSheet(isPresented: $store.isShowCalendarSheet) {
+                    DDCalendarSheet(
+                        isPresented: $store.isShowCalendarSheet,
+                        selectedDate: $store.calendarSelectedDate,
+                        todos: store.todosForSelectedDate
+                    )
+                    .padding(.top, 81)
+                }
+                .onAppear {
+                    store.send(.view(.viewOnAppear))
+                }
             }
             .background(.gray50)
         }

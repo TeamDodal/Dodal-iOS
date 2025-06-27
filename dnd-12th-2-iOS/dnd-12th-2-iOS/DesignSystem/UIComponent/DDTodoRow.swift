@@ -33,7 +33,7 @@ struct DDTodoRow: View {
             
             if let dueDate = todo.dueDate {
                 Text(formattedDate(dueDate))
-                    .font(.pretendard(size: 14, weight: .medium))
+                    .font(.pretendard(size: 12, weight: .medium))
                     .foregroundStyle(.gray500)
                     .padding(.trailing, 8)
             } else {
