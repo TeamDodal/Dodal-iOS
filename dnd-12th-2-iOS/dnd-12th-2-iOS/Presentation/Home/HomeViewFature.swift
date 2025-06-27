@@ -140,7 +140,9 @@ struct HomeViewFeature {
                 case .editingCanelled, .crateTodoCompleted:
                     state.isShowTodoSheet = false
                     state.todoSheetStore = .init()
-                    return .send(.todoListAction(.view(.viewonAppear)))
+                    return .run { send in
+                        await send(.todoListAction(.view(.viewonAppear)))
+                    }
                 default:
                     return .none
                 }

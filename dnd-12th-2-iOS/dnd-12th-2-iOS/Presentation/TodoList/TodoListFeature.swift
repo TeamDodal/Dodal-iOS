@@ -84,7 +84,7 @@ struct TodoListFeature {
                 switch externalAction {
                 case .fetchTodoItem:
                     return .run { send in
-                        let todos = try todoClient.fetchTodoItems()
+                        let todos = try todoClient.fetchTodoItems()                        
                         await send(.view(.responseTodoItem(todos)))
                     }
                 case let .fetchSubTodoItem(id):

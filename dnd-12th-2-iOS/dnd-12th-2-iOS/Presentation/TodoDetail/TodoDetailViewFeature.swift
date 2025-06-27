@@ -159,7 +159,10 @@ struct TodoDetailViewFeature {
                 case .editingCanelled, .crateTodoCompleted:
                     state.isShowAddTodoSheet = false
                     state.todoSheetStore = .init(parentId: state.todoItem.id)
-                    return .send(.todoList(.view(.viewonAppear)))
+                    return .run { send in
+                        try await Task.sleep(for: .seconds(0.3))
+                        await send(.todoList(.view(.viewonAppear)))
+                    }
                     // todo 수정 완료시 즉시반영
                 case let .todoStore(.editTodoCompleted(updatedTodo)):
                     state.todoItem = updatedTodo
