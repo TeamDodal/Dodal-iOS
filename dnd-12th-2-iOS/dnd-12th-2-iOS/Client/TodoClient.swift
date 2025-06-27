@@ -12,11 +12,11 @@ import ComposableArchitecture
 struct TodoClient {
     var fetchTodoItems: () throws -> [Todo]
     var fetchSubTodoItems: (_ id: UUID) throws -> [Todo]
-    var createTodoItem: (_ title: String, _ content: String?, _ dueDate: Date?) -> Void
-    var createSubTodoItem: (_ id: UUID, _ title: String, _ content: String?, _ dueDate: Date?) throws -> Void
+    var createTodoItem: (Todo) -> Void
+    var createSubTodoItem: (_ id: UUID, _ todoItem: Todo) throws -> Void
+    var editTodoItem: (Todo) throws -> Void
     var createOnboardingTodoItems: (_ title: String, _ content: String?, _ dueDate: Date?) -> UUID
     var createTodoWithSubTodos: (_ title: String, _ subTasks: [String]) throws -> Void
-    var editTodoItem: (_ id: UUID, _ title: String, _ content: String?, _ dueDate: Date?, _ isCompleted: Bool) throws -> Void
     var deleteTodoItem: (_ id: UUID) throws -> Void
     
     static let storage = TodoStorage.shared
@@ -38,28 +38,20 @@ extension TodoClient: DependencyKey {
                 throw error
             }
         },
-        createTodoItem: { title, content, dueDate in
-            storage.createTodoItem(title: title, content: content, dueDate: dueDate)
+        createTodoItem: { todo in
+            storage.createTodoItem(title: todo.title, content: todo.content, dueDate: todo.dueDate)
         },
-        createSubTodoItem: { id, title, content, dueDate in
+        createSubTodoItem: { id, todo in
             do {
-                try  storage.createSubTodoItem(id: id, title: title, content: content, dueDate: dueDate)
+                try  storage.createSubTodoItem(id: id, title: todo.title, content: todo.content, dueDate: todo.dueDate)
             } catch {
                 throw error
             }
             
-        }, createOnboardingTodoItems: { title, content, dueDate in
-            return storage.createOnboardingTodoItems(title: title, content: content, dueDate: dueDate)
-        }, createTodoWithSubTodos: { title, subTasks in
-            let parentID = storage.createOnboardingTodoItems(title: title, content: nil, dueDate: nil)
-            
-            for task in subTasks where !task.isEmpty {
-                try storage.createSubTodoItem(id: parentID, title: task, content: nil, dueDate: nil)
-            }
-        }, editTodoItem: { id, title, content, dueDate, isCompleted in
+        }, editTodoItem: { todo in
             do {
-                try  storage.editTodoItem(id: id, title: title, content: content, dueDate: dueDate, isCompleted: isCompleted)
-            } catch {
+                try  storage.editTodoItem(id: todo.id, title: todo.title, content: todo.content, dueDate: todo.dueDate, isCompleted: todo.isCompleted)
+            } catch {                
                 throw error
             }
         },

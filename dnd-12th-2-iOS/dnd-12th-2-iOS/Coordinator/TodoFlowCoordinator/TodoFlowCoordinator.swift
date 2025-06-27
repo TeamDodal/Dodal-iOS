@@ -1,14 +1,14 @@
 //
-//  MainFlowCoordinator.swift
+//  TodoFlowCoordinator.swift
 //  dnd-12th-2-iOS
 //
-//  Created by 권석기 on 5/6/25.
+//  Created by Allie on 5/30/25.
 //
 
 import ComposableArchitecture
 
 @Reducer
-struct MainFlowCoordinator {
+struct TodoFlowCoordinator {
     @Reducer
     enum Path {
         case todoDetail(TodoDetailViewFeature)
@@ -16,44 +16,33 @@ struct MainFlowCoordinator {
     
     @ObservableState
     struct State {
+        
+        /// todoListStore
+        var todoListStore = TodoListFeature.State()
+        
         /// 네비게이션 스택
         var path = StackState<Path.State>()
-        
-        /// HomeView store
-        var homeViewStore = HomeViewFeature.State()
     }
     
     enum Action {
-        /// 네비게이션 스택 액션
+        case todoListStore(TodoListFeature.Action)
         case path(StackActionOf<Path>)
-        
-        /// HomeView action
-        case homeViewStore(HomeViewFeature.Action)
     }
     
     var body: some Reducer<State, Action> {
-        Scope(state: \.homeViewStore, action: \.homeViewStore) {
-            HomeViewFeature()
+        Scope(state: \.todoListStore, action: \.todoListStore) {
+            TodoListFeature()
         }
+        
         Reduce { state, action in
             switch action {
-                // MARK: - homeView action
-            case let .homeViewStore(action):
-                switch action {
-                    // MARK: - View action
-                case let .view(action):
-                    switch action {
-                    case let .todoCellTapped(todo):
-                        state.path.append(.todoDetail(.init(todoItem: todo)))
-                        return .none
-                    default: return .none
-                    }
-                default: return .none
-                }
-                // MARK: - Navigation
+                // MARK: - Todolist action
+            case let .todoListStore(.view(.todoCellTapped(todo))):
+                state.path.append(.todoDetail(.init(todoItem: todo)))
+                return .none
+                // MARK: - Navigation action
             case let .path(action):
                 switch action {
-                    // todoDetail
                 case let .element(id: id, action: .todoDetail(.destination(.popNavigationStack))):
                     state.path.pop(from: id)
                     return .none
@@ -63,6 +52,9 @@ struct MainFlowCoordinator {
                 default:
                     return .none
                 }
+                
+            default:
+                return .none
             }
         }.forEach(\.path, action: \.path)
     }

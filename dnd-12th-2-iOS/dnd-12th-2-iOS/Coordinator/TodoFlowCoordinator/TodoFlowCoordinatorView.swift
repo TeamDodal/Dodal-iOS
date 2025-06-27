@@ -15,7 +15,7 @@ struct TodoFlowCoordinatorView: View {
     var body: some View {
         WithPerceptionTracking {
             NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
-                TodoView(store: store.scope(state: \.root, action: \.root))
+                TodoView(store: store.scope(state: \.todoListStore, action: \.todoListStore))
             } destination: { store in
                 switch store.case {
                 case let .todoDetail(store):

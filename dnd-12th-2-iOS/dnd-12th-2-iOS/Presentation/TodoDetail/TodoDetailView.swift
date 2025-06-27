@@ -22,16 +22,17 @@ struct TodoDetailView: View {
                 VStack {
                     HStack {
                         Button(action: {
-                            store.send(.destination(.popNavigationStack))
+                            store.send(.view(.backButtonTapped))
                         }) {
                             Image(.iconBack)
                                 .foregroundStyle(.gray900)
                         }
                         Spacer()
                         DDImageButton(type: .complete, text: nil) {
-                            store.send(.view(.setCompleteButtonTapped))
-                        }                        
+                            store.send(.view(.completeButtonTapped))
+                        }
                         .padding(.trailing, 12)
+                        
                         Button(action: {
                             store.send(.view(.showDeleteAlert))
                         }) {
@@ -84,8 +85,8 @@ struct TodoDetailView: View {
                     .padding(.horizontal, 16)
                     
                     HStack {
-                        DDImageButton(type: .dueDate, text: nil) {
-                            store.send(.view(.setDueDateButtonTapped(store.todoItem)))
+                        DDImageButton(type: store.todoItem.dueDate != nil ? .dueDateActive : .dueDate, text: store.dueDateButtonTitle) {
+                            
                         }
                         Spacer()
                     }
@@ -96,13 +97,13 @@ struct TodoDetailView: View {
                 .background(.gray0)
                 
                 ScrollView {
-                   LazyVStack(spacing: 8) {
-                       ForEach(store.todoList.todoItems) { todo in
-                           DDTodoCard(todo: todo) {
-                               store.send(.view(.setDueDateButtonTapped(todo)))
-                           }.onTapGesture {
-                               store.send(.view(.todoCellTapped(todo)))
-                           }
+                    LazyVStack(spacing: 8) {
+                        ForEach(store.todoList.todoItems) { todo in
+                            DDTodoCard(todo: todo) {
+                                store.send(.view(.dueDateButtonTapped(todo)))
+                            }.onTapGesture {
+                                store.send(.view(.todoCellTapped(todo)))
+                            }
                         }
                     }
                     .padding(.top, 30)
@@ -112,22 +113,21 @@ struct TodoDetailView: View {
             .background(.gray50)
             .toolbar(.hidden, for: .navigationBar)
             .overlay(alignment: .bottom) {
-                if !store.isOverDepthLimit {
-                    DDAddTaskButton(type: .child) {
-                        store.send(.view(.showAddTodoButtonTapped))
-                    }
-                    .padding(.bottom, 20)
-                }
+                DDAddTaskButton(action: {
+                    store.send(.view(.createTodoButtonTapped))
+                })
             }
             .bottomSheet(isPresented: $store.isShowAddTodoSheet, content: {
-                TodoModalView(store: store.scope(state: \.todo, action: \.todo))
+                TodoSheetView(store: store.scope(state: \.todoSheetStore, action: \.todoSheetStore))
                     .fixedSize(horizontal: false, vertical: true)
+            }, onDismiss: {
+                store.send(.view(.backgroundTapped))
             })
             .onAppear {
                 store.send(.view(.viewOnAppear))
             }
             .overlay(alignment: .center, content: {
-                if store.state.isShowDeleteAlert {
+                if store.isShowDeleteAlert {
                     DDAlert(
                         title: "할 일을 정말 삭제할까요?",
                         cancelButtonTitle: "취소",
@@ -136,7 +136,7 @@ struct TodoDetailView: View {
                             store.send(.view(.showDeleteAlertDismissed))
                         },
                         onConfirm: {
-                            store.send(.external(.deleteTodoItem(id: store.todoItem.id)))
+                            store.send(.view(.deleteButtonTapped))
                         }
                     )
                 }

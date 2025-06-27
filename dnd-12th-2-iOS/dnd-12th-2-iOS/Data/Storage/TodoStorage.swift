@@ -70,7 +70,7 @@ final class TodoStorage: TodoStorageType {
     func fetchTodoItems() throws -> [TodoItem] {
         do {
             let fetchRequest = NSFetchRequest<TodoItem>(entityName: modelName)
-            fetchRequest.predicate = NSPredicate(format: "parent == nil")
+//            fetchRequest.predicate = NSPredicate(format: "parent == nil")
             let data = try mainContext.fetch(fetchRequest)
             
             return data
@@ -117,7 +117,8 @@ final class TodoStorage: TodoStorageType {
                 todo.dueDate = dueDate
                 todo.updateDate = Date()
                 todo.isCompleted = isCompleted
-                do {
+                
+                do {                    
                     try mainContext.save()
                 } catch {}
             }
