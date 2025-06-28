@@ -11,7 +11,7 @@ import ComposableArchitecture
 struct HomeViewFeature {
     @ObservableState
     struct State {
-        
+        var isShowCalendarSheet = false
         /// 날짜 설정 관련 객체
         private let calendar = Calendar.current
         
@@ -26,7 +26,15 @@ struct HomeViewFeature {
         
         /// 마감일 하루전 팝업 여부
         var isShowDdayPopup = true
+        var calendarSelectedDate: Date? = Date()
         
+        var todosForSelectedDate: [Todo] {
+            guard let selectedDate = calendarSelectedDate else { return [] }
+            return todoListStore.todoItems.filter { todo in
+                guard let due = todo.dueDate else { return false }
+                return Calendar.current.isDate(due, inSameDayAs: selectedDate)
+            }
+        }
         /// 마감일 하루전 할일 목록
         var dDayTodos: [Todo] {
             return todoListStore.todoItems.filter { todo in
@@ -71,7 +79,7 @@ struct HomeViewFeature {
         
         enum ViewAction: BindableAction {
             case binding(BindingAction<State>)
-            
+            case calendarButtonTapped
             /// bottomSheet 닫기
             case sheetDismiss
             
@@ -109,6 +117,9 @@ struct HomeViewFeature {
                 // MARK: - view action
             case .view(let action):
                 switch action {
+                case .calendarButtonTapped:
+                    state.isShowCalendarSheet = true
+                    return .none
                 case .sheetDismiss:
                     guard let currentView = state.todoSheetStore.currentView else {
                         return .none
