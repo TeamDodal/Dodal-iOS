@@ -62,15 +62,15 @@ struct HomeView: View {
                     .padding(.horizontal, 16)
                 }
                 .overlay(alignment: .bottom, content: {
-                    DDAddTaskButton {
+                    DDAddTaskButton(type: .parent) {
                         store.send(.view(.sheetPresent))
                     }
                     .padding(.bottom, 20)
                 })
-                .bottomSheet(isPresented: $store.isShowAddTodoSheet, content: {
-                    TodoModalView(store: store.scope(state: \.todo, action: \.todo))
-                        .fixedSize(horizontal: false, vertical: true)
-                })
+//                .bottomSheet(isPresented: $store.isShowTodoSheet, content: {
+//                    TodoSheetView(store: store.scope(state: \.todoSheetStore, action: \.todoSheetStore))
+//                        .fixedSize(horizontal: false, vertical: true)
+//                })
                 .bottomSheet(isPresented: $store.isShowCalendarSheet) {
                     DDCalendarSheet(
                         isPresented: $store.isShowCalendarSheet,
