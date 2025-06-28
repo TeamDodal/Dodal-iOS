@@ -152,6 +152,7 @@ struct HomeViewFeature {
                     state.isShowTodoSheet = false
                     state.todoSheetStore = .init()
                     return .run { send in
+                        try await Task.sleep(for: .seconds(0.3))
                         await send(.todoListAction(.view(.viewonAppear)))
                     }
                 default:
