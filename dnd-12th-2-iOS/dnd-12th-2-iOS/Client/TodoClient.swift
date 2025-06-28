@@ -48,11 +48,20 @@ extension TodoClient: DependencyKey {
                 throw error
             }
             
-        }, editTodoItem: { todo in
+        },editTodoItem: { todo in
             do {
                 try  storage.editTodoItem(id: todo.id, title: todo.title, content: todo.content, dueDate: todo.dueDate, isCompleted: todo.isCompleted)
-            } catch {                
+            } catch {
                 throw error
+            }
+        },
+        createOnboardingTodoItems: { title, content, dueDate in
+            return storage.createOnboardingTodoItems(title: title, content: content, dueDate: dueDate)
+        }, createTodoWithSubTodos: { title, subTasks in
+            let parentID = storage.createOnboardingTodoItems(title: title, content: nil, dueDate: nil)
+            
+            for task in subTasks where !task.isEmpty {
+                try storage.createSubTodoItem(id: parentID, title: task, content: nil, dueDate: nil)
             }
         },
         deleteTodoItem: { id in
