@@ -116,9 +116,10 @@ final class TodoStorage: TodoStorageType {
                 todo.content = content
                 todo.dueDate = dueDate
                 todo.updateDate = Date()
+                
                 todo.isCompleted = isCompleted
                 
-                do {                    
+                do {
                     try mainContext.save()
                 } catch {}
             }
