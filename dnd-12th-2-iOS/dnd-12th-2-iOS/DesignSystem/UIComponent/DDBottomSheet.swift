@@ -6,6 +6,8 @@ struct DDBottomSheet<ContentView: View>: ViewModifier {
     @Binding var isPresented: Bool
     let contentView: () -> ContentView
     var onDismiss: (()->Void)?
+    var topSpacing: CGFloat = 0
+    
     func body(content: Content) -> some View {
         content
             .fullScreenCover(isPresented: $isPresented) {
@@ -14,17 +16,21 @@ struct DDBottomSheet<ContentView: View>: ViewModifier {
                         .onTapGesture {
                             onDismiss?()
                         }
-                    contentView()
-                        .frame(maxWidth: .infinity)
-                        .background(.white)
-                        .clipShape(
-                            .rect(
-                                topLeadingRadius: 12,
-                                bottomLeadingRadius: 0,
-                                bottomTrailingRadius: 0,
-                                topTrailingRadius: 12
+                    
+                    VStack(spacing: 0) {
+                        Spacer().frame(height: topSpacing)
+                        contentView()
+                            .frame(maxWidth: .infinity)
+                            .background(.white)
+                            .clipShape(
+                                .rect(
+                                    topLeadingRadius: 12,
+                                    bottomLeadingRadius: 0,
+                                    bottomTrailingRadius: 0,
+                                    topTrailingRadius: 12
+                                )
                             )
-                        )
+                    }
                 }
                 .background(ClearBackground())
             }
@@ -35,8 +41,13 @@ struct DDBottomSheet<ContentView: View>: ViewModifier {
 }
 
 extension View {
-    func bottomSheet<Content: View>(isPresented: Binding<Bool>, content: @escaping () -> Content, onDismiss: (()->Void)? = nil) -> some View {
-        modifier(DDBottomSheet(isPresented: isPresented, contentView: content, onDismiss: onDismiss))
+    func bottomSheet<Content: View>(
+        isPresented: Binding<Bool>,
+        topSpacing: CGFloat = 0,
+        content: @escaping () -> Content,
+        onDismiss: (() -> Void)? = nil
+    ) -> some View {
+        modifier(DDBottomSheet(isPresented: isPresented, contentView: content, onDismiss: onDismiss, topSpacing: topSpacing))
     }
 }
 
