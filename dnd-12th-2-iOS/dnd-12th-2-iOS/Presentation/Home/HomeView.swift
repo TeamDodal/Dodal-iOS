@@ -7,6 +7,8 @@
 
 import SwiftUI
 import ComposableArchitecture
+
+
 struct HomeView: View {
     @Perception.Bindable var store: StoreOf<HomeViewFeature>
     
@@ -71,13 +73,15 @@ struct HomeView: View {
 //                    TodoSheetView(store: store.scope(state: \.todoSheetStore, action: \.todoSheetStore))
 //                        .fixedSize(horizontal: false, vertical: true)
 //                })
-                .bottomSheet(isPresented: $store.isShowCalendarSheet) {
+                .bottomSheet(
+                    isPresented: $store.isShowCalendarSheet,
+                    topSpacing: 81
+                ) {
                     DDCalendarSheet(
                         isPresented: $store.isShowCalendarSheet,
                         selectedDate: $store.calendarSelectedDate,
                         todos: store.todosForSelectedDate
                     )
-                    .padding(.top, 81)
                 }
                 .onAppear {
                     store.send(.view(.viewOnAppear))
