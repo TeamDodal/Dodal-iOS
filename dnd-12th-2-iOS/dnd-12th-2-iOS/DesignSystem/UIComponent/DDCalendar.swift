@@ -24,6 +24,16 @@ struct DDCalendar: View {
             headerView
             calendarGridView
         }
+        .gesture(
+            DragGesture()
+                .onEnded { value in
+                    if value.translation.width < -80 {
+                        changeMonth(by: 1)
+                    } else if value.translation.width > 80 {
+                        changeMonth(by: -1)
+                    }
+                }
+        )
     }
     
     // MARK: - Header
@@ -78,11 +88,11 @@ struct DDCalendar: View {
         let daysInMonth = numberOfDays(in: month)
         let firstWeekday = firstWeekdayOfMonth(in: month) - 1
         let numberOfRows = Int(ceil(Double(daysInMonth + firstWeekday) / 7.0))
-
+        
         /// 이전 달 정보
         let prevMonth = adjustedMonth(by: -1)
         let daysInPrevMonth = numberOfDays(in: prevMonth)
-
+        
         return LazyVGrid(columns: Array(repeating: GridItem(), count: 7)) {
             ForEach(0 ..< (numberOfRows * 7), id: \.self) { index in
                 let dayOffset = index - firstWeekday
