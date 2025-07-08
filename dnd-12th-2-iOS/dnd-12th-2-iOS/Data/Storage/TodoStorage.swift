@@ -10,12 +10,11 @@ import CoreData
 
 protocol TodoStorageType {
     func createTodoItem(title: String, content: String?, dueDate: Date?)
-    func fetchTodoItems() throws -> [TodoItem]
-    func fetchTodoItems(id: UUID) throws -> [TodoItem]
+    func fetchTodoItems() throws -> [Todo]
+    func fetchTodoItems(id: UUID) throws -> [Todo]
     func createSubTodoItem(id: UUID, title: String, content: String?, dueDate: Date?) throws
     func editTodoItem(id: UUID, title: String, content: String?, dueDate: Date?, isCompleted: Bool) throws
     func deleteTodoItem(id: UUID) throws -> Void
-    
     func createOnboardingTodoItems(title: String, content: String?, dueDate: Date?) -> UUID
 }
 
@@ -45,116 +44,157 @@ final class TodoStorage: TodoStorageType {
     
     func createTodoItem(title: String, content: String?, dueDate: Date?) {
         let context = persistentContainer.viewContext
-        let newTodo = TodoItem(context: context)
-        newTodo.id = UUID()
-        newTodo.title = title
-        newTodo.content = content
-        newTodo.dueDate = dueDate
-        newTodo.createDate = Date()
-        newTodo.updateDate = Date()
-        try? context.save()
-    }
-    
-    func fetchTodoItems(id: UUID) throws -> [TodoItem] {
-        do {
-            let fetchRequest = NSFetchRequest<TodoItem>(entityName: modelName)
-            fetchRequest.predicate = NSPredicate(format: "parent.id == %@", id as CVarArg)
-            let data = try mainContext.fetch(fetchRequest)
-            
-            return data
-        } catch {
-            throw error
+        context.perform {
+            let newTodo = TodoItem(context: context)
+            newTodo.id = UUID()
+            newTodo.title = title
+            newTodo.content = content
+            newTodo.dueDate = dueDate
+            newTodo.createDate = Date()
+            newTodo.updateDate = Date()
+            do {
+                try context.save()
+            } catch {
+                print("Core Data save error: \(error)")
+            }
         }
     }
-    
-    func fetchTodoItems() throws -> [TodoItem] {
-        do {
-            let fetchRequest = NSFetchRequest<TodoItem>(entityName: modelName)
-//            fetchRequest.predicate = NSPredicate(format: "parent == nil")
-            let data = try mainContext.fetch(fetchRequest)
-            
-            return data
-        } catch {
+
+    func fetchTodoItems() throws -> [Todo] {
+        let context = persistentContainer.viewContext
+        var dtos: [Todo] = []
+        var fetchError: Error?
+        context.performAndWait {
+            do {
+                let fetchRequest = NSFetchRequest<TodoItem>(entityName: modelName)
+                let data = try context.fetch(fetchRequest)
+                dtos = data.map { $0.toDto() }
+            } catch {
+                fetchError = error
+            }
+        }
+        if let error = fetchError {
             throw error
         }
+        return dtos
+    }
+    
+    func fetchTodoItems(id: UUID) throws -> [Todo] {
+        let context = persistentContainer.viewContext
+        var dtos: [Todo] = []
+        var fetchError: Error?
+        context.performAndWait {
+            do {
+                let fetchRequest = NSFetchRequest<TodoItem>(entityName: modelName)
+                fetchRequest.predicate = NSPredicate(format: "parent.id == %@", id as CVarArg)
+                let data = try context.fetch(fetchRequest)
+                dtos = data.map { $0.toDto() }
+            } catch {
+                fetchError = error
+            }
+        }
+        if let error = fetchError {
+            throw error
+        }
+        return dtos
     }
     
     func createSubTodoItem(id: UUID, title: String, content: String?, dueDate: Date?) throws {
-        
-        let fetchRequest = NSFetchRequest<TodoItem>(entityName: modelName)
-        fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
-        do {
-            let data = try mainContext.fetch(fetchRequest)
-            if let todo = data.first {
-                let subTodo = TodoItem(context: mainContext)
-                subTodo.id = UUID()
-                subTodo.title = title
-                subTodo.content = content
-                subTodo.dueDate = dueDate
-                subTodo.createDate = Date()
-                subTodo.updateDate = Date()
-                todo.addToItems(subTodo)
-                
-                do {
-                    try? mainContext.save()
-                } catch {}
+        let context = persistentContainer.viewContext
+        var opError: Error?
+        context.performAndWait {
+            let fetchRequest = NSFetchRequest<TodoItem>(entityName: modelName)
+            fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+            do {
+                let data = try context.fetch(fetchRequest)
+                if let todo = data.first {
+                    let subTodo = TodoItem(context: context)
+                    subTodo.id = UUID()
+                    subTodo.title = title
+                    subTodo.content = content
+                    subTodo.dueDate = dueDate
+                    subTodo.createDate = Date()
+                    subTodo.updateDate = Date()
+                    subTodo.parent = todo
+                    todo.addToItems(subTodo)
+                    try context.save()
+                }
+            } catch {
+                opError = error
+                print("Core Data error: \(error)")
             }
-            
-        } catch {
+        }
+        if let error = opError {
             throw error
         }
     }
-    
+
     func editTodoItem(id: UUID, title: String, content: String?, dueDate: Date?, isCompleted: Bool) throws {
-        let fetchRequest = NSFetchRequest<TodoItem>(entityName: modelName)
-        fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
-        do {
-            let data = try mainContext.fetch(fetchRequest)
-            if let todo = data.first {
-                todo.id = id
-                todo.title = title
-                todo.content = content
-                todo.dueDate = dueDate
-                todo.updateDate = Date()
-                
-                todo.isCompleted = isCompleted
-                
-                do {
-                    try mainContext.save()
-                } catch {}
+        let context = persistentContainer.viewContext
+        var opError: Error?
+        context.performAndWait {
+            let fetchRequest = NSFetchRequest<TodoItem>(entityName: modelName)
+            fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+            do {
+                let data = try context.fetch(fetchRequest)
+                if let todo = data.first {
+                    todo.title = title
+                    todo.content = content
+                    todo.dueDate = dueDate
+                    todo.updateDate = Date()
+                    todo.isCompleted = isCompleted
+                    try context.save()
+                }
+            } catch {
+                opError = error
+                print("Core Data error: \(error)")
             }
-            
-        } catch {
+        }
+        if let error = opError {
             throw error
         }
     }
-    
+
     func deleteTodoItem(id: UUID) throws {
-        let fetchRequest = NSFetchRequest<TodoItem>(entityName: modelName)
-        fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
-        do {
-            let data = try mainContext.fetch(fetchRequest)
-            if let todo = data.first {
-                mainContext.delete(todo)
-                try mainContext.save()
+        let context = persistentContainer.viewContext
+        var opError: Error?
+        context.performAndWait {
+            let fetchRequest = NSFetchRequest<TodoItem>(entityName: modelName)
+            fetchRequest.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+            do {
+                let data = try context.fetch(fetchRequest)
+                if let todo = data.first {
+                    context.delete(todo)
+                    try context.save()
+                }
+            } catch {
+                opError = error
+                print("Core Data error: \(error)")
             }
-        } catch {
+        }
+        if let error = opError {
             throw error
         }
     }
-    
+
     func createOnboardingTodoItems(title: String, content: String?, dueDate: Date?) -> UUID {
         let context = persistentContainer.viewContext
-        let newTodo = TodoItem(context: context)
-        newTodo.id = UUID()
-        newTodo.title = title
-        newTodo.content = content
-        newTodo.dueDate = dueDate
-        newTodo.createDate = Date()
-        newTodo.updateDate = Date()
-        
-        try? context.save()
-        
-        return newTodo.id
+        var newID: UUID = UUID()
+        context.performAndWait {
+            let newTodo = TodoItem(context: context)
+            newID = UUID()
+            newTodo.id = newID
+            newTodo.title = title
+            newTodo.content = content
+            newTodo.dueDate = dueDate
+            newTodo.createDate = Date()
+            newTodo.updateDate = Date()
+            do {
+                try context.save()
+            } catch {
+                print("Core Data save error: \(error)")
+            }
+        }
+        return newID
     }
 }
