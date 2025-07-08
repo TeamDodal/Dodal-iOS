@@ -24,6 +24,7 @@ struct AppFlowCoordinatorView: View {
                 case .onboarding:
                     CaseLet(/AppFlowCoordinator.State.onboarding, action: AppFlowCoordinator.Action.onboarding) {
                         OnboardingView(store: $0)
+                            .ignoresSafeArea(.keyboard, edges: .bottom)
                     }
                 }
             }
