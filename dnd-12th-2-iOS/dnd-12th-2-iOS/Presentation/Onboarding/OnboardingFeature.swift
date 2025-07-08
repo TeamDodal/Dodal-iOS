@@ -16,6 +16,7 @@ struct OnboardingFeature {
         var title: String = ""
         var tasks: [String] = Array(repeating: "", count: 5)
         var isLastStep: Bool = false
+        var focusedTaskIndex: Int? = nil
         let taskPlaceholders: [String] = [
             "가장 먼저 할 일",
             "다음으로 할 일",
@@ -58,9 +59,11 @@ struct OnboardingFeature {
                     return .none
                 case .nextButtonTapped:
                     state.isLastStep = true
+                    state.focusedTaskIndex = 0
                     return .none
                 case .backButtonTapped:
                     state.isLastStep = false
+                    state.focusedTaskIndex = nil
                     return .none
                 case .completeButtonTapped:
                     return .send(.external(.saveTodo))

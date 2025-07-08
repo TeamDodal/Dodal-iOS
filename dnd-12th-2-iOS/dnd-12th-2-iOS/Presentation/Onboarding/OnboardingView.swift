@@ -78,6 +78,9 @@ struct OnboardingView: View {
                                 }
                                 .padding(8)
                             }
+                            .onChange(of: store.focusedTaskIndex) { index in
+                                focusedTaskIndex = index
+                            }
                         }
                         .background(
                             RoundedRectangle(cornerRadius: 8)
