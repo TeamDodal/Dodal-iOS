@@ -10,6 +10,7 @@ import SwiftUI
 struct DDCalendar: View {
     @State private var month: Date = Date()
     @Binding private var selectedDate: Date?
+    @State private var dragOffset: CGFloat = 0
     
     init(
         month: Date = Date(),
@@ -23,15 +24,22 @@ struct DDCalendar: View {
         VStack {
             headerView
             calendarGridView
+                .offset(x: dragOffset)
+                .animation(.interactiveSpring(), value: dragOffset)
         }
         .gesture(
             DragGesture()
+                .onChanged { value in
+                    dragOffset = value.translation.width
+                }
                 .onEnded { value in
-                    if value.translation.width < -80 {
+                    let threshold: CGFloat = 80
+                    if value.translation.width < -threshold {
                         changeMonth(by: 1)
-                    } else if value.translation.width > 80 {
+                    } else if value.translation.width > threshold {
                         changeMonth(by: -1)
                     }
+                    dragOffset = 0
                 }
         )
     }
