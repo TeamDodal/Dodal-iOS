@@ -106,7 +106,7 @@ struct OnboardingView: View {
                 .background(.gray0)
                 .overlay(alignment: .bottom) {
                     DDButton(
-                        type: .primary,
+                        type: store.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .disabled : .primary,
                         title: store.isLastStep ? "완료" : "다음"
                     ) {
                         store.send(
