@@ -28,6 +28,10 @@ struct DDButton: View {
             case .disabled: .gray300
             }
         }
+        
+        var isEnabled: Bool {
+            self != .disabled
+        }
     }
     
     let type: ButtonType
@@ -43,7 +47,9 @@ struct DDButton: View {
     
     var body: some View {
         Button {
-            action()
+            if type.isEnabled {
+                action()
+            }
         } label : {
             Text(title)
                 .font(.pretendard(size: 16, weight: .medium))
@@ -55,5 +61,6 @@ struct DDButton: View {
             RoundedRectangle(cornerRadius: 12)
                 .fill(type.backgroundColor)
         }
+        .disabled(!type.isEnabled)
     }
 }

@@ -57,7 +57,24 @@ extension TodoItem {
 }
 
 extension TodoItem {
-    func toDto() -> Todo {
+    func toDto(visited: Set<UUID> = []) -> Todo {
+        if visited.contains(self.id) {
+            /// 순환 발생 방지
+            return Todo(
+                id: self.id,
+                title: self.title,
+                content: self.content,
+                dueDate: self.dueDate,
+                createDate: self.createDate,
+                updateDate: self.updateDate,
+                children: [],
+                parentID: self.parent?.id,
+                depth: self.depth,
+                isCompleted: self.isCompleted,
+                path: self.path
+            )
+        }
+        let newVisited = visited.union([self.id])
         return Todo(
             id: self.id,
             title: self.title,
@@ -67,7 +84,7 @@ extension TodoItem {
             updateDate: self.updateDate,
             children: (self.items ?? [])
                 .sorted { $0.createDate < $1.createDate }
-                .map { $0.toDto() },
+                .map { $0.toDto(visited: newVisited) },
             parentID: self.parent?.id,
             depth: self.depth,
             isCompleted: self.isCompleted,

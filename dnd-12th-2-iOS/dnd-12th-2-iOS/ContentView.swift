@@ -15,6 +15,7 @@ struct ContentView: View {
             AppFlowCoordinatorView(store: Store(initialState: AppFlowCoordinator.State(), reducer: {
                 AppFlowCoordinator()
             }))
+            .ignoresSafeArea(.keyboard)
         }
     }
 }

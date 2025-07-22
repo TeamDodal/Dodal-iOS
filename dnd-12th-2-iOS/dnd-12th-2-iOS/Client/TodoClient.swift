@@ -25,54 +25,35 @@ struct TodoClient {
 extension TodoClient: DependencyKey {
     static let liveValue = Self (
         fetchTodoItems: {
-            do {
-                return try storage.fetchTodoItems().map { $0.toDto() }
-            } catch {
-                throw error
-            }
+            try storage.fetchTodoItems() // <-- 바로 반환
         },
         fetchSubTodoItems: { id in
-            do {
-                return try storage.fetchTodoItems(id: id).map { $0.toDto() }
-            } catch {
-                throw error
-            }
+            try storage.fetchTodoItems(id: id) // <-- 바로 반환
         },
         createTodoItem: { todo in
             storage.createTodoItem(title: todo.title, content: todo.content, dueDate: todo.dueDate)
         },
         createSubTodoItem: { id, todo in
-            do {
-                try  storage.createSubTodoItem(id: id, title: todo.title, content: todo.content, dueDate: todo.dueDate)
-            } catch {
-                throw error
-            }
-            
-        },editTodoItem: { todo in
-            do {
-                try  storage.editTodoItem(id: todo.id, title: todo.title, content: todo.content, dueDate: todo.dueDate, isCompleted: todo.isCompleted)
-            } catch {
-                throw error
-            }
+            try storage.createSubTodoItem(id: id, title: todo.title, content: todo.content, dueDate: todo.dueDate)
+        },
+        editTodoItem: { todo in
+            try storage.editTodoItem(id: todo.id, title: todo.title, content: todo.content, dueDate: todo.dueDate, isCompleted: todo.isCompleted)
         },
         createOnboardingTodoItems: { title, content, dueDate in
-            return storage.createOnboardingTodoItems(title: title, content: content, dueDate: dueDate)
-        }, createTodoWithSubTodos: { title, subTasks in
+            storage.createOnboardingTodoItems(title: title, content: content, dueDate: dueDate)
+        },
+        createTodoWithSubTodos: { title, subTasks in
             let parentID = storage.createOnboardingTodoItems(title: title, content: nil, dueDate: nil)
-            
             for task in subTasks where !task.isEmpty {
                 try storage.createSubTodoItem(id: parentID, title: task, content: nil, dueDate: nil)
             }
         },
         deleteTodoItem: { id in
-            do {
-                try  storage.deleteTodoItem(id: id)
-            } catch {
-                throw error
-            }
+            try storage.deleteTodoItem(id: id)
         }
     )
 }
+
 
 extension DependencyValues {
     var todoClient: TodoClient {
