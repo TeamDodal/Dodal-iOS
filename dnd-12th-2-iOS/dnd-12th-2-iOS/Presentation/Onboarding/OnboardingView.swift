@@ -8,6 +8,7 @@
 import SwiftUI
 
 import ComposableArchitecture
+import Combine
 
 struct OnboardingView: View {
     @Perception.Bindable fileprivate var store: StoreOf<OnboardingFeature>
@@ -21,90 +22,104 @@ struct OnboardingView: View {
     
     var body: some View {
         WithPerceptionTracking {
-            VStack {
-                HStack {
-                    if store.isLastStep {
-                        Button(action: {
-                            store.send(.view(.backButtonTapped))
-                        }) {
-                            Image(.iconBack)
-                                .foregroundStyle(.gray900)
+            GeometryReader { geo in
+                ScrollView {
+                    VStack {
+                        HStack {
+                            if store.isLastStep {
+                                Button(action: {
+                                    store.send(.view(.backButtonTapped))
+                                }) {
+                                    Image(.iconBack)
+                                        .foregroundStyle(.gray900)
+                                }
+                            }
+                            Spacer()
                         }
-                    }
-                    Spacer()
-                }
-                .padding(.horizontal)
-                
-                Text(store.isLastStep ? "프로젝트 할 일 정하기" : "첫 번째 프로젝트 정하기")
-                    .font(.pretendard(size: 24, weight: .bold))
-                    .foregroundStyle(.gray900)
-                    .padding(.top, 14)
-                    .padding(.bottom, 61)
-                
-                VStack(spacing: 8) {
-                    TextField(
-                        "프로젝트 이름",
-                        text: $store.title
-                    )
-                    .font(.pretendard(size: 22, weight: .medium))
-                    .foregroundStyle(isTitleFocused ? .gray900 : (store.title.isEmpty ? .gray300 : .gray900))
-                    .focused($isTitleFocused)
-                    .frame(height: 64)
-                    .padding(.horizontal, 12)
-                    .background(
-                        RoundedRectangle(cornerRadius: 6)
-                            .fill(.gray0)
-                    )
-                    .padding(8)
-                    .disabled(store.isLastStep)
-                    
-                    ForEach(store.tasks.indices, id: \.self) { index in
-                        HStack(spacing: 12) {
-                            Image(.iconCheckPurple)
-                                .padding(.leading, 8)
+                        .padding(.horizontal)
+                        
+                        Text(store.isLastStep ? "프로젝트 할 일 정하기" : "첫 번째 프로젝트 정하기")
+                            .font(.pretendard(size: 24, weight: .bold))
+                            .foregroundStyle(.gray900)
+                            .padding(.top, 14)
+                            .padding(.bottom, 61)
+                        
+                        VStack(spacing: 8) {
                             TextField(
-                                store.taskPlaceholders[index],
-                                text: $store.tasks[index]
+                                "프로젝트 이름",
+                                text: $store.title
                             )
-                            .font(.pretendard(size: 16, weight: .medium))
-                            .foregroundStyle(
-                                (focusedTaskIndex == index) ? .gray900 : (store.tasks[index].isEmpty ? .gray300 : .gray900)
+                            .font(.pretendard(size: 22, weight: .medium))
+                            .foregroundStyle(isTitleFocused ? .gray900 : (store.title.isEmpty ? .gray300 : .gray900))
+                            .focused($isTitleFocused)
+                            .frame(height: 64)
+                            .padding(.horizontal, 12)
+                            .background(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .fill(.gray0)
                             )
-                            .focused($focusedTaskIndex, equals: index)
-                            .disabled(!store.isLastStep)
+                            .padding(8)
+                            .disabled(store.isLastStep)
+                            
+                            ForEach(store.tasks.indices, id: \.self) { index in
+                                HStack(spacing: 12) {
+                                    Image(.iconCheckPurple)
+                                        .padding(.leading, 8)
+                                    TextField(
+                                        store.taskPlaceholders[index],
+                                        text: $store.tasks[index]
+                                    )
+                                    .font(.pretendard(size: 16, weight: .medium))
+                                    .foregroundStyle(
+                                        (focusedTaskIndex == index) ? .gray900 : (store.tasks[index].isEmpty ? .gray300 : .gray900)
+                                    )
+                                    .focused($focusedTaskIndex, equals: index)
+                                    .disabled(!store.isLastStep)
+                                }
+                                .padding(8)
+                            }
+                            .onChange(of: store.focusedTaskIndex) { index in
+                                focusedTaskIndex = index
+                            }
                         }
-                        .padding(8)
+                        .background(
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(.gray50)
+                        )
+                        .padding(.horizontal, 28)
+                        
+                        Spacer().frame(height: 70)
+                        
+                        Text("계획을 세운 사람의 42%가\n목표를 달성한다는 연구 결과가 있어요!")
+                            .font(.pretendard(size: 12, weight: .medium))
+                            .foregroundStyle(.gray500)
+                            .multilineTextAlignment(.center)
+                            .padding(.bottom, 20)
                     }
+                    .frame(minHeight: geo.size.height)
+                    .padding(.bottom, 36)
+                    .navigationBarHidden(true)
                 }
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(.gray50)
-                )
-                .padding(.horizontal, 28)
-                
-                Spacer()
-                
-                Text("계획을 세운 사람의 42%가\n목표를 달성한다는 연구 결과가 있어요!")
-                    .font(.pretendard(size: 12, weight: .medium))
-                    .foregroundStyle(.gray500)
-                    .multilineTextAlignment(.center)
-                    .padding(.bottom, 20)
-                
-                DDButton(
-                    type: .primary,
-                    title: store.isLastStep ? "완료" : "다음"
-                ) {
-                    store.send(
-                        store.isLastStep
-                        ? .view(.completeButtonTapped)
-                        : .view(.nextButtonTapped)
-                    )
+                .frame(width: geo.size.width)
+                .scrollDisabled(true)
+                .ignoresSafeArea(.keyboard, edges: .bottom)
+                .background(.gray0)
+                .overlay(alignment: .bottom) {
+                    DDButton(
+                        type: store.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .disabled : .primary,
+                        title: store.isLastStep ? "완료" : "다음"
+                    ) {
+                        store.send(
+                            store.isLastStep
+                            ? .view(.completeButtonTapped)
+                            : .view(.nextButtonTapped)
+                        )
+                    }
+                    .padding(.horizontal, 16)
+                    .ignoresSafeArea(.keyboard)
                 }
-                .padding(.horizontal, 16)
             }
-            .navigationBarHidden(true)
-            .padding(.bottom, 36)
-            .background(.gray0)
+            .keyboardAdaptive()
         }
     }
 }

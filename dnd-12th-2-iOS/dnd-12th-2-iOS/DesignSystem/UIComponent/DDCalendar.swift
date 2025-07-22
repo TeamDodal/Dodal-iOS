@@ -10,6 +10,7 @@ import SwiftUI
 struct DDCalendar: View {
     @State private var month: Date = Date()
     @Binding private var selectedDate: Date?
+    @State private var dragOffset: CGFloat = 0
     
     init(
         month: Date = Date(),
@@ -23,7 +24,24 @@ struct DDCalendar: View {
         VStack {
             headerView
             calendarGridView
+                .offset(x: dragOffset)
+                .animation(.interactiveSpring(), value: dragOffset)
         }
+        .gesture(
+            DragGesture()
+                .onChanged { value in
+                    dragOffset = value.translation.width
+                }
+                .onEnded { value in
+                    let threshold: CGFloat = 80
+                    if value.translation.width < -threshold {
+                        changeMonth(by: 1)
+                    } else if value.translation.width > threshold {
+                        changeMonth(by: -1)
+                    }
+                    dragOffset = 0
+                }
+        )
     }
     
     // MARK: - Header
@@ -75,31 +93,46 @@ struct DDCalendar: View {
     
     // MARK: - Days
     private var calendarGridView: some View {
-        let daysInMonth: Int = numberOfDays(in: month)
-        let firstWeekday: Int = firstWeekdayOfMonth(in: month) - 1
+        let daysInMonth = numberOfDays(in: month)
+        let firstWeekday = firstWeekdayOfMonth(in: month) - 1
         let numberOfRows = Int(ceil(Double(daysInMonth + firstWeekday) / 7.0))
-        let visibleDaysOfNextMonth = numberOfRows * 7 - (daysInMonth + firstWeekday)
+        
+        /// 이전 달 정보
+        let prevMonth = adjustedMonth(by: -1)
+        let daysInPrevMonth = numberOfDays(in: prevMonth)
         
         return LazyVGrid(columns: Array(repeating: GridItem(), count: 7)) {
-            ForEach(-firstWeekday ..< daysInMonth + visibleDaysOfNextMonth, id: \.self) { index in
-                Group {
-                    if index > -1 && index < daysInMonth {
-                        let date = getDate(for: index)
-                        let day = Calendar.current.component(.day, from: date)
-                        let isSelected = selectedDate == date
-                        let isToday = date.formattedCalendarDayDate == today.formattedCalendarDayDate
-                        
-                        DayCellView(day: day, isSelected: isSelected, isToday: isToday)
-                            .onTapGesture {
-                                selectedDate = date
-                            }
-                    } else {
-                        Color.clear
-                            .frame(height: 46)
-                    }
+            ForEach(0 ..< (numberOfRows * 7), id: \.self) { index in
+                let dayOffset = index - firstWeekday
+                if dayOffset < 0 {
+                    /// 이전 달
+                    let day = daysInPrevMonth + dayOffset + 1
+                    let date = getDate(for: dayOffset, in: prevMonth)
+                    DayCellView(day: day, isSelected: selectedDate == date, isToday: date.formattedCalendarDayDate == today.formattedCalendarDayDate, isCurrentMonth: false)
+                        .onTapGesture {
+                        }
+                } else if dayOffset < daysInMonth {
+                    /// 이번 달
+                    let date = getDate(for: dayOffset)
+                    let day = Calendar.current.component(.day, from: date)
+                    DayCellView(day: day, isSelected: selectedDate == date, isToday: date.formattedCalendarDayDate == today.formattedCalendarDayDate, isCurrentMonth: true)
+                        .onTapGesture {
+                            selectedDate = date
+                        }
+                } else {
+                    /// 다음 달
+                    let day = dayOffset - daysInMonth + 1
+                    let date = getDate(for: day - 1, in: adjustedMonth(by: 1))
+                    DayCellView(day: day, isSelected: selectedDate == date, isToday: date.formattedCalendarDayDate == today.formattedCalendarDayDate, isCurrentMonth: false)
+                        .onTapGesture {
+                        }
                 }
             }
         }
+    }
+    
+    func getDate(for index: Int, in baseMonth: Date) -> Date {
+        Calendar.current.date(byAdding: .day, value: index, to: Calendar.current.date(from: Calendar.current.dateComponents([.year, .month], from: baseMonth))!) ?? Date()
     }
 }
 
@@ -108,12 +141,15 @@ private struct DayCellView: View {
     private var day: Int
     private var isSelected: Bool
     private var isToday: Bool
+    private var isCurrentMonth: Bool
     
     private var textColor: Color {
         if isSelected {
             return Color.gray900
         } else if isToday {
             return Color.mainBlue
+        } else if !isCurrentMonth {
+            return Color.gray300
         } else {
             return Color.gray700
         }
@@ -129,11 +165,13 @@ private struct DayCellView: View {
     fileprivate init(
         day: Int,
         isSelected: Bool = false,
-        isToday: Bool = false
+        isToday: Bool = false,
+        isCurrentMonth: Bool = true
     ) {
         self.day = day
         self.isSelected = isSelected
         self.isToday = isToday
+        self.isCurrentMonth = isCurrentMonth
     }
     
     fileprivate var body: some View {
