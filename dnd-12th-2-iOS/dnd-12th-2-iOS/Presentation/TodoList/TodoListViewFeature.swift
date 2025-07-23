@@ -56,7 +56,15 @@ struct TodoListViewFeature {
                     state.isShowTodoSheet = true
                     return .none
                 case .sheetDismiss:
-                    state.isShowTodoSheet = false
+                    guard let currentView = state.todoSheetStore.currentView else {
+                        return .none
+                    }
+                    if currentView == .editTodo {
+                        state.todoSheetStore.todoStore.isEditing = false
+                    } else {
+                        state.isShowTodoSheet = false
+                        state.todoSheetStore = .init()
+                    }
                     return .none
                 case let .setDueDateButtonTapped(todoItem):
                     state.todoSheetStore = .setDueDate(todo: todoItem)
