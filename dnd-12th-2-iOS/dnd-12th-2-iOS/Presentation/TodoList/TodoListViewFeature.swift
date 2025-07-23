@@ -28,15 +28,20 @@ struct TodoListViewFeature {
             case viewOnAppear
             case todoCellTapped(Todo)
             case setDueDateButtonTapped(Todo)
+            case completeButtonTapped(Todo)
         }
         
         enum DestinationAction {}
         
-        enum ExternalAction {}
+        enum ExternalAction {
+            case todoComplete(Todo)
+        }
         
         case todoSheetStore(TodoSheetFeature.Action)
         case todoListAction(TodoListFeature.Action)
     }
+    
+    @Dependency(\.todoClient) var todoClient
     
     var body: some Reducer<State, Action> {
         BindingReducer(action: \.view)
@@ -70,6 +75,8 @@ struct TodoListViewFeature {
                     state.todoSheetStore = .setDueDate(todo: todoItem)
                     state.isShowTodoSheet = true
                     return .none
+                case let .completeButtonTapped(todoItem):
+                    return .send(.external(.todoComplete(todoItem)))
                 default:
                     return .none
                 }
@@ -84,6 +91,16 @@ struct TodoListViewFeature {
                     }
                 default:
                     return .none
+                }
+            case .external(let action):
+                switch action {
+                case let .todoComplete(todo):
+                    var newTodo = todo
+                    newTodo.isCompleted.toggle()
+                    return .run { send in
+                        try todoClient.editTodoItem(newTodo)
+                        await send(.todoListAction(.view(.viewonAppear)))
+                    }
                 }
             default:
                 return .none

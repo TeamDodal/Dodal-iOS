@@ -41,9 +41,12 @@ struct TodoView: View {
                     ScrollView {
                         LazyVStack(spacing: 8) {
                             ForEach(store.todoListStore.todoItems) { todo in
-                                DDTodoCard(todo: todo) {
+                                DDTodoCard(todo: todo, action: {
                                     store.send(.view(.setDueDateButtonTapped(todo)))
-                                }.onTapGesture {
+                                }, completeAction: {
+                                    store.send(.view(.completeButtonTapped(todo)))
+                                })
+                                .onTapGesture {
                                     store.send(.view(.todoCellTapped(todo)))
                                 }
                             }
