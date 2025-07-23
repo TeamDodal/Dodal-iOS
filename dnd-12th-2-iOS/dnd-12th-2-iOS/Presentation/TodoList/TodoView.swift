@@ -44,7 +44,7 @@ struct TodoView: View {
                                 DDTodoCard(todo: todo) {
                                     
                                 }.onTapGesture {
-//                                    store.send(.view(.todoCellTapped(todo)))
+                                    store.send(.view(.todoCellTapped(todo)))
                                 }
                             }
                         }
