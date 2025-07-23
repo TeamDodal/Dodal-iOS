@@ -11,51 +11,62 @@ import ComposableArchitecture
 
 @Reducer
 struct TodoListFeature {
-        
+    
     @ObservableState
-    struct State {   
-        /// 투두리스트
+    struct State {
+        /// 전체 투두 리스트
         var todoItems: [Todo] = []
-        /// 특정 id 하위의 할일 목록만 가져오기 위함
+        
+        /// 특정 parent ID 하위의 할 일만 필터링할 때 사용
         var parentID: UUID?
         
+        /// 추가하기 시트 표시 여부
         var isShowAddTodoSheet = false
         
+        // 기본 이니셜라이저 (parentID 없음)
         init() {
             self.parentID = nil
         }
         
-        init (parentID: UUID?) {
+        // parentID가 있는 경우의 이니셜라이저
+        init(parentID: UUID?) {
             self.parentID = parentID
         }
     }
     
+    
     enum Action: TCAAction {
+        // View에서 발생하는 사용자 액션
         case view(ViewAction)
+        
+        // 외부 의존성 또는 비동기 처리 액션
         case external(ExternalAction)
+        
+        // 화면 전환 등 네비게이션 관련 액션
         case destination(DestinationAction)
         
-        /// View에서 일어나는 액션을 정의
         enum ViewAction {
-            /// 뷰가 나타났을때 액션
+            // 뷰가 나타났을 때
             case viewonAppear
             
-            /// 할일 목록 받아왔을때
+            // 할 일 목록을 받아왔을 때
             case responseTodoItem([Todo])
-            /// 할일 목록 탭했을때
+            
+            // 할 일 셀을 탭했을 때
             case todoCellTapped(Todo)
         }
         
         enum ExternalAction {
-            /// 할일 목록 가져오기
+            // 전체 할 일 목록 가져오기
             case fetchTodoItem
+            
+            // 특정 parentID 하위 할 일 목록 가져오기
             case fetchSubTodoItem(UUID)
         }
         
-        enum DestinationAction {
-   
-        }
+        enum DestinationAction {}
     }
+    
     
     @Dependency(\.todoClient) var todoClient
     
@@ -75,7 +86,7 @@ struct TodoListFeature {
                             await send(.external(.fetchTodoItem))
                         }
                     }
-                
+                    
                 case let .responseTodoItem(todoItem):
                     state.todoItems = todoItem
                 default:
@@ -86,7 +97,7 @@ struct TodoListFeature {
                 switch externalAction {
                 case .fetchTodoItem:
                     return .run { send in
-                        let todos = try todoClient.fetchTodoItems()                        
+                        let todos = try todoClient.fetchTodoItems()
                         await send(.view(.responseTodoItem(todos)))
                     }
                 case let .fetchSubTodoItem(id):
