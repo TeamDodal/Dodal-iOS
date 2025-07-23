@@ -44,7 +44,6 @@ struct TodoListFeature {
             case responseTodoItem([Todo])
             /// 할일 목록 탭했을때
             case todoCellTapped(Todo)
-            case showAddTodoButtonTapped
         }
         
         enum ExternalAction {
@@ -66,9 +65,6 @@ struct TodoListFeature {
                 // MARK: - view
             case let .view(viewAction):
                 switch viewAction {
-                case .showAddTodoButtonTapped:
-                    state.isShowAddTodoSheet = true
-                    return .none
                 case .viewonAppear:
                     if let parentId = state.parentID {
                         return .run { send in
