@@ -42,7 +42,7 @@ struct TodoView: View {
                         LazyVStack(spacing: 8) {
                             ForEach(store.todoListStore.todoItems) { todo in
                                 DDTodoCard(todo: todo) {
-                                    
+                                    store.send(.view(.setDueDateButtonTapped(todo)))
                                 }.onTapGesture {
                                     store.send(.view(.todoCellTapped(todo)))
                                 }

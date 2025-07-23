@@ -58,6 +58,10 @@ struct TodoListViewFeature {
                 case .sheetDismiss:
                     state.isShowTodoSheet = false
                     return .none
+                case let .setDueDateButtonTapped(todoItem):
+                    state.todoSheetStore = .setDueDate(todo: todoItem)
+                    state.isShowTodoSheet = true
+                    return .none
                 default:
                     return .none
                 }
