@@ -61,6 +61,18 @@ struct TodoListViewFeature {
                 default:
                     return .none
                 }
+            case let .todoSheetStore(action):
+                switch action {
+                case .editingCanelled, .crateTodoCompleted:
+                    state.isShowTodoSheet = false
+                    state.todoSheetStore = .init()
+                    return .run { send in
+                        try await Task.sleep(for: .seconds(0.3))
+                        await send(.todoListAction(.view(.viewonAppear)))
+                    }
+                default:
+                    return .none
+                }
             default:
                 return .none
             }
