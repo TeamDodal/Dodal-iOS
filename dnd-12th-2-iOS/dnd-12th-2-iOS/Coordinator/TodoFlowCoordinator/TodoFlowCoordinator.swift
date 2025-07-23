@@ -37,9 +37,9 @@ struct TodoFlowCoordinator {
         Reduce { state, action in
             switch action {
                 // MARK: - Todolist action
-//            case let .todoListStore(.view(.todoCellTapped(todo))):
-//                state.path.append(.todoDetail(.init(todoItem: todo)))
-//                return .none
+            case let .todoListStore(.view(.todoCellTapped(todo))):
+                state.path.append(.todoDetail(.init(todoItem: todo)))
+                return .none
                 // MARK: - Navigation action
             case let .path(action):
                 switch action {
