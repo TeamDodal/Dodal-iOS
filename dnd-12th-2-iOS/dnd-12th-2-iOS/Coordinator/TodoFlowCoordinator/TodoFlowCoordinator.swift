@@ -18,28 +18,28 @@ struct TodoFlowCoordinator {
     struct State {
         
         /// todoListStore
-        var todoListStore = TodoListFeature.State()
+        var todoListStore = TodoListViewFeature.State()
         
         /// 네비게이션 스택
         var path = StackState<Path.State>()
     }
     
     enum Action {
-        case todoListStore(TodoListFeature.Action)
+        case todoListStore(TodoListViewFeature.Action)
         case path(StackActionOf<Path>)
     }
     
     var body: some Reducer<State, Action> {
         Scope(state: \.todoListStore, action: \.todoListStore) {
-            TodoListFeature()
+            TodoListViewFeature()
         }
         
         Reduce { state, action in
             switch action {
                 // MARK: - Todolist action
-            case let .todoListStore(.view(.todoCellTapped(todo))):
-                state.path.append(.todoDetail(.init(todoItem: todo)))
-                return .none
+//            case let .todoListStore(.view(.todoCellTapped(todo))):
+//                state.path.append(.todoDetail(.init(todoItem: todo)))
+//                return .none
                 // MARK: - Navigation action
             case let .path(action):
                 switch action {

@@ -10,16 +10,16 @@ import SwiftUI
 import ComposableArchitecture
 
 struct TodoView: View {
-    let store: StoreOf<TodoListFeature>
+    let store: StoreOf<TodoListViewFeature>
     
-    init(store: StoreOf<TodoListFeature>) {
+    init(store: StoreOf<TodoListViewFeature>) {
         self.store = store
     }
     
     var body: some View {
         WithPerceptionTracking {
             VStack(alignment: .leading, spacing: 0) {
-                if store.todoItems.isEmpty {
+                if store.todoListStore.todoItems.isEmpty {
                     VStack {
                         Image(.imgEmpty)
                             .resizable()
@@ -40,11 +40,11 @@ struct TodoView: View {
                 } else {
                     ScrollView {
                         LazyVStack(spacing: 8) {
-                            ForEach(store.todoItems) { todo in
+                            ForEach(store.todoListStore.todoItems) { todo in
                                 DDTodoCard(todo: todo) {
-
+                                    
                                 }.onTapGesture {
-                                    store.send(.view(.todoCellTapped(todo)))
+//                                    store.send(.view(.todoCellTapped(todo)))
                                 }
                             }
                         }
@@ -57,12 +57,12 @@ struct TodoView: View {
             .background(.gray50)
             .overlay(alignment: .bottom, content: {
                 DDAddTaskButton(type: .parent) {
-                    store.send(.view(.showAddTodoButtonTapped))
+//                    store.send(.view(.showAddTodoButtonTapped))
                 }
                 .padding(.bottom, 20)
             })
             .onAppear {
-                store.send(.view(.viewonAppear))
+                store.send(.view(.viewOnAppear))
             }
         }
     }
