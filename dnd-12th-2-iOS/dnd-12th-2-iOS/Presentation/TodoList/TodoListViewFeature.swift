@@ -1,0 +1,62 @@
+//
+//  TodoListViewFeature.swift
+//  dnd-12th-2-iOS
+//
+//  Created by 권석기 on 7/23/25.
+//
+
+import ComposableArchitecture
+
+@Reducer
+struct TodoListViewFeature {
+    @ObservableState
+    struct State {
+        var todoListStore = TodoListFeature.State()
+        var todoSheetStore = TodoSheetFeature.State()
+    }
+    
+    enum Action: TCAAction {
+        case view(ViewAction)
+        case external(ExternalAction)
+        case destination(DestinationAction)
+        
+        enum ViewAction: BindableAction {
+            case binding(BindingAction<State>)
+            case sheetDismiss
+            case sheetPresent
+            case viewOnAppear
+            case todoCellTapped(Todo)
+            case setDueDateButtonTapped(Todo)
+        }
+        
+        enum DestinationAction {}
+        
+        enum ExternalAction {}
+        
+        case todoSheetStore(TodoSheetFeature.Action)
+        case todoListAction(TodoListFeature.Action)
+    }
+    
+    var body: some Reducer<State, Action> {
+        BindingReducer(action: \.view)
+        Scope(state: \.todoSheetStore, action: \.todoSheetStore) {
+            TodoSheetFeature()
+        }
+        Scope(state: \.todoListStore, action: \.todoListAction) {
+            TodoListFeature()
+        }
+        Reduce { state, action in
+            switch action {
+            case .view(let action):
+                switch action {
+                case .viewOnAppear:
+                    return .send(.todoListAction(.view(.viewonAppear)))
+                default:
+                    return .none
+                }
+            default:
+                return .none
+            }
+        }
+    }
+}
