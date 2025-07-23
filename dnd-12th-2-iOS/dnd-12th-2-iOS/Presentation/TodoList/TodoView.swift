@@ -10,7 +10,7 @@ import SwiftUI
 import ComposableArchitecture
 
 struct TodoView: View {
-    let store: StoreOf<TodoListViewFeature>
+    @Perception.Bindable var store: StoreOf<TodoListViewFeature>
     
     init(store: StoreOf<TodoListViewFeature>) {
         self.store = store
@@ -55,9 +55,15 @@ struct TodoView: View {
                 Spacer()
             }
             .background(.gray50)
+            .bottomSheet(isPresented: $store.isShowTodoSheet, content: {
+                TodoSheetView(store: store.scope(state: \.todoSheetStore, action: \.todoSheetStore))
+                    .fixedSize(horizontal: false, vertical: true)
+            }, onDismiss: {
+                store.send(.view(.sheetDismiss))
+            })
             .overlay(alignment: .bottom, content: {
                 DDAddTaskButton(type: .parent) {
-//                    store.send(.view(.showAddTodoButtonTapped))
+                    store.send(.view(.sheetPresent))
                 }
                 .padding(.bottom, 20)
             })

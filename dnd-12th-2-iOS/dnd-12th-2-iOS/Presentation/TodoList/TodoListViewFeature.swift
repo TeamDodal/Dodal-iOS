@@ -13,9 +13,10 @@ struct TodoListViewFeature {
     struct State {
         var todoListStore = TodoListFeature.State()
         var todoSheetStore = TodoSheetFeature.State()
+        var isShowTodoSheet = false
     }
     
-    enum Action: TCAAction {
+    enum Action: ViewAction, TCAAction {
         case view(ViewAction)
         case external(ExternalAction)
         case destination(DestinationAction)
@@ -51,6 +52,12 @@ struct TodoListViewFeature {
                 switch action {
                 case .viewOnAppear:
                     return .send(.todoListAction(.view(.viewonAppear)))
+                case .sheetPresent:
+                    state.isShowTodoSheet = true
+                    return .none
+                case .sheetDismiss:
+                    state.isShowTodoSheet = false
+                    return .none
                 default:
                     return .none
                 }
