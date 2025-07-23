@@ -17,27 +17,40 @@ struct TodoListViewFeature {
     }
     
     enum Action: ViewAction, TCAAction {
+        // View의 사용자 인터랙션 관련 액션
         case view(ViewAction)
+        // 외부(서버 등)에서 발생한 이벤트 처리용 액션
         case external(ExternalAction)
+        // 네비게이션 관련 액션
         case destination(DestinationAction)
         
         enum ViewAction: BindableAction {
+            // 바인딩 값 변경 (예: isShowTodoSheet)
             case binding(BindingAction<State>)
+            // 시트 닫힘 처리
             case sheetDismiss
+            // 시트 열기 처리
             case sheetPresent
+            // 화면 등장 시 처리
             case viewOnAppear
+            // Todo 셀 탭
             case todoCellTapped(Todo)
+            // 마감일 설정 버튼 탭
             case setDueDateButtonTapped(Todo)
+            // 완료 버튼 탭
             case completeButtonTapped(Todo)
         }
         
-        enum DestinationAction {}
+        enum DestinationAction {} // 네비게이션 상태 전용 액션
         
         enum ExternalAction {
+            // Todo 완료 처리
             case todoComplete(Todo)
         }
         
+        // 하위 시트 Feature 액션
         case todoSheetStore(TodoSheetFeature.Action)
+        // 하위 리스트 Feature 액션
         case todoListAction(TodoListFeature.Action)
     }
     
