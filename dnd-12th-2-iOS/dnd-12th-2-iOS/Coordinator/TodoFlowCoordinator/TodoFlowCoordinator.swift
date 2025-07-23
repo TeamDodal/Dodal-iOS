@@ -16,11 +16,7 @@ struct TodoFlowCoordinator {
     
     @ObservableState
     struct State {
-        
-        /// todoListStore
-        var todoListStore = TodoListViewFeature.State()
-        
-        /// 네비게이션 스택
+        var todoListStore = TodoListViewFeature.State()                
         var path = StackState<Path.State>()
     }
     

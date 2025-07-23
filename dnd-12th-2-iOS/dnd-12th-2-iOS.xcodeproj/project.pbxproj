@@ -20,12 +20,7 @@
 		478783ED2D489B0B00D529E0 /* Exceptions for "dnd-12th-2-iOS" folder in "dnd-12th-2-iOS" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Client/.gitkeep,
-				DesignSystem/UIComponent/.gitkeep,
-				Global/Extensions/.gitkeep,
 				Info.plist,
-				Model/.gitkeep,
-				Presentation/.gitkeep,
 			);
 			target = FB8E73272D40CB60005F935D /* dnd-12th-2-iOS */;
 		};

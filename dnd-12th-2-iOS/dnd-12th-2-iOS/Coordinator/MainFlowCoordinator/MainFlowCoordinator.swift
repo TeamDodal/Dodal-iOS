@@ -16,18 +16,12 @@ struct MainFlowCoordinator {
     
     @ObservableState
     struct State {
-        /// 네비게이션 스택
         var path = StackState<Path.State>()
-        
-        /// HomeView store
         var homeViewStore = HomeViewFeature.State()
     }
     
     enum Action {
-        /// 네비게이션 스택 액션
-        case path(StackActionOf<Path>)
-        
-        /// HomeView action
+        case path(StackActionOf<Path>)                
         case homeViewStore(HomeViewFeature.Action)
     }
     
