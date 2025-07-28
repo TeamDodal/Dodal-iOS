@@ -15,8 +15,7 @@ struct TabBarView: View {
                 HStack {
                     HStack {
                         Spacer()
-                        VStack {
-                            // TODO: 머지하고 이미지 추가예정
+                        VStack {                            
                             Image(tabInfo == currentTab ? tabInfo.iconSelected : tabInfo.icon)
                             Text(tabInfo.rawValue)
                                 .font(.pretendard(size: 10, weight: .regular))

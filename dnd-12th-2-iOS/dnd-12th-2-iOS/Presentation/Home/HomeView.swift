@@ -69,10 +69,6 @@ struct HomeView: View {
                     }
                     .padding(.bottom, 20)
                 })
-//                .bottomSheet(isPresented: $store.isShowTodoSheet, content: {
-//                    TodoSheetView(store: store.scope(state: \.todoSheetStore, action: \.todoSheetStore))
-//                        .fixedSize(horizontal: false, vertical: true)
-//                })
                 .bottomSheet(
                     isPresented: $store.isShowCalendarSheet,
                     topSpacing: 81

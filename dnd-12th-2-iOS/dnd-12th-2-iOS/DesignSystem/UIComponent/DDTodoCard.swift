@@ -10,12 +10,18 @@ import SwiftUI
 struct DDTodoCard: View {
     let todo: Todo
     var action: (()->())?
+    var completeAction: (()->())?
     
     var body: some View {
         HStack {
-            Image(todo.isCompleted ? .iconCheck : .iconCheckGray)
-                .resizable()
-                .frame(width: 32, height: 32)
+            Button {
+                completeAction?()
+            } label: {
+                Image(todo.isCompleted ? .iconCheck : .iconCheckGray)
+                    .resizable()
+                    .frame(width: 32, height: 32)
+            }
+
             
             Text(todo.title)
                 .font(.pretendard(size: 14, weight: .medium))

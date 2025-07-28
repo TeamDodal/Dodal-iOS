@@ -16,22 +16,18 @@ struct TodoFlowCoordinator {
     
     @ObservableState
     struct State {
-        
-        /// todoListStore
-        var todoListStore = TodoListFeature.State()
-        
-        /// 네비게이션 스택
+        var todoListStore = TodoListViewFeature.State()                
         var path = StackState<Path.State>()
     }
     
     enum Action {
-        case todoListStore(TodoListFeature.Action)
+        case todoListStore(TodoListViewFeature.Action)
         case path(StackActionOf<Path>)
     }
     
     var body: some Reducer<State, Action> {
         Scope(state: \.todoListStore, action: \.todoListStore) {
-            TodoListFeature()
+            TodoListViewFeature()
         }
         
         Reduce { state, action in

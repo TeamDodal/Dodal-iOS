@@ -10,16 +10,16 @@ import SwiftUI
 import ComposableArchitecture
 
 struct TodoView: View {
-    let store: StoreOf<TodoListFeature>
+    @Perception.Bindable var store: StoreOf<TodoListViewFeature>
     
-    init(store: StoreOf<TodoListFeature>) {
+    init(store: StoreOf<TodoListViewFeature>) {
         self.store = store
     }
     
     var body: some View {
         WithPerceptionTracking {
             VStack(alignment: .leading, spacing: 0) {
-                if store.todoItems.isEmpty {
+                if store.todoListStore.todoItems.isEmpty {
                     VStack {
                         Image(.imgEmpty)
                             .resizable()
@@ -40,10 +40,13 @@ struct TodoView: View {
                 } else {
                     ScrollView {
                         LazyVStack(spacing: 8) {
-                            ForEach(store.todoItems) { todo in
-                                DDTodoCard(todo: todo) {
-
-                                }.onTapGesture {
+                            ForEach(store.todoListStore.todoItems) { todo in
+                                DDTodoCard(todo: todo, action: {
+                                    store.send(.view(.setDueDateButtonTapped(todo)))
+                                }, completeAction: {
+                                    store.send(.view(.completeButtonTapped(todo)))
+                                })
+                                .onTapGesture {
                                     store.send(.view(.todoCellTapped(todo)))
                                 }
                             }
@@ -55,14 +58,20 @@ struct TodoView: View {
                 Spacer()
             }
             .background(.gray50)
+            .bottomSheet(isPresented: $store.isShowTodoSheet, content: {
+                TodoSheetView(store: store.scope(state: \.todoSheetStore, action: \.todoSheetStore))
+                    .fixedSize(horizontal: false, vertical: true)
+            }, onDismiss: {
+                store.send(.view(.sheetDismiss))
+            })
             .overlay(alignment: .bottom, content: {
                 DDAddTaskButton(type: .parent) {
-                    store.send(.view(.showAddTodoButtonTapped))
+                    store.send(.view(.sheetPresent))
                 }
                 .padding(.bottom, 20)
             })
             .onAppear {
-                store.send(.view(.viewonAppear))
+                store.send(.view(.viewOnAppear))
             }
         }
     }
